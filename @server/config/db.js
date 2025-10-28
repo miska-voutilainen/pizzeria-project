@@ -21,33 +21,24 @@ let db = null;
 
 async function connectMongoDB() {
   if (db) {
-    console.log('Reusing existing MongoDB connection');
     return db;
   }
-
   if (!DB_CONFIG.uri) {
     throw new Error('MONGO_URI is not defined in .env file');
   }
-
   let retries = 0;
   while (retries < DB_CONFIG.maxRetries) {
     try {
       client = new MongoClient(DB_CONFIG.uri, DB_CONFIG.options);
       await client.connect();
-      console.log('Successfully connected to MongoDB');
-
       db = client.db(DB_CONFIG.dbName);
-
       client.on('error', (err) => {
         console.error('MongoDB connection error:', err);
         db = null;
       });
-
       client.on('close', () => {
-        console.log('MongoDB connection closed unexpectedly');
         db = null;
       });
-
       return db;
     } catch (error) {
       console.error(`Connection attempt ${retries + 1} failed:`, error.message);
@@ -64,7 +55,6 @@ async function closeMongoDB() {
   if (client) {
     try {
       await client.close();
-      console.log('MongoDB connection closed');
     } catch (error) {
       console.error('Error closing MongoDB connection:', error);
     } finally {
