@@ -167,11 +167,6 @@ function createAuthRoutes(db) {
         passwordResetRequired: false,
         is2faEnabled: false,
         last2faVerifiedAt: null,
-        preferences: {
-          vegan: false,
-          glutenFree: false,
-          lactoseFree: false
-        },
         role: "customer",
         accountStatus: "active",
         createdAt: user.createdAt,
