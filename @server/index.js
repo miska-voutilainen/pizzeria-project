@@ -8,7 +8,7 @@ dotenv.config({ path: ".env.development" });
 const app = express();
 app.use(express.json());
 
-app.use(foodRoutes);
+app.use("/api", foodRoutes);
 
 const db = await connectMongoDB();
 
