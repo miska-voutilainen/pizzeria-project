@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
+import { getFoods } from "./fetchApi";
 
 const HomePage = () => {
-  const [foods] = useState([]);
+  const [foods, setFoods] = useState([]);
 
   useEffect(() => {
     const loadFoods = async () => {
-      //const data = await getFoods();
-      //setFoods(data);
+      const data = await getFoods();
+      setFoods(data);
     };
     loadFoods();
   }, []);
