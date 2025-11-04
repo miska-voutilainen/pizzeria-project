@@ -14,6 +14,7 @@ const db = await connectMongoDB();
 
 app.use("/api", createAuthRoutes(db));
 
-app.listen(process.env.PORT || 3001, () => {
-  console.log(`Server running on http://localhost:${process.env.PORT || 3001}`);
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });
