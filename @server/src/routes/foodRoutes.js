@@ -5,7 +5,7 @@ import { validateToken } from "../../services/tokenService.js";
 
 const foodRoutes = express.Router();
 
-//  Middleware to verify Token ti let the user see Producets.
+/*  ei trvitse: Middleware to verify Token ti let the user see Producets.
 async function verifyToken(req, res, next) {
   try {
     const authHeader = req.headers["authorization"];
@@ -29,7 +29,7 @@ async function verifyToken(req, res, next) {
     console.error("Token validation error:", err);
     res.status(500).json({ message: "Internal server error" });
   }
-}
+} */
 
 //#1 - Retrive All, with user verifed Token.
 //http://localhost:3001/"Home Page"
@@ -49,7 +49,7 @@ foodRoutes.get("/", async (req, res) => {
 
 //#1 - Retrive One, with user verifed Token.
 //http://localhost:3001/:id
-foodRoutes.get("/:id", verifyToken, async (req, res) => {
+foodRoutes.get("/:id", async (req, res) => {
   try {
     const db = await connectMongoDB();
     const food = await db
