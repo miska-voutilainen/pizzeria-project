@@ -31,7 +31,7 @@ async function verifyToken(req, res, next) {
   }
 } */
 
-//#1 - Retrive All, with user verifed Token.
+//#1 - Retrive All
 //http://localhost:3001/"Home Page"
 foodRoutes.get("/", async (req, res) => {
   try {
@@ -47,7 +47,7 @@ foodRoutes.get("/", async (req, res) => {
   }
 });
 
-//#1 - Retrive One, with user verifed Token.
+//#1 - Retrive One
 //http://localhost:3001/:id
 foodRoutes.get("/:id", async (req, res) => {
   try {
