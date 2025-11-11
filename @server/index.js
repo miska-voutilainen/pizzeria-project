@@ -1,14 +1,20 @@
 import express from 'express';
-import { connectMongoDB } from './config/db.js';
+import { connectMariaDB, closeMariaDB } from './config/db.js';
 import createAuthRoutes from './src/routes/authRoutes.js';
 
-const app = express();
-app.use(express.json());
+(async () => {
+  const pool = await connectMariaDB();
+  const app = express();
 
-const db = await connectMongoDB();
+  app.use(express.json());
+  app.use('/api', createAuthRoutes(pool));
 
-app.use('/api', createAuthRoutes(db));
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => console.log(`API listening on ${PORT}`));
 
-app.listen(process.env.PORT || 3001, () => {
-  console.log(`Server running on http://localhost:${process.env.PORT || 3001}`);
-});
+  // graceful shutdown
+  process.on('SIGINT', async () => {
+    await closeMariaDB();
+    process.exit(0);
+  });
+})();

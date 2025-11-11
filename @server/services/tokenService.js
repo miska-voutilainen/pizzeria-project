@@ -1,33 +1,32 @@
+// tokenService.js
 import { randomUUID } from 'crypto';
 
-async function createToken(db, userId, type, expiresInHours = 24) {
-  const now = new Date();
+export async function createToken(pool, userId, type, expiresInHours = 24) {
   const token = randomUUID();
+  const now = new Date();
   const expiresAt = new Date(now.getTime() + expiresInHours * 60 * 60 * 1000);
-  const tokenDoc = {
-    userId,
-    token,
-    type,
-    createdAt: now,
-    expiresAt,
-    used: false,
-    ipAddress: null,
-    userAgent: null,
-  };
-  await db.collection('userTokens').insertOne(tokenDoc);
+
+  const sql = `
+    INSERT INTO userTokens
+      (_id, userId, token, type, createdAt, expiresAt, used)
+    VALUES (UUID(), ?, ?, ?, ?, ?, FALSE)
+  `;
+  await pool.execute(sql, [userId, token, type, now, expiresAt]);
   return token;
 }
 
-async function validateToken(db, token, type) {
-  const tokenDoc = await db.collection('userTokens').findOne({ token, used: false, type });
-  if (!tokenDoc || tokenDoc.expiresAt < new Date()) {
-    return null;
-  }
-  return tokenDoc;
+export async function validateToken(pool, token, type) {
+  const [rows] = await pool.execute(
+    `SELECT * FROM userTokens
+     WHERE token = ? AND type = ? AND used = FALSE AND expiresAt > NOW()`,
+    [token, type]
+  );
+  return rows[0] || null;
 }
 
-async function markTokenUsed(db, tokenId) {
-  await db.collection('userTokens').updateOne({ _id: tokenId }, { $set: { used: true } });
+export async function markTokenUsed(pool, tokenId) {
+  await pool.execute(
+    `UPDATE userTokens SET used = TRUE WHERE _id = ?`,
+    [tokenId]
+  );
 }
-
-export { createToken, validateToken, markTokenUsed };

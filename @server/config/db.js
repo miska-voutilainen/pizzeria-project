@@ -1,78 +1,44 @@
-import { MongoClient } from 'mongodb';
+import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
-
 dotenv.config({ path: '.env.development' });
 
 const DB_CONFIG = {
-  uri: process.env.MONGO_URI || '',
-  dbName: process.env.DB_NAME || '',
-  options: {
-    maxPoolSize: 10,
-    minPoolSize: 2,
-    maxIdleTimeMS: 10000,
-    serverSelectionTimeoutMS: 5000,
-  },
-  maxRetries: 3,
-  retryDelay: 1000,
+  host: process.env.MYSQL_HOST || '',
+  port: Number(process.env.MYSQL_PORT) || 3306,
+  user: process.env.MYSQL_USER || '',
+  password: process.env.MYSQL_PASSWORD || '',
+  database: process.env.MYSQL_DATABASE || '',
+  connectionLimit: 10,          // pool size
+  waitForConnections: true,
+  queueLimit: 0,
 };
 
-let client = null;
-let db = null;
+let pool = null;
 
-async function connectMongoDB() {
-  if (db) {
-    return db;
+export async function connectMariaDB() {
+  if (pool) return pool;
+  if (!DB_CONFIG.database) {
+    throw new Error('MYSQL_DATABASE is not defined in .env file');
   }
-  if (!DB_CONFIG.uri) {
-    throw new Error('MONGO_URI is not defined in .env file');
-  }
-  let retries = 0;
-  while (retries < DB_CONFIG.maxRetries) {
-    try {
-      client = new MongoClient(DB_CONFIG.uri, DB_CONFIG.options);
-      await client.connect();
-      db = client.db(DB_CONFIG.dbName);
-      client.on('error', (err) => {
-        console.error('MongoDB connection error:', err);
-        db = null;
-      });
-      client.on('close', () => {
-        db = null;
-      });
-      return db;
-    } catch (error) {
-      console.error(`Connection attempt ${retries + 1} failed:`, error.message);
-      retries++;
-      if (retries >= DB_CONFIG.maxRetries) {
-        throw new Error(`Failed to connect to MongoDB after ${DB_CONFIG.maxRetries} attempts`);
-      }
-      await new Promise((resolve) => setTimeout(resolve, DB_CONFIG.retryDelay));
-    }
+  pool = mysql.createPool(DB_CONFIG);
+  // test the pool
+  const conn = await pool.getConnection();
+  conn.release();
+  console.log('MariaDB pool created');
+  return pool;
+}
+
+export async function closeMariaDB() {
+  if (pool) {
+    await pool.end();
+    pool = null;
+    console.log('MariaDB pool closed');
   }
 }
 
-async function closeMongoDB() {
-  if (client) {
-    try {
-      await client.close();
-    } catch (error) {
-      console.error('Error closing MongoDB connection:', error);
-    } finally {
-      client = null;
-      db = null;
-    }
+export function getMariaDB() {
+  if (!pool) {
+    throw new Error('MariaDB not connected. Call connectMariaDB first.');
   }
+  return pool;
 }
-
-function getMongoDB() {
-  if (!db) {
-    throw new Error('MongoDB not connected. Call connectMongoDB first.');
-  }
-  return db;
-}
-
-function isMongoConnected() {
-  return !!db && !!client;
-}
-
-export { connectMongoDB, closeMongoDB, getMongoDB, isMongoConnected };
