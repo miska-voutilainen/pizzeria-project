@@ -36,7 +36,7 @@ async function verifyToken(req, res, next) {
 foodRoutes.get("/", async (req, res) => {
   try {
     const db = await connectMongoDB();
-    const foods = await db.collection("foods").find({}).toArray();
+    const foods = await db.collection("productData").find({}).toArray();
 
     !foods.length // Advanced if/else (? :)
       ? res.status(404).json({ message: "No foods found" })
@@ -53,7 +53,7 @@ foodRoutes.get("/:id", async (req, res) => {
   try {
     const db = await connectMongoDB();
     const food = await db
-      .collection("foods")
+      .collection("productData")
       .findOne({ _id: new ObjectId(req.params.id) });
 
     !food // Advanced if/else (? :)
