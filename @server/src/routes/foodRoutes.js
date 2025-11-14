@@ -1,68 +1,47 @@
 import express from "express";
-import { ObjectId } from "mongodb";
-import { connectMongoDB } from "../../config/db.js";
-import { validateToken } from "../../services/tokenService.js";
 
-const foodRoutes = express.Router();
+function foodRoutes(pool) {
+  const router = express.Router();
 
-/*  ei trvitse: Middleware to verify Token ti let the user see Producets.
-async function verifyToken(req, res, next) {
-  try {
-    const authHeader = req.headers["authorization"];
-    const token = authHeader && authHeader.split(" ")[1];
+  //#1 - Retrive All Foods
+  //http://localhost:3001/"Home Page"
+  router.get("/", async (req, res) => {
+    try {
+      const [rows] = await pool.execute(
+        `SELECT _id, tag, name, description, price, imgUrl 
+      FROM productdata`
+      );
 
-    if (!token) {
-      return res.status(401).json({ message: "Token missing" });
+      !rows.length // Advanced if/else (? :)
+        ? res.status(404).json({ message: "No foods found" })
+        : res.json(rows);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Server error" });
     }
+  });
 
-    // Verify The Token in Databse.
-    const db = await connectMongoDB();
-    const tokenDoc = await validateToken(db, token, "access");
+  //#1 - Retrive One
+  //http://localhost:3001/:id
+  router.get("/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+      const [rows] = await pool.execute(
+        `SELECT _id, tag, name, description, price, imgUrl 
+      FROM productdata
+      WHERE _id = ?`,
+        [id]
+      );
 
-    if (!tokenDoc) {
-      return res.status(403).json({ message: "Invalid or expired token" });
+      !rows[0] // Advanced if/else (? :)
+        ? res.status(404).json({ message: "No foods found" })
+        : res.json(rows);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Server error" });
     }
-
-    req.user = { id: tokenDoc.userId };
-    next();
-  } catch (err) {
-    console.error("Token validation error:", err);
-    res.status(500).json({ message: "Internal server error" });
-  }
-} */
-
-//#1 - Retrive All
-//http://localhost:3001/"Home Page"
-foodRoutes.get("/", async (req, res) => {
-  try {
-    const db = await connectMongoDB();
-    const foods = await db.collection("productData").find({}).toArray();
-
-    !foods.length // Advanced if/else (? :)
-      ? res.status(404).json({ message: "No foods found" })
-      : res.json(foods);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-//#1 - Retrive One
-//http://localhost:3001/:id
-foodRoutes.get("/:id", async (req, res) => {
-  try {
-    const db = await connectMongoDB();
-    const food = await db
-      .collection("productData")
-      .findOne({ _id: new ObjectId(req.params.id) });
-
-    !food // Advanced if/else (? :)
-      ? res.status(404).json({ message: "No foods found" })
-      : res.json(food);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
-  }
-});
+  });
+  return router;
+}
 
 export default foodRoutes;
