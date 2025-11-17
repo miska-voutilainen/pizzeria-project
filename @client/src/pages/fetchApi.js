@@ -1,4 +1,4 @@
-const URL = "/api";
+const URL = "http://localhost:3001";
 
 // fetch all from the backend
 export const getFoods = async () => {

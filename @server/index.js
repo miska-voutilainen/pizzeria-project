@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import { connectMariaDB, closeMariaDB } from "./config/db.js";
 import createAuthRoutes from "./src/routes/authRoutes.js";
 import foodRoutes from "./src/routes/foodRoutes.js";
@@ -8,6 +9,7 @@ dotenv.config({ path: ".env.development" });
 (async () => {
   const pool = await connectMariaDB();
   const app = express();
+  app.use(cors());
 
   app.use(express.json());
   app.use("/api", createAuthRoutes(pool));

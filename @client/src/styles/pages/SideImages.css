@@ -1,0 +1,245 @@
+/* SideImages.css - Circular Motion for Side Images */
+
+/* Container for all side images */
+.left-side-images-container {
+  position: fixed;
+  left: -50px;
+  top: 0;
+  height: 90vh;
+  width: 100px;
+  z-index: 10;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 120px 0 0;
+}
+
+.right-side-images-container {
+  position: fixed;
+  right: -50px;
+  top: 0;
+  height: 100vh;
+  width: 150px;
+  z-index: 10;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 120px 0 0;
+}
+
+/* Individual side image with circular motion base */
+.side-image {
+  width: 300px;
+  height: 300px;
+  overflow: hidden;
+  transition: all 0.1s ease 100;
+  position: relative;
+}
+
+.side-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Circular Motion Animations */
+
+/* Circular orbit animation - images move in circular paths */
+@keyframes circularOrbit {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translate(20px, -15px) rotate(90deg) scale(1.1);
+  }
+  50% {
+    transform: translate(0, -30px) rotate(180deg) scale(1);
+  }
+  75% {
+    transform: translate(-20px, -15px) rotate(270deg) scale(0.9);
+  }
+  100% {
+    transform: translate(0, 0) rotate(360deg) scale(1);
+  }
+}
+
+/* Elliptical orbit - more dynamic circular motion */
+@keyframes ellipticalOrbit {
+  0% {
+    transform: translateX(0px) translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateX(25px) translateY(-20px) rotate(120deg);
+  }
+  66% {
+    transform: translateX(-25px) translateY(-15px) rotate(240deg);
+  }
+  100% {
+    transform: translateX(0px) translateY(0px) rotate(360deg);
+  }
+}
+
+/* Spinning circular motion with floating */
+@keyframes spinFloat {
+  0% {
+    transform: rotate(0deg) translateX(0px) translateY(0px);
+  }
+  25% {
+    transform: rotate(90deg) translateX(15px) translateY(-10px);
+  }
+  50% {
+    transform: rotate(180deg) translateX(0px) translateY(-20px);
+  }
+  75% {
+    transform: rotate(270deg) translateX(-15px) translateY(-10px);
+  }
+  100% {
+    transform: rotate(360deg) translateX(0px) translateY(0px);
+  }
+}
+
+/* Pulsating circular motion */
+@keyframes pulseOrbit {
+  0%,
+  100% {
+    transform: rotate(0deg) translateX(0px) scale(1);
+    opacity: 0.7;
+  }
+  25% {
+    transform: rotate(90deg) translateX(20px) scale(1.1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: rotate(180deg) translateX(0px) scale(1.2);
+    opacity: 1;
+  }
+  75% {
+    transform: rotate(270deg) translateX(-20px) scale(1.1);
+    opacity: 0.9;
+  }
+}
+
+/* NEW: Add the missing animations from your React code */
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-40px);
+  }
+}
+
+/* Apply circular animations - FIXED CLASS NAMES */
+.side-image-top {
+  animation: circularOrbit 12s ease-in-out infinite;
+}
+
+.side-image-bottom {
+  animation: ellipticalOrbit 10s ease-in-out infinite;
+}
+
+/* Additional circular animation classes */
+.side-image-spin {
+  animation: spinFloat 12s linear infinite;
+}
+
+.side-image-pulse-orbit {
+  animation: pulseOrbit 6s ease-in-out infinite;
+}
+
+/* NEW: Add the classes you're using in React */
+.side-image-rotate {
+  animation: rotate 12s linear infinite;
+}
+
+/*
+.side-image-pulse {
+  animation: pulse 4s ease-in-out infinite;
+}
+*/
+
+.side-image-bounce {
+  animation: bounce 12s ease-in-out infinite;
+}
+
+/* Hover effects for circular motion */
+.side-image:hover {
+  animation-play-state: paused;
+  transform: scale(1.15);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  .left-side-images-container,
+  .right-side-images-container {
+    width: 120px;
+  }
+
+  .side-image {
+    width: 100px;
+    height: 100px;
+  }
+
+  /* Adjust circular motion for smaller screens */
+  @keyframes circularOrbit {
+    0% {
+      transform: translate(0, 0) rotate(0deg) scale(1);
+    }
+    25% {
+      transform: translate(10px, -10px) rotate(90deg) scale(1.05);
+    }
+    50% {
+      transform: translate(0, -20px) rotate(180deg) scale(1);
+    }
+    75% {
+      transform: translate(-10px, -10px) rotate(270deg) scale(0.95);
+    }
+    100% {
+      transform: translate(0, 0) rotate(360deg) scale(1);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .left-side-images-container,
+  .right-side-images-container {
+    display: none;
+  }
+}
