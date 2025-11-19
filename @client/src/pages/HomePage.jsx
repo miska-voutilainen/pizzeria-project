@@ -1,3 +1,5 @@
+import '../styles/pages/HomePage.css';
+
 const HomePage = () => {
   return (
     <div className="text-center mt-8">
