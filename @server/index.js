@@ -1,29 +1,28 @@
 import express from "express";
-import cookieParser from "cookie-parser";
-import { connectDB, closeDB } from "./config/db.js";
+import cors from "cors";
+import { connectMariaDB, closeMariaDB } from "./config/db.js";
 import createAuthRoutes from "./src/routes/authRoutes.js";
-import { createSessionService } from "./services/sessionService.js";
+import foodRoutes from "./src/routes/foodRoutes.js";
+import dotenv from "dotenv";
+dotenv.config({ path: ".env.development" });
 
 (async () => {
   const pool = await connectDB();
   const app = express();
+  app.use(cors());
 
   app.use(express.json());
-  app.use(cookieParser());
-
-  const sessionService = createSessionService(pool);
-
-  app.use(sessionService.sessionMiddleware);
-
-  app.use("/api", createAuthRoutes({ pool, ...sessionService }));
+  app.use("/api", createAuthRoutes(pool));
+  app.use("/", foodRoutes(pool));
 
   const PORT = process.env.PORT || 3001;
-  app.listen(PORT, () => {
-    console.log(`API running on http://localhost:${PORT}`);
-  });
+  app.listen(PORT, () =>
+    console.log(`Server running on http://localhost:${PORT}`)
+  );
 
+  // graceful shutdown
   process.on("SIGINT", async () => {
-    await closeDB();
+    await closeMariaDB();
     process.exit(0);
   });
 })();
