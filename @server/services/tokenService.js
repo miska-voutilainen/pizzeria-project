@@ -1,13 +1,12 @@
-// tokenService.js
-import { randomUUID } from 'crypto';
+import { randomBytes } from "crypto";
 
 export async function createToken(pool, userId, type, expiresInHours = 24) {
-  const token = randomUUID();
+  const token = randomBytes(48).toString("hex");
   const now = new Date();
   const expiresAt = new Date(now.getTime() + expiresInHours * 60 * 60 * 1000);
 
   const sql = `
-    INSERT INTO userTokens
+    INSERT INTO user_tokens
       (_id, userId, token, type, createdAt, expiresAt, used)
     VALUES (UUID(), ?, ?, ?, ?, ?, FALSE)
   `;
@@ -17,7 +16,7 @@ export async function createToken(pool, userId, type, expiresInHours = 24) {
 
 export async function validateToken(pool, token, type) {
   const [rows] = await pool.execute(
-    `SELECT * FROM userTokens
+    `SELECT * FROM user_tokens
      WHERE token = ? AND type = ? AND used = FALSE AND expiresAt > NOW()`,
     [token, type]
   );
@@ -25,8 +24,7 @@ export async function validateToken(pool, token, type) {
 }
 
 export async function markTokenUsed(pool, tokenId) {
-  await pool.execute(
-    `UPDATE userTokens SET used = TRUE WHERE _id = ?`,
-    [tokenId]
-  );
+  await pool.execute(`UPDATE user_tokens SET used = TRUE WHERE _id = ?`, [
+    tokenId,
+  ]);
 }

@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 dotenv.config({ path: ".env.development" });
 
 (async () => {
-  const pool = await connectMariaDB();
+  const pool = await connectDB();
   const app = express();
   app.use(cors());
 
