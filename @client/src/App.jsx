@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "./components/Navbar.jsx"; // works if file is in src/components/
+import Navbar from "./components/NavBar/Navbar.jsx"; // works if file is in src/components/
 import { Outlet } from "react-router-dom";
 
 function App() {

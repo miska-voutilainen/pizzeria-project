@@ -13,6 +13,11 @@
   --subtitle-2: 32px;
   --body: 15px;
 
+  --page-max-width: 1200px;
+  --navbar-height: 70px;
+  --navbar-container-padding-sides: 0 40px;
+  --hover-animation: 0.3s ease;
+
   /* Global font settings */
   font-family: var(--font-base);
   font-size: 16px;
@@ -21,6 +26,9 @@
 
   /* Colors */
   color: rgba(0, 0, 0, 0.87);
+  --red: #e10000;
+  --background: #fdf8e2;
+
   background-color: #ffffff;
 
   /* Rendering improvements */
@@ -48,7 +56,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   overflow-x: hidden;
-  background-color: #fdf8e2; /* soft cream restaurant tone */
+  background-color: var(--background);
   font-family: var(--font-base);
 }
 
