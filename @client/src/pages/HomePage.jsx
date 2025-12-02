@@ -1,9 +1,7 @@
+import "../styles/pages/HomePage.css";
+
 const HomePage = () => {
-  return (
-    <div className="text-center mt-8">
-      {/* Add home content here if needed */}
-    </div>
-  );
+  return <div className="">{/* Add home content here */}</div>;
 };
 
 export default HomePage;

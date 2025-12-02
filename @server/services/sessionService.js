@@ -1,66 +1,101 @@
-// services/sessionService.js
-import session from 'express-session';
-import MariaDBStore from 'express-session-mariadb-store';
-import mysql from 'mysql';
+import { randomBytes } from "crypto";
 
-function createSessionService(pool) {
-  // 1. Create mysql (callback-style) pool for the store
-  const sessionPool = mysql.createPool({
-    host: process.env.MYSQL_HOST || 'localhost',
-    port: Number(process.env.MYSQL_PORT) || 3306,
-    user: process.env.MYSQL_USER || 'root',
-    password: process.env.MYSQL_PASSWORD || '',
-    database: process.env.MYSQL_DATABASE || '',
-    connectionLimit: 5,
-  });
+const SESSION_COOKIE_NAME = "sid";
+const SESSION_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 
-  // 2. Create the store instance
-  const store = new MariaDBStore({
-    pool: sessionPool,           // Correct: pass the pool
-    table: 'express_sessions',
-    expiration: 86400000,        // 24 hours in ms
-  });
+export function createSessionService(pool) {
+  const sessionMiddleware = async (req, res, next) => {
+    const sessionToken = req.cookies[SESSION_COOKIE_NAME];
 
-  // 3. Session middleware
-  const sessionMiddleware = session({
-    secret: process.env.SESSION_SECRET || 'fallback-secret',
-    resave: false,
-    saveUninitialized: false,
-    rolling: true,
-    store,                       // Correct: pass the store instance
-    cookie: {
+    if (!sessionToken) {
+      req.user = null;
+      req.session = null;
+      return next();
+    }
+
+    try {
+      const [rows] = await pool.execute(
+        `SELECT us.*, u.id AS userId, u.role
+         FROM user_sessions us
+         JOIN users u ON us.userId = u.id
+         WHERE us.sessionToken = ?
+           AND us.isActive = TRUE
+           AND us.expiresAt > NOW()
+         LIMIT 1`,
+        [sessionToken]
+      );
+
+      if (rows.length === 0) {
+        res.clearCookie(SESSION_COOKIE_NAME);
+        req.user = null;
+        req.session = null;
+        return next();
+      }
+
+      const session = rows[0];
+      req.user = { id: session.userId, role: session.role };
+      req.session = session;
+
+      await pool.execute(
+        `UPDATE user_sessions SET expiresAt = DATE_ADD(NOW(), INTERVAL 1 DAY) WHERE sessionToken = ?`,
+        [sessionToken]
+      );
+
+      next();
+    } catch (err) {
+      console.error("Session middleware error:", err);
+      req.user = null;
+      req.session = null;
+      next();
+    }
+  };
+
+  const createSession = async (userId, req, res, expiresInDays = 1) => {
+    const sessionToken = randomBytes(48).toString("hex");
+    const expiresAt = new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000);
+
+    await pool.execute(
+      `INSERT INTO user_sessions
+         (_id, userId, sessionToken, loginAt, expiresAt, ipAddress, userAgent, isActive)
+       VALUES (UUID(), ?, ?, NOW(), ?, ?, ?, TRUE)`,
+      [
+        userId,
+        sessionToken,
+        expiresAt,
+        req.ip || "unknown",
+        req.get("User-Agent") || "unknown",
+      ]
+    );
+
+    res.cookie(SESSION_COOKIE_NAME, sessionToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 24 * 60 * 60 * 1000,
-    },
-  });
-
-  // 4. Audit log (uses your mysql2/promise pool)
-  async function createSession(userId, req, res, expiresInHours = 24) {
-    const now = new Date();
-    const expiresAt = new Date(now.getTime() + expiresInHours * 60 * 60 * 1000);
-    const sessionToken = req.sessionID;
-
-    const sql = `
-      INSERT INTO userSessions
-        (_id, userId, loginAt, expiresAt, ipAddress, userAgent, isActive, sessionToken)
-      VALUES (UUID(), ?, ?, ?, ?, ?, TRUE, ?)
-    `;
-
-    await pool.execute(sql, [
-      userId,
-      now,
-      expiresAt,
-      req.ip || 'unknown',
-      req.get('User-Agent') || 'unknown',
-      sessionToken,
-    ]);
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: expiresInDays * 24 * 60 * 60 * 1000,
+      path: "/",
+    });
 
     return sessionToken;
-  }
+  };
 
-  return { sessionMiddleware, createSession };
+  const destroySession = async (req, res) => {
+    const token = req.cookies[SESSION_COOKIE_NAME];
+    if (token) {
+      await pool.execute(`UPDATE user_sessions SET isActive = FALSE WHERE sessionToken = ?`, [token]);
+    }
+    res.clearCookie(SESSION_COOKIE_NAME, { path: "/" });
+  };
+
+  const destroyAllSessions = async (userId) => {
+    await pool.execute(`UPDATE user_sessions SET isActive = FALSE WHERE userId = ?`, [userId]);
+  };
+
+  return {
+    sessionMiddleware,
+    createSession,
+    destroySession,
+    destroyAllSessions,
+  };
 }
 
 export default createSessionService;

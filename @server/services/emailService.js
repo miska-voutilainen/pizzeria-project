@@ -1,7 +1,6 @@
-// services/emailService.js
-import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
-dotenv.config({ path: '.env.development' });
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+dotenv.config({ path: ".env.development" });
 
 let transporter = null;
 
@@ -9,22 +8,24 @@ async function getTransporter() {
   if (transporter) return transporter;
 
   if (!process.env.EMAIL_ADDRESS || !process.env.EMAIL_SECRET) {
-    throw new Error('EMAIL_ADDRESS or EMAIL_SECRET not set in .env');
+    throw new Error("EMAIL_ADDRESS or EMAIL_SECRET not set in .env");
   }
 
-  transporter = nodemailer.createTransport({  // ← Fixed: createTransport
-    service: 'gmail',
+  transporter = nodemailer.createTransport({
+    host: process.env.EMAIL_HOST,
+    port: Number(process.env.EMAIL_PORT),
+    secure: process.env.EMAIL_SECURE === "true",
     auth: {
       user: process.env.EMAIL_ADDRESS,
-      pass: process.env.EMAIL_SECRET, // ← Must be App Password
+      pass: process.env.EMAIL_SECRET,
     },
   });
 
   try {
     await transporter.verify();
-    console.log('SMTP connection verified');
+    console.log("SMTP connection verified");
   } catch (error) {
-    console.error('SMTP verification failed:', error.message);
+    console.error("SMTP verification failed:", error.message);
     throw error;
   }
 
@@ -33,9 +34,9 @@ async function getTransporter() {
 
 export async function sendVerificationEmail(email, username, verifyLink) {
   const mailOptions = {
-    from: `"Pizzeria" <${process.env.EMAIL_ADDRESS}>`,
+    from: `<${process.env.EMAIL_ADDRESS}>`,
     to: email,
-    subject: 'Verify Your Email Address',
+    subject: "Verify Your Email Address",
     text: `Hi ${username},\n\nVerify your email: ${verifyLink}\n\nExpires in 15 minutes.`,
     html: `
       <div style="font-family: Arial; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 8px;">
@@ -47,7 +48,7 @@ export async function sendVerificationEmail(email, username, verifyLink) {
         </p>
         <p><small>Link expires in <strong>15 minutes</strong>.</small></p>
         <hr>
-        <small>&copy; Pizzeria 2025</small>
+        <small> Pizza Web Oy &copy; 2025</small>
       </div>
     `,
   };
@@ -55,19 +56,19 @@ export async function sendVerificationEmail(email, username, verifyLink) {
   try {
     const t = await getTransporter();
     const info = await t.sendMail(mailOptions);
-    console.log('Verification email sent:', info.messageId);
+    console.log("Verification email sent:", info.messageId);
     return info;
   } catch (error) {
-    console.error('Failed to send verification email:', error.message);
+    console.error("Failed to send verification email:", error.message);
     throw error;
   }
 }
 
 export async function sendUnlockEmail(email, username, unlockLink, resetLink) {
   const mailOptions = {
-    from: `"Pizzeria" <${process.env.EMAIL_ADDRESS}>`,
+    from: `<${process.env.EMAIL_ADDRESS}>`,
     to: email,
-    subject: 'Account Locked – Action Required',
+    subject: "Account Locked - Action Required",
     html: `
       <p>Your account <strong>${username}</strong> is locked.</p>
       <p><a href="${unlockLink}">Unlock Account</a> | <a href="${resetLink}">Reset Password</a></p>
@@ -78,10 +79,10 @@ export async function sendUnlockEmail(email, username, unlockLink, resetLink) {
   try {
     const t = await getTransporter();
     const info = await t.sendMail(mailOptions);
-    console.log('Unlock email sent:', info.messageId);
+    console.log("Unlock email sent:", info.messageId);
     return info;
   } catch (error) {
-    console.error('Failed to send unlock email:', error.message);
+    console.error("Failed to send unlock email:", error.message);
     throw error;
   }
 }

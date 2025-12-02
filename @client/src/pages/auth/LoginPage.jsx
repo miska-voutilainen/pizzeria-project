@@ -1,13 +1,14 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
+    username: "",
+    password: "",
   });
+
   const [errors, setErrors] = useState({});
-  const [serverError, setServerError] = useState('');
+  const [serverError, setServerError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -15,54 +16,57 @@ const LoginForm = () => {
       ...prev,
       [name]: value,
     }));
-
     setErrors((prev) => ({
       ...prev,
-      [name]: '',
+      [name]: "",
     }));
-    setServerError('');
+    setServerError("");
   };
 
   const validate = () => {
     const newErrors = {};
+
     if (!formData.username) {
-      newErrors.username = 'Username is required';
+      newErrors.username = "Username is required";
     } else if (formData.username.length < 3) {
-      newErrors.username = 'Username must be at least 3 characters';
+      newErrors.username = "Username must be at least 3 characters";
     }
+
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = "Password must be at least 6 characters";
     }
+
     return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const validationErrors = validate();
 
+    const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
 
     try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
+      const response = await fetch("/api/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Login failed');
+        throw new Error(errorData.message || "Login failed");
       }
 
       const data = await response.json();
-      console.log('Login successful:', data);
+      console.log("Login successful:", data);
+      // TODO: redirect and set auth state here
     } catch (error) {
       setServerError(error.message);
     }
@@ -70,40 +74,46 @@ const LoginForm = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-4">Login</h2>
-      {serverError && <div>{serverError}</div>}
+      <h2>Login</h2>
+
+      {serverError && <p>{serverError}</p>}
+
       <form onSubmit={handleSubmit}>
         <div>
           <input
             type="text"
             name="username"
-            id="username"
             value={formData.username}
             onChange={handleChange}
-            placeholder="Enter your username"
-            style={{ outline: '1px solid black', marginBottom: '8px' }}
+            placeholder="Username"
           />
-          {errors.username && <div>{errors.username}</div>}
+          {errors.username && <p>{errors.username}</p>}
         </div>
 
         <div>
           <input
             type="password"
             name="password"
-            id="password"
             value={formData.password}
             onChange={handleChange}
-            placeholder="Enter your password"
-            style={{ outline: '1px solid black', marginBottom: '8px' }}
+            placeholder="Password"
           />
-          {errors.password && <div>{errors.password}</div>}
+          {errors.password && <p>{errors.password}</p>}
         </div>
 
-        <button type="submit">Login</button>
+        <div>
+          <button type="submit">Login</button>
+        </div>
       </form>
-      <div name="register-link">
+
+      <div>
         <p>Don't have an account?</p>
-        <Link to="/register" style={{ color: 'blue', textDecoration: 'underline' }}>Register</Link>
+        <Link
+          to="/register"
+          style={{ color: "blue", textDecoration: "underline" }}
+        >
+          Register here
+        </Link>
       </div>
     </div>
   );
