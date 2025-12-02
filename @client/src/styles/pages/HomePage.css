@@ -104,7 +104,7 @@
 
 /* Food Card - UPDATED */
 .food-card {
-  background: #fdf8e2;
+  background: var(--background);
   border: 2px solid #a88f67; /* Classic border color */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -210,7 +210,7 @@
 .view-menu-button {
   background: #e10000;
   border: 2px solid #b10000;
-  color: #fdf8e2;
+  color: var(--background);
   font-family: var(--font-base);
   font-size: 1.125rem;
   padding: 12px 32px;

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { getFoods } from "./fetchApi";
 import { useNavigate } from "react-router-dom";
 import "../styles/pages/HomePage.css";
-//import "../styles/pages/SideImages.css";
 import cover from "../assets/cover.png";
 import cover2 from "../assets/cover2.jpg";
 import cover3 from "../assets/cover3.jpg";
@@ -11,12 +10,6 @@ import cover5 from "../assets/cover5.jpg";
 import cover6 from "../assets/cover6.jpg";
 import cover7 from "../assets/cover7.jpg";
 import cover8 from "../assets/cover8.jpg";
-/*
-import side1 from "../assets/side1.png";
-import side2 from "../assets/side2.png";
-import side3 from "../assets/side3.png";
-import side4 from "../assets/side4.png";
-*/
 
 const images = [cover, cover2, cover3, cover4, cover5, cover6, cover7, cover8];
 //const sides = [side1, side2, side3, side4];
