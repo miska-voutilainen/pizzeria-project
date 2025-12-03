@@ -48,17 +48,26 @@ function Navbar() {
           </div>
 
           {/* MOBILE MENU BUTTON */}
-          <button className="menuButton" onClick={() => setMenuOpen(!menuOpen)}>
-            {menuOpen ? (
-              <img
-                className="close-icon"
-                src="./close-light.svg"
-                alt="close button"
-              />
-            ) : (
-              <img src="./hamburger-menu.svg" alt="hamburger menu" />
-            )}
-          </button>
+          <div className="mobile-navbar-column-end ">
+            <Link to="/cart">
+              <img src="/SVGRepo_shopping_cart.svg" alt="Shopping cart icon" />
+            </Link>
+            <button
+              className="menuButton"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              {menuOpen ? (
+                <img
+                  className="close-icon"
+                  src="./close-light.svg"
+                  alt="close button"
+                />
+              ) : (
+                <img src="./hamburger-menu.svg" alt="hamburger menu" />
+              )}
+            </button>
+          </div>
+
           {/* MOBILE MENU DROPDOWN */}
           {menuOpen && (
             <div className="mobileMenu">
@@ -76,24 +85,12 @@ function Navbar() {
                 </ul>
               </nav>
 
-              <div className="mobile-navbar-column-end">
-                <ul>
-                  <li>
-                    <Button
-                      url={"/login"}
-                      text={"Sign in"}
-                      imageUrl={"./user-icon.svg"}
-                    />
-                  </li>
-                  <li>
-                    <Link to="/cart">
-                      <img
-                        src="/SVGRepo_shopping_cart.svg"
-                        alt="Shopping cart icon"
-                      />
-                    </Link>
-                  </li>
-                </ul>
+              <div className="mobile-menu-column-end">
+                <Button
+                  url={"/login"}
+                  text={"Sign in"}
+                  imageUrl={"./user-icon.svg"}
+                />
               </div>
             </div>
           )}
