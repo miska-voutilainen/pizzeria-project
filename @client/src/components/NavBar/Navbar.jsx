@@ -14,7 +14,7 @@ function Navbar() {
   return (
     <>
       <header className="navbar">
-        <div class="navbar-container">
+        <div className="navbar-container">
           <div className="navbar-row-start">
             <Link to="/">
               <img src="/Pizzaweb-logo.svg" alt="Pizzaweb logo" />

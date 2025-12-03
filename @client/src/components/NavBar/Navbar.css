@@ -138,7 +138,7 @@
 
 .mobile-navbar-column-end {
   display: none;
-  gap: 30px;
+  gap: 4vw;
   align-items: center;
 }
 
@@ -177,5 +177,10 @@
 
   .mobile-navbar-column-end {
     display: flex;
+  }
+
+  .navbar-container {
+    padding: 0px;
+    width: 90vw;
   }
 }
