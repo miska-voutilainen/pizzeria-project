@@ -1,45 +1,75 @@
+// src/pages/MenuPage.jsx
 import { useEffect, useState } from "react";
-import { getFoods } from "./fetchApi";
+import { getPizzas, getDrinks } from "../utils/fetchApi";
+//import "../styles/pages/MenuPage.css";
+
+const categories = [
+  { id: "pizza", label: "Pizzas", fetch: getPizzas },
+  { id: "drinks", label: "Drinks", fetch: getDrinks },
+];
 
 const MenuPage = () => {
-  const [foods, setFoods] = useState([]);
+  const [activeTab, setActiveTab] = useState("pizza");
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const currentCategory = categories.find((c) => c.id === activeTab);
 
   useEffect(() => {
-    const loadFoods = async () => {
-      const data = await getFoods();
-      setFoods(data);
-    };
-    loadFoods();
-  }, []);
+    setLoading(true);
+    currentCategory
+      .fetch()
+      .then((data) => {
+        setProducts(data || []);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [activeTab]);
 
   return (
-    <div className="min-h-screen bg-yellow-50 p-6">
-      {/* Header with back button */}
+    <div className="menu-page">
+      <h1 className="page-title">─ Menu ─</h1>
 
-      <div className="max-w-1200 mx-auto mb-8">
-        <h1 className="page-title"> ─ Full Menu ─ </h1>
+      <div className="category-tabs">
+        {categories.map((cat) => (
+          <button
+            key={cat.id}
+            onClick={() => setActiveTab(cat.id)}
+            className={`category-tab ${activeTab === cat.id ? "active" : ""}`}
+          >
+            {cat.label}
+          </button>
+        ))}
       </div>
 
-      {/* Full Food Grid */}
-      <div className="food-grid">
-        {foods.length > 0 ? (
-          foods.map((food) => (
-            <div key={food._id} className="food-card">
-              <div className="food-image-container">
-                <img src={food.imgUrl} alt={food.name} className="food-image" />
+      <div className="product-grid">
+        {loading ? (
+          <p className="loading-text">
+            Loading {currentCategory.label.toLowerCase()}...
+          </p>
+        ) : products.length > 0 ? (
+          products.map((product) => (
+            <div key={product.tag} className="product-card">
+              <div className="product-image-container">
+                <img
+                  src={product.imgUrl}
+                  alt={product.name}
+                  className="product-image"
+                />
               </div>
-              <div className="food-content">
-                <h2 className="food-name">{food.name}</h2>
-                <p className="food-description">{food.description}</p>
-                <span className="food-price">{food.price} €</span>
+              <div className="product-content">
+                <h2 className="product-name">{product.name}</h2>
+                <p className="product-description">{product.description}</p>
+                <span className="product-price">{product.price} €</span>
               </div>
             </div>
           ))
         ) : (
-          <p className="loading-text">Loading menu...</p>
+          <p className="loading-text">No items available.</p>
         )}
       </div>
     </div>
   );
 };
+
 export default MenuPage;
