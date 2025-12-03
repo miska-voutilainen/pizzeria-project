@@ -3,33 +3,14 @@ import { useEffect, useState } from "react";
 import { getAllProducts } from "../utils/fetchApi.js"; // correct
 import { useNavigate } from "react-router-dom";
 import "../styles/pages/HomePage.css";
-
-// your images...
-import cover from "../assets/cover.png";
-import cover2 from "../assets/cover2.jpg";
-import cover3 from "../assets/cover3.jpg";
-import cover4 from "../assets/cover4.jpg";
-import cover5 from "../assets/cover5.jpg";
-import cover6 from "../assets/cover6.jpg";
-import cover7 from "../assets/cover7.jpg";
-import cover8 from "../assets/cover8.jpg";
-
-const images = [cover, cover2, cover3, cover4, cover5, cover6, cover7, cover8];
+import Hero from "../components/Hero/Hero.jsx";
 
 const HomePage = () => {
   const [products, setProducts] = useState([]);
-  const [current, setCurrent] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
     getAllProducts().then(setProducts).catch(console.error);
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrent((i) => (i + 1) % images.length);
-    }, 5000);
-    return () => clearInterval(interval);
   }, []);
 
   const displayed = products.slice(0, 8);
@@ -37,24 +18,7 @@ const HomePage = () => {
   return (
     <div>
       {/* Hero slider */}
-      <div className="hero-slider-wrapper">
-        <div className="hero-slider-container">
-          <div className="hero-slider">
-            <img src={images[current]} className="hero-image" alt="Promotion" />
-          </div>
-        </div>
-        <div className="slider-indicators">
-          {images.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrent(i)}
-              className={`slider-dot ${
-                i === current ? "slider-dot-active" : ""
-              }`}
-            />
-          ))}
-        </div>
-      </div>
+      <Hero />
 
       <h1 className="page-title">─ Pizzat ─</h1>
 
