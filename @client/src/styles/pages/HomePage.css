@@ -1,20 +1,19 @@
+/* ──────────────────────── HERO SLIDER ──────────────────────── */
+.hero-slider-wrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 40px;
+}
+
 .hero-slider-container {
   margin: 0 auto;
   width: 80%;
   max-width: 1200px;
   height: 50vh;
   position: relative;
-  overflow: hidden; /* Keep hidden */
+  overflow: hidden;
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  margin-top: 0px;
-}
-
-/* Add wrapper to maintain structure */
-.hero-slider-wrapper {
-  position: relative;
-  width: 100%;
-  margin-bottom: 20px; /* Space for dots */
 }
 
 .hero-slider {
@@ -26,18 +25,16 @@
 
 .hero-image {
   width: 100%;
-  height: auto;
+  height: 100%;
   object-fit: contain;
-  object-position: center center;
+  object-position: center;
   display: block;
   transition: opacity 0.5s ease-in-out;
-  aspect-ratio: 568 / 376; /* Set the aspect ratio to match the image's actual ratio */
 }
 
-/* Dots positioned absolutely relative to wrapper */
 .slider-indicators {
   position: absolute;
-  bottom: -40px; /* Position below container */
+  bottom: -40px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -60,20 +57,18 @@
   transform: scale(1.2);
 }
 
-/* Page Title */
+/* ──────────────────────── PAGE TITLE ──────────────────────── */
 .page-title {
   text-align: center;
   color: #1b4618;
-  /* color: #dc2626;  red-600 */
-
   font-family: var(--font-base);
   font-size: 55px;
   line-height: 3.5;
   font-weight: 400;
 }
 
-/* Food Grid */
-.food-grid {
+/* ──────────────────────── PRODUCT GRID & CARDS ──────────────────────── */
+.product-grid {
   display: grid;
   gap: 2rem;
   grid-template-columns: 1fr;
@@ -84,66 +79,63 @@
 }
 
 @media (min-width: 640px) {
-  .food-grid {
+  .product-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
-
 @media (min-width: 768px) {
-  .food-grid {
+  .product-grid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
-
 @media (min-width: 1024px) {
-  .food-grid {
+  .product-grid {
     grid-template-columns: repeat(4, 1fr);
     gap: 1.5rem;
   }
 }
 
-/* Food Card - UPDATED */
-.food-card {
+.product-card {
   background: var(--background);
-  border: 2px solid #a88f67; /* Classic border color */
+  border: 2px solid #a88f67;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
   height: 100%;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
-.food-card:hover {
+.product-card:hover {
   transform: scale(1.05);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  border-color: #8a7454; /* Slightly darker on hover */
+  border-color: #8a7454;
 }
 
-/* Food Image Container - ADD PADDING */
-.food-image-container {
+.product-image-container {
   width: 100%;
-  height: 180px; /* Adjust this as needed */
+  height: 180px;
   overflow: hidden;
   position: relative;
-  border-bottom: 0px solid #a88f67;
-  padding: 8px; /* ← Add this padding to create space */
-  box-sizing: border-box; /* ← Ensure padding is included in total height */
+  padding: 8px;
+  box-sizing: border-box;
+  background: white;
 }
 
-.food-image {
+.product-image {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* ← Change from 'cover' to 'contain' to show full image */
+  object-fit: contain;
   object-position: center;
   transition: transform 0.3s ease;
 }
 
-.food-card:hover .food-image {
+.product-card:hover .product-image {
   transform: scale(1.1);
 }
 
-/* Food Content */
-.food-content {
+.product-content {
   padding: 1.25rem;
   text-align: left;
   flex-grow: 1;
@@ -151,7 +143,7 @@
   flex-direction: column;
 }
 
-.food-name {
+.product-name {
   font-size: 1.25rem;
   font-weight: bold;
   margin-bottom: 0.75rem;
@@ -159,54 +151,30 @@
   color: #333;
 }
 
-.food-description {
-  color: #6b7280; /* gray-500 */
+.product-description {
+  color: #6b7280;
   font-size: 0.875rem;
   margin-bottom: 0.75rem;
   line-height: 1.5;
   flex-grow: 1;
 }
 
-.food-price {
+.product-price {
   display: block;
   margin-top: auto;
-  color: #dc2626; /* red-600 */
+  color: #dc2626;
   font-weight: 600;
   font-size: 1.25rem;
 }
 
-/* Loading Text */
 .loading-text {
   text-align: center;
-  color: #6b7280; /* gray-500 */
+  color: #6b7280;
   grid-column: 1 / -1;
   padding: 2rem;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .hero-slider-container {
-    height: 400px;
-    margin-top: 60px;
-  }
-
-  .page-title {
-    font-size: 2rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero-slider-container {
-    height: 300px;
-    margin-top: 50px;
-  }
-
-  .page-title {
-    font-size: 1.75rem;
-  }
-}
-
-/* View Menu Button Styles */
+/* ──────────────────────── VIEW MENU BUTTON ──────────────────────── */
 .view-menu-button {
   background: #e10000;
   border: 2px solid #b10000;
@@ -217,6 +185,7 @@
   border-radius: 0px;
   transition: all 0.3s ease;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
 }
 
 .view-menu-button:hover {
@@ -228,12 +197,11 @@
 .text-center {
   text-align: center;
 }
-
 .mt-8 {
   margin-top: 4rem;
 }
 
-/* Why Choose Us Section */
+/* ──────────────────────── WHY CHOOSE US ──────────────────────── */
 .info-title {
   text-align: center;
   color: #1b4618;
@@ -241,6 +209,14 @@
   font-family: var(--font-base);
   font-size: 55px;
   font-weight: 400;
+}
+
+.separator-line {
+  width: 100%;
+  max-width: 60px;
+  height: 4px;
+  background: #e10000;
+  margin: 3rem auto 1rem auto;
 }
 
 .info-grid {
@@ -280,29 +256,35 @@
   margin: 0;
 }
 
-/* Separator line */
-.separator-line {
-  width: 100%;
-  max-width: 60px;
-  height: 4px;
-  background: #e10000;
-  margin: 3rem auto 1rem auto;
-}
-
-/* Responsive design */
+/* ──────────────────────── RESPONSIVE ──────────────────────── */
 @media (max-width: 768px) {
+  .hero-slider-container {
+    height: 400px;
+    margin-top: 60px;
+  }
+  .page-title {
+    font-size: 2rem;
+  }
   .info-grid {
     grid-template-columns: 1fr;
     gap: 2.5rem;
     padding: 1rem;
   }
-
   .info-title {
     font-size: 2rem;
     margin: 2rem 0 1rem 0;
   }
-
   .info-name {
     font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-slider-container {
+    height: 300px;
+    margin-top: 50px;
+  }
+  .page-title {
+    font-size: 1.75rem;
   }
 }
