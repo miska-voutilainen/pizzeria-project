@@ -1,11 +1,13 @@
+// src/components/layout/Navigation/NavigationBar.jsx
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import Button from "../../ui/Button/Button";
+import { useAuth } from "../../../context/AuthContext.jsx";
 import "./NavigationBar.css";
 
 const NavigationBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const { user } = useAuth();
 
   useEffect(() => {
     setMenuOpen(false);
@@ -38,16 +40,39 @@ const NavigationBar = () => {
 
         {/* Desktop Right Side */}
         <div className="navbar-row-end">
-          <Button url="/login" text="Sign in" imageUrl="./user-icon.svg" />
-          <Link to="/cart">
-            <img src="/SVGRepo_shopping_cart.svg" alt="Shopping cart" />
+          {/* USER BUTTON — Logged in */}
+          {user ? (
+            <Link to="/user" className="user-profile-button">
+              <span className="user-name">{user.username}</span>
+              <svg
+                className="user-icon"
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+                stroke="currentColor"
+                fill="none"
+              >
+                <circle cx="12" cy="7" r="4" />
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              </svg>
+            </Link>
+          ) : (
+            /* SIGN IN — Not logged in */
+            <Link to="/login" className="signin-button">
+              <span>Sign in</span>
+              <img src="/user-icon.svg" alt="" className="signin-icon" />
+            </Link>
+          )}
+
+          <Link to="/cart" className="cart-link">
+            <img src="/SVGRepo_shopping_cart.svg" alt="Cart" />
           </Link>
         </div>
 
         {/* Mobile Controls */}
         <div className="mobile-navbar-column-end">
           <Link to="/cart">
-            <img src="/SVGRepo_shopping_cart.svg" alt="Shopping cart" />
+            <img src="/SVGRepo_shopping_cart.svg" alt="Cart" />
           </Link>
           <button
             className="menuButton"
@@ -62,7 +87,7 @@ const NavigationBar = () => {
           </button>
         </div>
 
-        {/* Mobile Menu Dropdown */}
+        {/* Mobile Menu */}
         {menuOpen && (
           <div className="mobileMenu">
             <nav>
@@ -78,8 +103,29 @@ const NavigationBar = () => {
                 </li>
               </ul>
             </nav>
+
             <div className="mobile-menu-column-end">
-              <Button url="/login" text="Sign in" imageUrl="./user-icon.svg" />
+              {user ? (
+                <Link to="/user" className="mobile-user-profile-button">
+                  <span>{user.username}</span>
+                  <svg
+                    className="user-icon"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    height="24"
+                    stroke="currentColor"
+                    fill="none"
+                  >
+                    <circle cx="12" cy="7" r="4" />
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  </svg>
+                </Link>
+              ) : (
+                <Link to="/login" className="mobile-signin-button">
+                  <span>Sign in</span>
+                  <img src="/user-icon.svg" alt="" />
+                </Link>
+              )}
             </div>
           </div>
         )}
