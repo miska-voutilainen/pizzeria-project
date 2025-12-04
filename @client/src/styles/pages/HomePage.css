@@ -198,7 +198,7 @@
 }
 
 /* ──────────────────────── RESPONSIVE ──────────────────────── */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .hero-slider-container {
     height: 400px;
     margin-top: 60px;
@@ -228,4 +228,4 @@
   .page-title {
     font-size: 1.75rem;
   }
-}
+} */
