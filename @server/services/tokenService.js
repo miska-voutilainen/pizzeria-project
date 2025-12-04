@@ -33,7 +33,7 @@ export async function validateToken(pool, token, type) {
 export async function markTokenUsed(pool, tokenId) {
   await pool.execute(
     `UPDATE user_tokens 
-     SET used = TRUE, usedAt = NOW() 
+     SET used = TRUE 
      WHERE _id = ?`,
     [tokenId]
   );

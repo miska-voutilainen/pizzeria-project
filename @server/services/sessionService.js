@@ -17,10 +17,14 @@ export function createSessionService(pool) {
       const [rows] = await pool.execute(
         `SELECT 
            us.*, 
-           u.id AS userId, 
-           u.role 
+           u._id AS userPrimaryId,
+           u.userId, 
+           u.username,
+           u.role,
+           u.is2faEnabled,
+           u.emailVerified
          FROM user_sessions us
-         JOIN users u ON us.userId = u.id
+         JOIN user_data u ON us.userId = u.userId
          WHERE us.sessionToken = ?
            AND us.isActive = TRUE
            AND us.expiresAt > NOW()
@@ -36,7 +40,14 @@ export function createSessionService(pool) {
       }
 
       const session = rows[0];
-      req.user = { id: session.userId, role: session.role };
+      req.user = {
+        id: session.userPrimaryId,
+        userId: session.userId,
+        username: session.username,
+        role: session.role,
+        is2faEnabled: session.is2faEnabled,
+        emailVerified: session.emailVerified,
+      };
       req.session = session;
 
       await pool.execute(
