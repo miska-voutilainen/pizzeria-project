@@ -4,6 +4,7 @@ import { getAllProducts } from "../utils/fetchApi.js"; // correct
 import { useNavigate } from "react-router-dom";
 import "../styles/pages/HomePage.css";
 import Hero from "../components/Hero/Hero.jsx";
+import Footer from "../components/Footer/Footer.jsx";
 
 const HomePage = () => {
   const [products, setProducts] = useState([]);
@@ -88,6 +89,8 @@ const HomePage = () => {
           </p>
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 };
