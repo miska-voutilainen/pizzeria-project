@@ -27,7 +27,8 @@
   /* Colors */
   color: rgba(0, 0, 0, 0.87);
   --red: #e10000;
-  --background: #fdf8e2;
+  --background-light: #fdf8e2;
+  --background-dark: #082109;
 
   background-color: #ffffff;
 
@@ -57,7 +58,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   overflow-x: hidden;
-  background-color: var(--background);
+  background-color: var(--background-light);
   font-family: var(--font-base);
 }
 
