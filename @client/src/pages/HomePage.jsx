@@ -6,6 +6,7 @@ import Hero from "../components/layout/Hero/Hero.jsx";
 import Footer from "../components/Footer/Footer.jsx";
 
 import "../styles/pages/HomePage.css";
+import {SignIn} from "../components/modal/signIn/SignIn.jsx";
 
 const HomePage = () => {
   const [pizzas, setPizzas] = useState([]);
@@ -21,6 +22,7 @@ const HomePage = () => {
 
   return (
     <div>
+      <SignIn />
       <Hero />
 
       <h1 className="page-title">─ Pizzat ─</h1>
