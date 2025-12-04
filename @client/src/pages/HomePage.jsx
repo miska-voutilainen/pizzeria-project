@@ -3,7 +3,7 @@ import { getPizzas } from "../lib/api/products.js";
 import { useNavigate } from "react-router-dom";
 
 import Hero from "../components/layout/Hero/Hero.jsx";
-import Footer from "../components/Footer/Footer.jsx";
+import Footer from "../components/layout/Footer/Footer.jsx";
 
 import "../styles/pages/HomePage.css";
 
@@ -51,7 +51,10 @@ const HomePage = () => {
 
       {pizzas.length > 8 && (
         <div className="text-center">
-          <button onClick={() => navigate("/menu")} className="view-menu-button">
+          <button
+            onClick={() => navigate("/menu")}
+            className="view-menu-button"
+          >
             View Full Menu
           </button>
         </div>
@@ -96,8 +99,6 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 };

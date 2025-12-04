@@ -1,12 +1,13 @@
 import React from 'react'
+import "./Footer.css"
 
 const Footer = () => {
   return (
-    <div>Footer
-
-      <p>Test</p>
-      <p>test 2</p>
-    </div>
+    <footer>
+      <div>
+        <img src="/.Pizzaweb-logo.svg" alt="Pizzaweb logo" />
+      </div>
+    </footer>
   )
 }
 
