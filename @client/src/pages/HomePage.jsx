@@ -6,6 +6,7 @@ import Hero from "../components/layout/Hero/Hero.jsx";
 import Footer from "../components/layout/Footer/Footer.jsx";
 
 import "../styles/pages/HomePage.css";
+import Newsletter from "../components/layout/Newsletter/Newsletter.jsx";
 
 const HomePage = () => {
   const [pizzas, setPizzas] = useState([]);
@@ -99,6 +100,7 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+      <Newsletter />
     </div>
   );
 };
