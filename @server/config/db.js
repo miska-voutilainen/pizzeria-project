@@ -1,9 +1,10 @@
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
+
 dotenv.config({ path: ".env.local" });
 
 const DB_CONFIG = {
-  host: process.env.MYSQL_HOST || "",
+  host: process.env.MYSQL_HOST || "localhost",
   port: Number(process.env.MYSQL_PORT) || 3306,
   user: process.env.MYSQL_USER || "",
   password: process.env.MYSQL_PASSWORD || "",
@@ -20,27 +21,40 @@ let pool = null;
 
 export async function connectDB() {
   if (pool) return pool;
+
   if (!DB_CONFIG.database) {
-    throw new Error("MYSQL_DATABASE is not defined in .env file");
+    throw new Error("MYSQL_DATABASE is missing in .env.local");
   }
-  pool = mysql.createPool(DB_CONFIG);
-  const conn = await pool.getConnection();
-  conn.release();
-  console.log("Database pool created.");
-  return pool;
+
+  try {
+    pool = mysql.createPool(DB_CONFIG);
+    const connection = await pool.getConnection();
+    connection.release();
+
+    console.log("MySQL pool connected successfully");
+    return pool;
+  } catch (error) {
+    console.error("Failed to connect to database:", error.message);
+    throw error;
+  }
 }
 
 export async function closeDB() {
-  if (pool) {
+  if (!pool) return;
+
+  try {
     await pool.end();
+    console.log("MySQL pool closed");
     pool = null;
-    console.log("Database pool closed.");
+  } catch (error) {
+    console.error("Error closing database pool:", error.message);
+    throw error;
   }
 }
 
 export function getDB() {
   if (!pool) {
-    throw new Error("Database not connected. Call connectDB first.");
+    throw new Error("Database not connected. Call connectDB() first.");
   }
   return pool;
 }

@@ -6,25 +6,35 @@ export async function createToken(pool, userId, type, expiresInHours = 24) {
   const expiresAt = new Date(now.getTime() + expiresInHours * 60 * 60 * 1000);
 
   const sql = `
-    INSERT INTO user_tokens
+    INSERT INTO user_tokens 
       (_id, userId, token, type, createdAt, expiresAt, used)
     VALUES (UUID(), ?, ?, ?, ?, ?, FALSE)
   `;
+
   await pool.execute(sql, [userId, token, type, now, expiresAt]);
+
   return token;
 }
 
 export async function validateToken(pool, token, type) {
   const [rows] = await pool.execute(
     `SELECT * FROM user_tokens
-     WHERE token = ? AND type = ? AND used = FALSE AND expiresAt > NOW()`,
+     WHERE token = ?
+       AND type = ?
+       AND used = FALSE
+       AND expiresAt > NOW()
+     LIMIT 1`,
     [token, type]
   );
+
   return rows[0] || null;
 }
 
 export async function markTokenUsed(pool, tokenId) {
-  await pool.execute(`UPDATE user_tokens SET used = TRUE WHERE _id = ?`, [
-    tokenId,
-  ]);
+  await pool.execute(
+    `UPDATE user_tokens 
+     SET used = TRUE, usedAt = NOW() 
+     WHERE _id = ?`,
+    [tokenId]
+  );
 }

@@ -9,9 +9,8 @@ const RegisterPage = () => {
     confirm: "",
   });
 
-  const [isEmailSent, setIsEmailSent] = useState(false);
-  const [isChecking, setIsChecking] = useState(false);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,89 +18,54 @@ const RegisterPage = () => {
     setError("");
   };
 
-  const handleSendVerify = async () => {
-    if (!formData.username) {
-      return setError("Username is required");
-    }
-    if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      return setError("Valid email is required");
-    }
-
-    try {
-      const res = await fetch("/api/send-verify-link", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: formData.username,
-          email: formData.email,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok)
-        throw new Error(data.message || "Failed to send verification");
-
-      setIsEmailSent(true);
-      setError("");
-    } catch (err) {
-      setError(err.message || "Failed to send email");
-    }
-  };
-
   const handleRegister = async (e) => {
     e.preventDefault();
 
+    // Client-side validation
+    if (!formData.username.trim()) return setError("Username is required");
+    if (!formData.email.trim()) return setError("Email is required");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
+      return setError("Please enter a valid email");
     if (!formData.password) return setError("Password is required");
     if (formData.password.length < 6)
       return setError("Password must be at least 6 characters");
     if (formData.password !== formData.confirm)
-      return setError("Passwords don't match");
+      return setError("Passwords do not match");
 
-    setIsChecking(true);
+    setIsLoading(true);
     setError("");
 
     try {
-      const checkRes = await fetch("/api/check-email-verified", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: formData.username }),
-      });
-      const { verified } = await checkRes.json();
-
-      if (!verified) {
-        return setError(
-          "Email not verified. Please check your inbox and click the link."
-        );
-      }
-
-      const regRes = await fetch("/api/register", {
+      const res = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          username: formData.username,
+          username: formData.username.trim(),
+          email: formData.email.trim().toLowerCase(),
           password: formData.password,
         }),
       });
 
-      const regData = await regRes.json();
-      if (!regRes.ok) throw new Error(regData.message || "Registration failed");
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Registration failed");
 
-      alert("Successfully registered! Redirecting to login...");
+      alert("Account created successfully! Taking you to login...");
       window.location.href = "/login";
     } catch (err) {
-      setError(err.message || "Something went wrong. Please try again.");
+      setError(err.message || "Registration failed. Please try again.");
     } finally {
-      setIsChecking(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <div>
+    <div className="register-page">
       <h2>Register</h2>
 
-      {error && <p>{error}</p>}
+      {error && <p className="error">{error}</p>}
 
       <form onSubmit={handleRegister}>
-        <div>
+        <div className="form-group">
           <input
             type="text"
             name="username"
@@ -112,7 +76,7 @@ const RegisterPage = () => {
           />
         </div>
 
-        <div>
+        <div className="form-group">
           <input
             type="email"
             name="email"
@@ -121,16 +85,9 @@ const RegisterPage = () => {
             onChange={handleChange}
             required
           />
-          <button
-            type="button"
-            onClick={handleSendVerify}
-            disabled={isEmailSent}
-          >
-            {isEmailSent ? "Sent" : "Send Verification Email"}
-          </button>
         </div>
 
-        <div>
+        <div className="form-group">
           <input
             type="password"
             name="password"
@@ -141,7 +98,7 @@ const RegisterPage = () => {
           />
         </div>
 
-        <div>
+        <div className="form-group">
           <input
             type="password"
             name="confirm"
@@ -152,23 +109,14 @@ const RegisterPage = () => {
           />
         </div>
 
-        <div>
-          <button type="submit" disabled={isChecking}>
-            {isChecking ? "Registering..." : "Register"}
-          </button>
-        </div>
+        <button type="submit" disabled={isLoading}>
+          {isLoading ? "Creating Account..." : "Register"}
+        </button>
       </form>
 
-      {isEmailSent && <p>Verification email sent! Check your inbox.</p>}
-
-      <div>
+      <div className="login-link">
         <p>Already have an account?</p>
-        <Link
-          to="/login"
-          style={{ color: "blue", textDecoration: "underline" }}
-        >
-          Login here
-        </Link>
+        <Link to="/login">Login here</Link>
       </div>
     </div>
   );

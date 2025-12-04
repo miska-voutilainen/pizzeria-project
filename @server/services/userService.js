@@ -2,18 +2,24 @@ import { createToken } from "./tokenService.js";
 import { sendUnlockEmail } from "./emailService.js";
 
 export async function handleFailedLogin(pool, username) {
-  const [users] = await pool.execute(
-    `SELECT userId, failedLoginCount, email, username FROM user_data WHERE username = ?`,
+  const [rows] = await pool.execute(
+    `SELECT userId, failedLoginCount, email, username 
+     FROM user_data 
+     WHERE username = ?`,
     [username]
   );
-  const user = users[0];
+
+  const user = rows[0];
   if (!user) return;
 
   const newFailedCount = (user.failedLoginCount || 0) + 1;
 
   if (newFailedCount >= 5) {
     await pool.execute(
-      `UPDATE user_data SET accountStatus = 'locked', failedLoginCount = ? WHERE username = ?`,
+      `UPDATE user_data 
+       SET accountStatus = 'locked', 
+           failedLoginCount = ? 
+       WHERE username = ?`,
       [newFailedCount, username]
     );
 
@@ -25,12 +31,14 @@ export async function handleFailedLogin(pool, username) {
 
     try {
       await sendUnlockEmail(user.email, user.username, unlockLink, resetLink);
-    } catch (e) {
-      console.error("Failed to send unlock e-mail", e);
+    } catch (error) {
+      console.error("Failed to send account unlock email:", error);
     }
   } else {
     await pool.execute(
-      `UPDATE user_data SET failedLoginCount = ? WHERE username = ?`,
+      `UPDATE user_data 
+       SET failedLoginCount = ? 
+       WHERE username = ?`,
       [newFailedCount, username]
     );
   }

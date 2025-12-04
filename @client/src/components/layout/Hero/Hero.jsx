@@ -1,17 +1,14 @@
-import React from "react";
-import { useEffect, useState } from "react";
-
-import cover from "../../assets/cover.png";
-import cover2 from "../../assets/cover2.jpg";
-import cover4 from "../../assets/cover4.jpg";
-import cover5 from "../../assets/cover5.jpg";
-import cover6 from "../../assets/cover6.jpg";
-import cover7 from "../../assets/cover7.jpg";
-import cover8 from "../../assets/cover8.jpg";
-
+import React, { useEffect, useState } from "react";
+import cover1 from "../../../assets/images/cover1.png";
+import cover2 from "../../../assets/images/cover2.jpg";
+import cover4 from "../../../assets/images/cover4.jpg";
+import cover5 from "../../../assets/images/cover5.jpg";
+import cover6 from "../../../assets/images/cover6.jpg";
+import cover7 from "../../../assets/images/cover7.jpg";
+import cover8 from "../../../assets/images/cover8.jpg";
 import "./Hero.css";
 
-const images = [cover, cover2, cover4, cover5, cover6, cover7, cover8];
+const images = [cover1, cover2, cover4, cover5, cover6, cover7, cover8];
 
 const Hero = () => {
   const [current, setCurrent] = useState(0);
@@ -37,6 +34,7 @@ const Hero = () => {
           ))}
         </div>
       </div>
+
       <div className="slider-indicators">
         {images.map((_, i) => (
           <button

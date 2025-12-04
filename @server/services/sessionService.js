@@ -1,7 +1,7 @@
 import { randomBytes } from "crypto";
 
 const SESSION_COOKIE_NAME = "sid";
-const SESSION_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+const SESSION_MAX_AGE_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 export function createSessionService(pool) {
   const sessionMiddleware = async (req, res, next) => {
@@ -15,7 +15,10 @@ export function createSessionService(pool) {
 
     try {
       const [rows] = await pool.execute(
-        `SELECT us.*, u.id AS userId, u.role
+        `SELECT 
+           us.*, 
+           u.id AS userId, 
+           u.role 
          FROM user_sessions us
          JOIN users u ON us.userId = u.id
          WHERE us.sessionToken = ?
@@ -26,7 +29,7 @@ export function createSessionService(pool) {
       );
 
       if (rows.length === 0) {
-        res.clearCookie(SESSION_COOKIE_NAME);
+        res.clearCookie(SESSION_COOKIE_NAME, { path: "/" });
         req.user = null;
         req.session = null;
         return next();
@@ -37,13 +40,15 @@ export function createSessionService(pool) {
       req.session = session;
 
       await pool.execute(
-        `UPDATE user_sessions SET expiresAt = DATE_ADD(NOW(), INTERVAL 1 DAY) WHERE sessionToken = ?`,
+        `UPDATE user_sessions 
+         SET expiresAt = DATE_ADD(NOW(), INTERVAL 1 DAY) 
+         WHERE sessionToken = ?`,
         [sessionToken]
       );
 
       next();
-    } catch (err) {
-      console.error("Session middleware error:", err);
+    } catch (error) {
+      console.error("Session middleware error:", error);
       req.user = null;
       req.session = null;
       next();
@@ -52,10 +57,10 @@ export function createSessionService(pool) {
 
   const createSession = async (userId, req, res, expiresInDays = 1) => {
     const sessionToken = randomBytes(48).toString("hex");
-    const expiresAt = new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000);
+    const expiresAt = new Date(Date.now() + expiresInDays * SESSION_MAX_AGE_MS);
 
     await pool.execute(
-      `INSERT INTO user_sessions
+      `INSERT INTO user_sessions 
          (_id, userId, sessionToken, loginAt, expiresAt, ipAddress, userAgent, isActive)
        VALUES (UUID(), ?, ?, NOW(), ?, ?, ?, TRUE)`,
       [
@@ -71,7 +76,7 @@ export function createSessionService(pool) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: expiresInDays * 24 * 60 * 60 * 1000,
+      maxAge: expiresInDays * SESSION_MAX_AGE_MS,
       path: "/",
     });
 
@@ -80,14 +85,22 @@ export function createSessionService(pool) {
 
   const destroySession = async (req, res) => {
     const token = req.cookies[SESSION_COOKIE_NAME];
+
     if (token) {
-      await pool.execute(`UPDATE user_sessions SET isActive = FALSE WHERE sessionToken = ?`, [token]);
+      await pool.execute(
+        `UPDATE user_sessions SET isActive = FALSE WHERE sessionToken = ?`,
+        [token]
+      );
     }
+
     res.clearCookie(SESSION_COOKIE_NAME, { path: "/" });
   };
 
   const destroyAllSessions = async (userId) => {
-    await pool.execute(`UPDATE user_sessions SET isActive = FALSE WHERE userId = ?`, [userId]);
+    await pool.execute(
+      `UPDATE user_sessions SET isActive = FALSE WHERE userId = ?`,
+      [userId]
+    );
   };
 
   return {
