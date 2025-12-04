@@ -26,10 +26,8 @@ const ResetPasswordPage = () => {
       try {
         const res = await fetch(`/api/reset-password/${token}`);
         const data = await res.json();
-
         if (!res.ok)
           throw new Error(data.message || "Invalid or expired token");
-
         setIsTokenValid(true);
       } catch (err) {
         setServerMessage(err.message || "Invalid or expired token");
@@ -70,8 +68,8 @@ const ResetPasswordPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const validationErrors = validate();
+
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
@@ -88,7 +86,6 @@ const ResetPasswordPage = () => {
       });
 
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.message || "Failed to reset password");
 
       setServerMessage("Password changed successfully! Redirecting...");
@@ -110,7 +107,7 @@ const ResetPasswordPage = () => {
 
   if (!token || isTokenValid === false) {
     return (
-      <div>
+      <div className="reset-password-error">
         <h1>Error</h1>
         <p>
           {serverMessage ||
@@ -122,17 +119,21 @@ const ResetPasswordPage = () => {
   }
 
   if (isTokenValid === null) {
-    return <div>Loading...</div>;
+    return <div className="loading">Loading...</div>;
   }
 
   return (
-    <div>
+    <div className="reset-password-page">
       <h1>Reset Your Password</h1>
 
-      {serverMessage && <p>{serverMessage}</p>}
+      {serverMessage && (
+        <p className={serverMessage.includes("success") ? "success" : "error"}>
+          {serverMessage}
+        </p>
+      )}
 
       <form onSubmit={handleSubmit}>
-        <div>
+        <div className="form-group">
           <input
             type="password"
             name="password"
@@ -140,10 +141,10 @@ const ResetPasswordPage = () => {
             onChange={handleChange}
             placeholder="New password"
           />
-          {errors.password && <p>{errors.password}</p>}
+          {errors.password && <p className="error">{errors.password}</p>}
         </div>
 
-        <div>
+        <div className="form-group">
           <input
             type="password"
             name="confirmPassword"
@@ -151,7 +152,9 @@ const ResetPasswordPage = () => {
             onChange={handleChange}
             placeholder="Confirm new password"
           />
-          {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
+          {errors.confirmPassword && (
+            <p className="error">{errors.confirmPassword}</p>
+          )}
         </div>
 
         <button type="submit" disabled={!canSubmit || isLoading}>

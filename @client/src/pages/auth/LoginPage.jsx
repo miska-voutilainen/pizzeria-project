@@ -12,14 +12,8 @@ const LoginForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    setErrors((prev) => ({
-      ...prev,
-      [name]: "",
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
     setServerError("");
   };
 
@@ -43,8 +37,8 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const validationErrors = validate();
+
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
@@ -53,9 +47,7 @@ const LoginForm = () => {
     try {
       const response = await fetch("/api/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
@@ -66,20 +58,20 @@ const LoginForm = () => {
 
       const data = await response.json();
       console.log("Login successful:", data);
-      // TODO: redirect and set auth state here
+      // TODO: redirect + set auth state
     } catch (error) {
       setServerError(error.message);
     }
   };
 
   return (
-    <div>
+    <div className="login-form">
       <h2>Login</h2>
 
-      {serverError && <p>{serverError}</p>}
+      {serverError && <p className="error">{serverError}</p>}
 
       <form onSubmit={handleSubmit}>
-        <div>
+        <div className="form-group">
           <input
             type="text"
             name="username"
@@ -87,10 +79,10 @@ const LoginForm = () => {
             onChange={handleChange}
             placeholder="Username"
           />
-          {errors.username && <p>{errors.username}</p>}
+          {errors.username && <p className="error">{errors.username}</p>}
         </div>
 
-        <div>
+        <div className="form-group">
           <input
             type="password"
             name="password"
@@ -98,22 +90,15 @@ const LoginForm = () => {
             onChange={handleChange}
             placeholder="Password"
           />
-          {errors.password && <p>{errors.password}</p>}
+          {errors.password && <p className="error">{errors.password}</p>}
         </div>
 
-        <div>
-          <button type="submit">Login</button>
-        </div>
+        <button type="submit">Login</button>
       </form>
 
-      <div>
+      <div className="register-link">
         <p>Don't have an account?</p>
-        <Link
-          to="/register"
-          style={{ color: "blue", textDecoration: "underline" }}
-        >
-          Register here
-        </Link>
+        <Link to="/register">Register here</Link>
       </div>
     </div>
   );

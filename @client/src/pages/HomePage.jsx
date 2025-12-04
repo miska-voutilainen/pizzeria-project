@@ -1,94 +1,101 @@
-// src/pages/HomePage.jsx
 import { useEffect, useState } from "react";
-import { getAllProducts } from "../utils/fetchApi.js"; // correct
+import { getPizzas } from "../lib/api/products.js";
 import { useNavigate } from "react-router-dom";
-import "../styles/pages/HomePage.css";
-import Hero from "../components/Hero/Hero.jsx";
+
+import Hero from "../components/layout/Hero/Hero.jsx";
 import Footer from "../components/Footer/Footer.jsx";
 
+import "../styles/pages/HomePage.css";
+
 const HomePage = () => {
-  const [products, setProducts] = useState([]);
+  const [pizzas, setPizzas] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    getAllProducts().then(setProducts).catch(console.error);
+    getPizzas()
+      .then(setPizzas)
+      .catch((err) => console.error("Failed to load pizzas:", err));
   }, []);
 
-  const displayed = products.slice(0, 8);
+  const displayedPizzas = pizzas.slice(0, 8);
 
   return (
     <div>
-      {/* Hero slider */}
       <Hero />
 
       <h1 className="page-title">─ Pizzat ─</h1>
 
       <div className="product-grid">
-        {displayed.length > 0 ? (
-          displayed.map((p) => (
-            <div key={p.slug} className="product-card">
+        {displayedPizzas.length > 0 ? (
+          displayedPizzas.map((pizza) => (
+            <article key={pizza.slug} className="product-card">
               <div className="product-image-container">
-                <img src={p.imgUrl} alt={p.name} className="product-image" />
+                <img
+                  src={pizza.imgUrl}
+                  alt={pizza.name}
+                  className="product-image"
+                  loading="lazy"
+                />
               </div>
               <div className="product-content">
-                <h2 className="product-name">{p.name}</h2>
-                <p className="product-description">{p.description}</p>
-                <span className="product-price">{p.price} €</span>
+                <h2 className="product-name">{pizza.name}</h2>
+                <p className="product-description">{pizza.description}</p>
+                <span className="product-price">{pizza.price} €</span>
               </div>
-            </div>
+            </article>
           ))
         ) : (
-          <p className="loading-text">Loading...</p>
+          <p className="loading-text">Loading pizzas...</p>
         )}
       </div>
 
-      {/* TODO: View Full Menu button */}
-      {products.length > 8 && (
+      {pizzas.length > 8 && (
         <div className="text-center">
-          <button
-            onClick={() => navigate("/menu")}
-            className="view-menu-button"
-          >
+          <button onClick={() => navigate("/menu")} className="view-menu-button">
             View Full Menu
           </button>
         </div>
       )}
 
-      {/* Why Choose Us section */}
-      <h1 className="info-title">Why Choose Us?</h1>
-      <div className="separator-line"></div>
-      <div className="info-grid">
-        <div className="info-item">
-          <img
-            src="https://s3.eu-north-1.amazonaws.com/mahalna.images/Frame.png"
-            alt="Fresh"
-          />
-          <h2 className="info-name">Fresh ingredients</h2>
-          <p className="info-description">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit
-          </p>
+      <section className="info-section">
+        <h2 className="info-title">Why Choose Us?</h2>
+        <div className="separator-line"></div>
+
+        <div className="info-grid">
+          <div className="info-item">
+            <img
+              src="https://s3.eu-north-1.amazonaws.com/mahalna.images/Frame.png"
+              alt="Fresh ingredients"
+            />
+            <h3 className="info-name">Fresh ingredients</h3>
+            <p className="info-description">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit
+            </p>
+          </div>
+
+          <div className="info-item">
+            <img
+              src="https://s3.eu-north-1.amazonaws.com/mahalna.images/Frame2.png"
+              alt="Fast delivery"
+            />
+            <h3 className="info-name">Guaranteed fast delivery</h3>
+            <p className="info-description">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit
+            </p>
+          </div>
+
+          <div className="info-item">
+            <img
+              src="https://s3.eu-north-1.amazonaws.com/mahalna.images/Frame3.png"
+              alt="Delicious pizza"
+            />
+            <h3 className="info-name">Delicious Pizza</h3>
+            <p className="info-description">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit
+            </p>
+          </div>
         </div>
-        <div className="info-item">
-          <img
-            src="https://s3.eu-north-1.amazonaws.com/mahalna.images/Frame2.png"
-            alt="Fast"
-          />
-          <h2 className="info-name">Guaranteed fast delivery</h2>
-          <p className="info-description">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit
-          </p>
-        </div>
-        <div className="info-item">
-          <img
-            src="https://s3.eu-north-1.amazonaws.com/mahalna.images/Frame3.png"
-            alt="Pizza"
-          />
-          <h2 className="info-name">Delicious Pizza</h2>
-          <p className="info-description">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit
-          </p>
-        </div>
-      </div>
+      </section>
 
       <Footer />
     </div>

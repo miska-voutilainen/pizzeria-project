@@ -1,16 +1,16 @@
 import React from "react";
-import Navbar from "./components/navbar/Navbar.jsx"; // works if file is in src/components/
 import { Outlet } from "react-router-dom";
+import NavigationBar from "./components/layout/Navigation/NavigationBar.jsx";
 
-function App() {
+const App = () => {
   return (
     <>
-      <Navbar />
+      <NavigationBar />
       <main>
         <Outlet />
       </main>
     </>
   );
-}
+};
 
 export default App;

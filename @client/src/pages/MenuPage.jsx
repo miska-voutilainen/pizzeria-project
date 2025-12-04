@@ -1,7 +1,6 @@
-// src/pages/MenuPage.jsx
 import { useEffect, useState } from "react";
-import { getPizzas, getDrinks } from "../utils/fetchApi";
-//import "../styles/pages/MenuPage.css";
+import { getPizzas, getDrinks } from "../lib/api/products.js";
+// import "../styles/pages/MenuPage.css";
 
 const categories = [
   { id: "pizza", label: "Pizzas", fetch: getPizzas },
@@ -23,7 +22,10 @@ const MenuPage = () => {
         setProducts(data || []);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch((err) => {
+        console.error(`Failed to load ${activeTab}:`, err);
+        setLoading(false);
+      });
   }, [activeTab]);
 
   return (
@@ -49,12 +51,13 @@ const MenuPage = () => {
           </p>
         ) : products.length > 0 ? (
           products.map((product) => (
-            <div key={product.tag} className="product-card">
+            <article key={product.slug} className="product-card">
               <div className="product-image-container">
                 <img
                   src={product.imgUrl}
                   alt={product.name}
                   className="product-image"
+                  loading="lazy"
                 />
               </div>
               <div className="product-content">
@@ -62,7 +65,7 @@ const MenuPage = () => {
                 <p className="product-description">{product.description}</p>
                 <span className="product-price">{product.price} €</span>
               </div>
-            </div>
+            </article>
           ))
         ) : (
           <p className="loading-text">No items available.</p>

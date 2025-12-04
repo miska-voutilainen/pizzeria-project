@@ -9,4 +9,4 @@ const fetchJson = async (url) => {
 export const getAllProducts = () => fetchJson("/");
 export const getPizzas = () => fetchJson("/pizza");
 export const getDrinks = () => fetchJson("/drinks");
-export const getProductByTag = (tag) => fetchJson(`/${tag}`);
+export const getProductBySlug = (slug) => fetchJson(`/${slug}`);
