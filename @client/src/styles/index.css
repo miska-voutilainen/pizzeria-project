@@ -33,7 +33,6 @@
   background-color: #ffffff;
 
   /* Rendering improvements */
-  user-select: none;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
