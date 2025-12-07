@@ -7,6 +7,7 @@ import Footer from "../components/layout/Footer/Footer.jsx";
 
 import "../styles/pages/HomePage.css";
 import Newsletter from "../components/layout/Newsletter/Newsletter.jsx";
+import PromoSlide from "../components/layout/PromoSlide/PromoSlide.jsx";
 
 const HomePage = () => {
   const [pizzas, setPizzas] = useState([]);
@@ -101,6 +102,7 @@ const HomePage = () => {
         </div>
       </section>
       <Newsletter />
+      <PromoSlide />
     </div>
   );
 };
