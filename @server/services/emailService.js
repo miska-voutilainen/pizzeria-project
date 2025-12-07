@@ -13,22 +13,54 @@ const getTransporter = async () => {
     throw new Error("EMAIL_ADDRESS or EMAIL_SECRET missing in .env.local");
   }
 
+  console.log("Creating SMTP transporter for Namecheap Email Pro:", {
+    host: process.env.EMAIL_HOST,
+    port: Number(process.env.EMAIL_PORT) || 587,
+    secure: process.env.EMAIL_SECURE === "true",
+    user: process.env.EMAIL_ADDRESS,
+  });
+
+  console.log("Auth credentials check:", {
+    emailExists: !!process.env.EMAIL_ADDRESS,
+    passwordExists: !!process.env.EMAIL_SECRET,
+    passwordLength: process.env.EMAIL_SECRET
+      ? process.env.EMAIL_SECRET.length
+      : 0,
+    passwordFirstChar: process.env.EMAIL_SECRET
+      ? process.env.EMAIL_SECRET[0]
+      : "none",
+  });
+
   transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: Number(process.env.EMAIL_PORT) || 587,
     secure: process.env.EMAIL_SECURE === "true",
+    requireTLS: true, // Required for Namecheap
     auth: {
       user: process.env.EMAIL_ADDRESS,
       pass: process.env.EMAIL_SECRET,
     },
+    tls: {
+      ciphers: "SSLv3",
+      rejectUnauthorized: false,
+    },
+    debug: true,
+    logger: true,
   });
 
   try {
+    console.log("Attempting SMTP verification for Namecheap...");
     await transporter.verify();
     console.log("SMTP connection verified successfully");
     return transporter;
   } catch (error) {
     console.error("SMTP verification failed:", error.message);
+    console.error("Error details:", {
+      code: error.code,
+      response: error.response,
+      responseCode: error.responseCode,
+      command: error.command,
+    });
     throw error;
   }
 };

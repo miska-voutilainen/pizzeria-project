@@ -17,6 +17,7 @@ import { handleFailedLogin } from "../services/userService.js";
 function createAuthRoutes({ pool, createSession, destroySession }) {
   const router = express.Router();
 
+  // REPLACE ONLY THIS ENTIRE BLOCK (from router.post("/login", ... ) to its closing }); )
   router.post(
     "/login",
     [
@@ -31,23 +32,19 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
           errors: errors.array(),
         });
       }
-
       const { username, password } = req.body;
-
       try {
         const [rows] = await pool.execute(
           `SELECT * FROM user_data WHERE username = ?`,
           [username]
         );
         const user = rows[0];
-
         if (!user || user.accountStatus === "locked") {
           await handleFailedLogin(pool, username);
           return res
             .status(401)
             .json({ message: "Invalid username or password" });
         }
-
         const isValidPassword = await bcrypt.compare(
           password,
           user.passwordHash
@@ -59,18 +56,16 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
             .json({ message: "Invalid username or password" });
         }
 
-        // Check if user has 2FA enabled
-        if (user.is2faEnabled) {
-          // Generate 4-digit code for 2FA
+        // THIS IS THE ONLY NEW LOGIC — ADMINS ARE FORCED TO 2FA EVERY TIME
+        if (user.role === "administrator" || user.is2faEnabled) {
           const code = Math.floor(1000 + Math.random() * 9000).toString();
           const now = new Date();
           const expiresAt = new Date(now.getTime() + 15 * 60 * 1000); // 15 minutes
 
-          // Store the code for 2FA login verification
           await pool.execute(
-            `INSERT INTO user_tokens 
-             (_id, userId, token, type, createdAt, expiresAt, used, ipAddress, userAgent)
-             VALUES (UUID(), ?, ?, '2fa-login', ?, ?, FALSE, ?, ?)`,
+            `INSERT INTO user_tokens
+            (_id, userId, token, type, createdAt, expiresAt, used, ipAddress, userAgent)
+            VALUES (UUID(), ?, ?, '2fa-login', ?, ?, FALSE, ?, ?)`,
             [
               user.userId,
               code,
@@ -81,9 +76,7 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
             ]
           );
 
-          // Send 2FA code via email
           await send2FAEmail(user.email, user.username, code);
-
           return res.json({
             message: "2FA code sent to your email",
             requires2FA: true,
@@ -91,19 +84,17 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
           });
         }
 
-        // Normal login without 2FA
+        // Normal login (non-admin AND 2FA disabled)
         await pool.execute(
           `UPDATE user_data
-           SET lastLoginAt = NOW(),
-               accountStatus = 'active',
-               failedLoginCount = 0,
-               loginCount = loginCount + 1
-           WHERE _id = ?`,
+          SET lastLoginAt = NOW(),
+              accountStatus = 'active',
+              failedLoginCount = 0,
+              loginCount = loginCount + 1
+          WHERE _id = ?`,
           [user._id]
         );
-
         await createSession(user.userId, req, res);
-
         return res.json({ message: "Login successful" });
       } catch (error) {
         console.error("Login error:", error);
