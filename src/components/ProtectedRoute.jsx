@@ -1,3 +1,4 @@
+// src/components/ProtectedRoute.jsx — keep exactly this
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import api from "../api";
