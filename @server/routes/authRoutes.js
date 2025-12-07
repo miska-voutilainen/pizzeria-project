@@ -545,6 +545,44 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
     }
   });
 
+  // GET all users — admin only
+  router.get("/users", async (req, res) => {
+    if (req.user?.role !== "administrator") {
+      return res.status(403).json({ error: "Admin only" });
+    }
+    try {
+      const [rows] = await pool.execute(
+        `SELECT userId, username, email, role, is2faEnabled, emailVerified, createdAt FROM user_data ORDER BY createdAt DESC`
+      );
+      res.json(rows);
+    } catch (err) {
+      console.error("GET /users error:", err);
+      res.status(500).json({ error: "Server error" });
+    }
+  });
+
+  // UPDATE user — admin only
+  router.put("/users/:userId", async (req, res) => {
+    if (req.user?.role !== "administrator") {
+      return res.status(403).json({ error: "Admin only" });
+    }
+    const { userId } = req.params;
+    const { username, email, role, is2faEnabled } = req.body;
+
+    try {
+      await pool.execute(
+        `UPDATE user_data 
+        SET username = ?, email = ?, role = ?, is2faEnabled = ?
+        WHERE userId = ?`,
+        [username, email, role, is2faEnabled === "1" ? 1 : 0, userId]
+      );
+      res.json({ message: "User updated" });
+    } catch (err) {
+      console.error("PUT /users error:", err);
+      res.status(500).json({ error: "Server error" });
+    }
+  });
+
   return router;
 }
 
