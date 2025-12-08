@@ -1,4 +1,7 @@
-import React from "react";
+import "./UserContextMenu.css";
+import seeInfoIcon from "../../assets/images/see-info-icon.svg";
+import penIcon from "../../assets/images/pen-black-icon.svg";
+import ordersIcon from "../../assets/images/orders-black-icon.svg";
 
 export default function UserContextMenu({
   isOpen,
@@ -10,17 +13,17 @@ export default function UserContextMenu({
 }) {
   const menuItems = [
     {
-      icon: "📄",
+      icon: seeInfoIcon,
       label: "Tarkastele tietoja",
       onClick: onViewDetails,
     },
     {
-      icon: "✏️",
+      icon: penIcon,
       label: "Muokkaa",
       onClick: onEditProfile,
     },
     {
-      icon: "📋",
+      icon: ordersIcon,
       label: "Tilaukset",
       onClick: onViewOrders,
     },
@@ -32,6 +35,7 @@ export default function UserContextMenu({
     <>
       {/* Overlay */}
       <div
+        className="user-context-menu-container"
         style={{
           position: "fixed",
           top: 0,
@@ -84,7 +88,7 @@ export default function UserContextMenu({
             }}
           >
             <span style={{ marginRight: "8px", fontSize: "16px" }}>
-              {item.icon}
+              <img src={item.icon} alt={item.icon} />
             </span>
             {item.label}
           </button>

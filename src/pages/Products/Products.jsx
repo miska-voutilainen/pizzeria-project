@@ -63,7 +63,6 @@ export default function Products() {
 
       <div className="products-search-row">
         <Search inputPlaceholder="hae tuotteita" name="productSearch" />
-        {/*TODO: Open modal on add*/}
         <SquareButton type={"add"} onClick={() => setIsModalOpen(true)} />
       </div>
       <div className="product-cards">

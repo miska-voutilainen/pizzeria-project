@@ -7,7 +7,6 @@ import {
   TableRow,
   TableCell,
   StatusBadge,
-  SearchBox,
 } from "../components";
 
 export default function Orders() {
@@ -69,11 +68,11 @@ export default function Orders() {
       </h1>
 
       <div style={{ marginBottom: 20 }}>
-        <SearchBox
+        {/* <SearchBox
           placeholder="Hae tilauksia..."
           value={searchTerm}
           onChange={setSearchTerm}
-        />
+        /> */}
       </div>
 
       <Table>
