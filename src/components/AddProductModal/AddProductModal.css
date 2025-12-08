@@ -1,0 +1,60 @@
+.product-modal-wrapper {
+  display: flex;
+  gap: 20px;
+  width: 800px;
+  justify-content: center;
+}
+
+/* image input column */
+.product-modal-img-input-col {
+  width: 50%;
+}
+
+.product-modal-preview-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.product-modal-image-preview-container {
+  border: 1px solid #ccc;
+  border-bottom: none;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* form fields collumn */
+.product-modal-text-inputs-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 50%;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-field label {
+  color: grey;
+  margin-left: 5px;
+}
+
+.form-field input,
+.form-field textarea,
+.form-field select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+/* add button */
+.product-modal-button {
+  display: flex;
+  justify-content: end;
+  margin-top: 40px;
+}
