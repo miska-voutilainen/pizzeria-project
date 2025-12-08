@@ -8,11 +8,10 @@ export { default as TableCell } from "./TableCell";
 // UI Components
 export { default as ActionButton } from "./ActionButton";
 export { default as StatusBadge } from "./StatusBadge";
-export { default as SearchBox } from "./SearchBox";
 
 // Modal Components
 export { default as Modal } from "./Modal/Modal";
-export { default as UserContextMenu } from "./UserContextMenu";
+export { default as UserContextMenu } from "./UserContextMenu/UserContextMenu";
 export { default as UserProfileModal } from "./UserProfileModal";
 export { default as ViewUserDetailsModal } from "./ViewUserDetailsModal";
 export { default as ViewUserOrdersModal } from "./ViewUserOrdersModal";
