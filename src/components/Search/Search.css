@@ -1,0 +1,9 @@
+.search-container input {
+  background-image: url("../../assets/images/search-icon.svg");
+  background-repeat: no-repeat;
+  background-position: 10px center;
+  background-size: 16px 16px;
+  padding: 10px 25px;
+  padding-left: 35px;
+  border: 1px solid grey;
+}
