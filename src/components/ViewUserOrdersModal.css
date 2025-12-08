@@ -1,0 +1,109 @@
+/* View User Orders Modal Styles */
+
+.view-user-orders-modal {
+  /* Modal content styles handled by Modal component */
+}
+
+.view-user-orders-header {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.view-user-orders-user-id {
+  color: #6c757d;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.view-user-orders-user-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.view-user-orders-last-login {
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.view-user-orders-content {
+  /* Content styles */
+}
+
+.view-user-orders-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.view-user-orders-loading {
+  text-align: center;
+  padding: 40px;
+  color: #6c757d;
+}
+
+.view-user-orders-empty {
+  text-align: center;
+  padding: 40px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+.item-name {
+  color: #007bff;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.item-name:hover {
+  text-decoration: underline;
+}
+
+.item-id {
+  color: #6c757d;
+  font-size: 11px;
+}
+
+.status-badge {
+  display: inline-block;
+  min-width: 70px;
+}
+
+.order-actions-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #6c757d;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.order-actions-button:hover {
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .order-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .item-id {
+    margin-top: 2px;
+  }
+}

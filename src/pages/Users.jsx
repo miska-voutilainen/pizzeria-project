@@ -12,6 +12,7 @@ import {
   UserContextMenu,
   UserProfileModal,
   ViewUserDetailsModal,
+  ViewUserOrdersModal,
 } from "../components";
 
 export default function Users() {
@@ -27,6 +28,7 @@ export default function Users() {
   });
   const [profileModalUser, setProfileModalUser] = useState(null);
   const [viewDetailsUser, setViewDetailsUser] = useState(null);
+  const [viewOrdersUser, setViewOrdersUser] = useState(null);
 
   const loadUsers = () => {
     api.get("/auth/users").then((r) => {
@@ -121,6 +123,10 @@ export default function Users() {
     setViewDetailsUser(null);
   };
 
+  const closeViewOrdersModal = () => {
+    setViewOrdersUser(null);
+  };
+
   const saveProfile = async (updatedData) => {
     if (profileModalUser) {
       await api.put(`/auth/users/${profileModalUser.userId}`, {
@@ -142,8 +148,7 @@ export default function Users() {
   };
 
   const handleViewOrders = () => {
-    // Handle view orders functionality
-    console.log("View orders for:", contextMenuUser);
+    setViewOrdersUser(contextMenuUser);
     closeContextMenu();
   };
 
@@ -326,6 +331,12 @@ export default function Users() {
         isOpen={!!viewDetailsUser}
         onClose={closeViewDetailsModal}
         user={viewDetailsUser}
+      />
+
+      <ViewUserOrdersModal
+        isOpen={!!viewOrdersUser}
+        onClose={closeViewOrdersModal}
+        user={viewOrdersUser}
       />
     </div>
   );

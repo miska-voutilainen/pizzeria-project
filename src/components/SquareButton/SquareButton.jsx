@@ -2,7 +2,10 @@ import "./SquareButton.css";
 import addIcon from "../../assets/images/add-icon.svg";
 import editIcon from "../../assets/images/pen-icon.svg";
 
-const SquareButton = ({ buttonText, type }) => {
+{
+  /*onclick prop*/
+}
+const SquareButton = ({ type, onClick }) => {
   const getIcon = () => {
     if (type === "add") return addIcon;
     if (type === "edit") return editIcon;
@@ -10,7 +13,7 @@ const SquareButton = ({ buttonText, type }) => {
 
   return (
     <div id="square-button-container">
-      <button>
+      <button onClick={onClick}>
         <img src={getIcon()} alt={`${type} icon`} />
       </button>
     </div>
