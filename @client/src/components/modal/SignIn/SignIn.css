@@ -98,8 +98,8 @@ a:hover {
     border: none;
 }
 
-#inputPlaceholder{
-    color: #1C3D1933;
+input::Placeholder{
+    color: var(--input-placeholder);
     font-size: 15px;
     font-style: normal;
     font-weight: 400;
@@ -107,3 +107,4 @@ a:hover {
     letter-spacing: 0.45px;
     font-family: var(--font-base);
 }
+
