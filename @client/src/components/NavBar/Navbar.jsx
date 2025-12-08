@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./Navbar.css";
-import Button from "../Button/Button";
+import Button from "../ui/Button/Button";
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -39,7 +39,7 @@ function Navbar() {
           <div className="navbar-row-end">
             <Button
               url={"/login"}
-              text={"Sign in"}
+              text={"Sign innnnn"}
               imageUrl={"./user-icon.svg"}
             />
             <Link to="/cart">
