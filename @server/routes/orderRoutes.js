@@ -10,18 +10,10 @@ export default function orderRoutes(pool) {
     try {
       const [rows] = await pool.execute(`
         SELECT o.*, u.username, u.email
-        FROM orders o
+        FROM order_data o
         JOIN user_data u ON o.userId = u.userId
-        ORDER BY o.createdAt DESC
+        ORDER BY o.created_at DESC
       `);
-      // Also get items for each order
-      for (let order of rows) {
-        const [items] = await pool.execute(
-          `SELECT slug, name, quantity, price FROM order_items WHERE orderId = ?`,
-          [order.id]
-        );
-        order.items = items;
-      }
       res.json(rows);
     } catch (err) {
       console.error("GET /orders error:", err);
@@ -30,15 +22,15 @@ export default function orderRoutes(pool) {
   });
 
   // UPDATE order status — admin only
-  router.put("/:id", async (req, res) => {
+  router.put("/:orderId", async (req, res) => {
     if (req.user?.role !== "administrator")
       return res.status(403).json({ error: "Admin only" });
     const { status } = req.body;
     try {
-      await pool.execute(`UPDATE orders SET status = ? WHERE id = ?`, [
-        status,
-        req.params.id,
-      ]);
+      await pool.execute(
+        `UPDATE order_data SET status = ?, updated_at = NOW() WHERE orderId = ?`,
+        [status, req.params.orderId]
+      );
       res.json({ message: "Status updated" });
     } catch (err) {
       res.status(500).json({ error: "Server error" });

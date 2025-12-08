@@ -73,7 +73,6 @@ function productRoutes(pool) {
   // ADD NEW PRODUCT
   router.post("/", requireAdmin, async (req, res) => {
     const {
-      id,
       name,
       slug,
       description,
@@ -112,7 +111,7 @@ function productRoutes(pool) {
     try {
       const [result] = await pool.execute(
         `UPDATE product_data 
-         SET id = ?, name = ?, description = ?, price = ?, imgUrl = ?, category = ?, sort_order = ?
+         SET name = ?, description = ?, price = ?, imgUrl = ?, category = ?, sort_order = ?
          WHERE slug = ?`,
         [
           name,
