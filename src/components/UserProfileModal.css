@@ -1,0 +1,142 @@
+/* User Profile Modal Styles */
+
+.user-profile-modal {
+  /* Modal content styles handled by Modal component */
+}
+
+.user-profile-header {
+  margin-bottom: 24px;
+}
+
+.user-profile-header-user-id {
+  color: #6c757d;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.user-profile-header-user-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.user-profile-header-last-login {
+  color: #6c757d;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.user-profile-section {
+  margin-bottom: 24px;
+}
+
+.user-profile-section--final {
+  margin-bottom: 32px;
+}
+
+.user-profile-section-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.user-profile-form-grid {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.user-profile-form-grid--three-columns {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.user-profile-form-grid--two-columns {
+  grid-template-columns: 1fr 1fr;
+}
+
+.user-profile-form-field {
+  /* Container for form field */
+}
+
+.user-profile-form-field-label {
+  display: block;
+  font-size: 12px;
+  color: #6c757d;
+  margin-bottom: 4px;
+}
+
+.user-profile-form-field-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.user-profile-form-field-input--email {
+  width: 48%;
+}
+
+.user-profile-form-field-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.user-profile-form-field-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: white;
+  box-sizing: border-box;
+}
+
+.user-profile-actions {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #dee2e6;
+  padding-top: 20px;
+}
+
+.user-profile-actions-save-button {
+  background-color: #28a745;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .user-profile-form-grid--three-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .user-profile-form-grid--two-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .user-profile-form-field-input--email {
+    width: 100%;
+  }
+
+  .user-profile-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-profile-header-user-name {
+    font-size: 16px;
+  }
+
+  .user-profile-section-title {
+    font-size: 14px;
+  }
+}

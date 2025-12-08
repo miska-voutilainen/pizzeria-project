@@ -1,5 +1,4 @@
 import React from "react";
-import Modal from "./Modal";
 
 export default function UserContextMenu({
   isOpen,
@@ -7,6 +6,7 @@ export default function UserContextMenu({
   onViewDetails,
   onEditProfile,
   onViewOrders,
+  position,
 }) {
   const menuItems = [
     {
@@ -26,14 +26,39 @@ export default function UserContextMenu({
     },
   ];
 
+  if (!isOpen) return null;
+
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      size="small"
-      showCloseButton={false}
-    >
-      <div style={{ padding: "4px" }}>
+    <>
+      {/* Overlay */}
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 999,
+        }}
+        onClick={onClose}
+      />
+
+      {/* Context Menu */}
+      <div
+        style={{
+          position: "fixed",
+          top: position?.y || 0,
+          left: position?.x || 0,
+          backgroundColor: "white",
+          borderRadius: "8px",
+          padding: "4px",
+          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.15)",
+          border: "1px solid #dee2e6",
+          zIndex: 1000,
+          minWidth: "180px",
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
         {menuItems.map((item, index) => (
           <button
             key={index}
@@ -65,6 +90,6 @@ export default function UserContextMenu({
           </button>
         ))}
       </div>
-    </Modal>
+    </>
   );
 }

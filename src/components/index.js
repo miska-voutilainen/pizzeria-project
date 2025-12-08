@@ -14,6 +14,7 @@ export { default as SearchBox } from "./SearchBox";
 export { default as Modal } from "./Modal";
 export { default as UserContextMenu } from "./UserContextMenu";
 export { default as UserProfileModal } from "./UserProfileModal";
+export { default as ViewUserDetailsModal } from "./ViewUserDetailsModal";
 
 // Other Components
 export { default as ProtectedRoute } from "./ProtectedRoute";

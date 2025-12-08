@@ -1,0 +1,137 @@
+/* View User Details Modal Styles */
+
+.view-user-details-modal {
+  /* Modal content styles handled by Modal component */
+}
+
+.view-user-details-header {
+  margin-bottom: 24px;
+}
+
+.view-user-details-header-user-id {
+  color: #6c757d;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.view-user-details-header-user-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.view-user-details-header-last-login {
+  color: #6c757d;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.view-user-details-section {
+  margin-bottom: 24px;
+}
+
+.view-user-details-section--final {
+  margin-bottom: 32px;
+}
+
+.view-user-details-section-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.view-user-details-section-divider {
+  height: 1px;
+  background-color: #e9ecef;
+  margin: 24px 0;
+  border: none;
+}
+
+.view-user-details-grid {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.view-user-details-grid--three-columns {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.view-user-details-grid--two-columns {
+  grid-template-columns: 1fr 1fr;
+}
+
+.view-user-details-grid--four-columns {
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.view-user-details-grid--five-columns {
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+}
+
+.view-user-details-grid--six-columns {
+  grid-template-columns: repeat(6, 1fr);
+}
+
+.view-user-details-field {
+  /* Container for field */
+}
+
+.view-user-details-field-label {
+  display: block;
+  font-size: 12px;
+  color: #6c757d;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.view-user-details-field-value {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+.view-user-details-actions {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #dee2e6;
+  padding-top: 20px;
+}
+
+.view-user-details-actions-edit-button {
+  background-color: #28a745;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .view-user-details-grid--three-columns,
+  .view-user-details-grid--four-columns,
+  .view-user-details-grid--five-columns,
+  .view-user-details-grid--six-columns {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .view-user-details-grid--two-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .view-user-details-grid--three-columns,
+  .view-user-details-grid--four-columns,
+  .view-user-details-grid--five-columns,
+  .view-user-details-grid--six-columns,
+  .view-user-details-grid--two-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .view-user-details-header-user-name {
+    font-size: 16px;
+  }
+
+  .view-user-details-section-title {
+    font-size: 14px;
+  }
+}

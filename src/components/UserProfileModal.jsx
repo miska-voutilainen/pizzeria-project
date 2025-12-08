@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "./Modal";
 import ActionButton from "./ActionButton";
+import "./UserProfileModal.css";
 
 export default function UserProfileModal({ isOpen, onClose, user, onSave }) {
   const [form, setForm] = useState({
@@ -14,9 +15,10 @@ export default function UserProfileModal({ isOpen, onClose, user, onSave }) {
   });
 
   // Update form when user changes
-  useState(() => {
+  useEffect(() => {
     if (user) {
-      setForm({
+      console.log("UserProfileModal user data:", user); // Debug
+      const newForm = {
         etunimi: user.firstName || "",
         sukunimi: user.lastName || "",
         kayttajanimi: user.username || "",
@@ -24,7 +26,9 @@ export default function UserProfileModal({ isOpen, onClose, user, onSave }) {
         katuosoite: user.address || "",
         status: user.accountStatus === "active" ? "Aktiivinen" : "Deactiivinen",
         rooli: user.role || "User",
-      });
+      };
+      console.log("Setting form to:", newForm); // Debug
+      setForm(newForm);
     }
   }, [user]);
 
@@ -53,106 +57,54 @@ export default function UserProfileModal({ isOpen, onClose, user, onSave }) {
       onClose={onClose}
       size="large"
       title="Muokkaa profiilia"
+      className="user-profile-modal"
     >
-      <div style={{ color: "#6c757d", fontSize: "12px", marginBottom: "4px" }}>
-        #{user.userId}
-      </div>
-      <div style={{ fontSize: "18px", fontWeight: "600", marginBottom: "8px" }}>
-        {user.firstName && user.lastName
-          ? `${user.firstName} ${user.lastName}`
-          : user.username}
-      </div>
-      <div style={{ color: "#6c757d", fontSize: "14px", marginBottom: "24px" }}>
-        Viimeinen kirjautuminen:{" "}
-        {user.lastLoginAt
-          ? new Date(user.lastLoginAt).toLocaleDateString("fi-FI") +
-            ", " +
-            new Date(user.lastLoginAt).toLocaleTimeString("fi-FI", {
-              hour: "2-digit",
-              minute: "2-digit",
-            })
-          : "Ei koskaan"}
+      <div className="user-profile-header">
+        <div className="user-profile-header-user-id">#{user.userId}</div>
+        <div className="user-profile-header-user-name">
+          {user.firstName && user.lastName
+            ? `${user.firstName} ${user.lastName}`
+            : user.username}
+        </div>
+        <div className="user-profile-header-last-login">
+          Viimeinen kirjautuminen:{" "}
+          {user.lastLoginAt
+            ? new Date(user.lastLoginAt).toLocaleDateString("fi-FI") +
+              ", " +
+              new Date(user.lastLoginAt).toLocaleTimeString("fi-FI", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })
+            : "Ei koskaan"}
+        </div>
       </div>
 
-      <div style={{ marginBottom: "24px" }}>
-        <h3
-          style={{
-            fontSize: "16px",
-            fontWeight: "600",
-            marginBottom: "16px",
-            color: "#333",
-          }}
-        >
-          Henkilötiedot
-        </h3>
+      <div className="user-profile-section">
+        <h3 className="user-profile-section-title">Henkilötiedot</h3>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
-            gap: "16px",
-            marginBottom: "16px",
-          }}
-        >
-          <div>
-            <label
-              style={{
-                display: "block",
-                fontSize: "12px",
-                color: "#6c757d",
-                marginBottom: "4px",
-              }}
-            >
-              Etunimi
-            </label>
+        <div className="user-profile-form-grid user-profile-form-grid--three-columns">
+          <div className="user-profile-form-field">
+            <label className="user-profile-form-field-label">Etunimi</label>
             <input
               type="text"
               value={form.etunimi}
               onChange={(e) => handleInputChange("etunimi", e.target.value)}
-              style={{
-                width: "100%",
-                padding: "8px 12px",
-                border: "1px solid #ced4da",
-                borderRadius: "4px",
-                fontSize: "14px",
-              }}
+              className="user-profile-form-field-input"
             />
           </div>
 
-          <div>
-            <label
-              style={{
-                display: "block",
-                fontSize: "12px",
-                color: "#6c757d",
-                marginBottom: "4px",
-              }}
-            >
-              Sukunimi
-            </label>
+          <div className="user-profile-form-field">
+            <label className="user-profile-form-field-label">Sukunimi</label>
             <input
               type="text"
               value={form.sukunimi}
               onChange={(e) => handleInputChange("sukunimi", e.target.value)}
-              style={{
-                width: "100%",
-                padding: "8px 12px",
-                border: "1px solid #ced4da",
-                borderRadius: "4px",
-                fontSize: "14px",
-              }}
+              className="user-profile-form-field-input"
             />
           </div>
 
-          <div>
-            <label
-              style={{
-                display: "block",
-                fontSize: "12px",
-                color: "#6c757d",
-                marginBottom: "4px",
-              }}
-            >
+          <div className="user-profile-form-field">
+            <label className="user-profile-form-field-label">
               Käyttäjänimi
             </label>
             <input
@@ -161,152 +113,59 @@ export default function UserProfileModal({ isOpen, onClose, user, onSave }) {
               onChange={(e) =>
                 handleInputChange("kayttajanimi", e.target.value)
               }
-              style={{
-                width: "100%",
-                padding: "8px 12px",
-                border: "1px solid #ced4da",
-                borderRadius: "4px",
-                fontSize: "14px",
-              }}
+              className="user-profile-form-field-input"
             />
           </div>
         </div>
 
-        <div>
-          <label
-            style={{
-              display: "block",
-              fontSize: "12px",
-              color: "#6c757d",
-              marginBottom: "4px",
-            }}
-          >
-            Sähköposti
-          </label>
+        <div className="user-profile-form-field">
+          <label className="user-profile-form-field-label">Sähköposti</label>
           <input
             type="email"
             value={form.sahkoposti}
             onChange={(e) => handleInputChange("sahkoposti", e.target.value)}
-            style={{
-              width: "48%",
-              padding: "8px 12px",
-              border: "1px solid #ced4da",
-              borderRadius: "4px",
-              fontSize: "14px",
-            }}
+            className="user-profile-form-field-input user-profile-form-field-input--email"
           />
         </div>
       </div>
 
-      <div style={{ marginBottom: "24px" }}>
-        <h3
-          style={{
-            fontSize: "16px",
-            fontWeight: "600",
-            marginBottom: "16px",
-            color: "#333",
-          }}
-        >
-          Osoite
-        </h3>
+      <div className="user-profile-section">
+        <h3 className="user-profile-section-title">Osoite</h3>
 
-        <div>
-          <label
-            style={{
-              display: "block",
-              fontSize: "12px",
-              color: "#6c757d",
-              marginBottom: "4px",
-            }}
-          >
-            Osoite
-          </label>
+        <div className="user-profile-form-field">
+          <label className="user-profile-form-field-label">Osoite</label>
           <textarea
             value={form.katuosoite}
             onChange={(e) => handleInputChange("katuosoite", e.target.value)}
             rows="2"
-            style={{
-              width: "100%",
-              padding: "8px 12px",
-              border: "1px solid #ced4da",
-              borderRadius: "4px",
-              fontSize: "14px",
-              resize: "vertical",
-            }}
+            className="user-profile-form-field-textarea"
             placeholder="Esim. Pizzatie 5, 00510 Helsinki"
           />
         </div>
       </div>
 
-      <div style={{ marginBottom: "32px" }}>
-        <h3
-          style={{
-            fontSize: "16px",
-            fontWeight: "600",
-            marginBottom: "16px",
-            color: "#333",
-          }}
-        >
-          Muu
-        </h3>
+      <div className="user-profile-section user-profile-section--final">
+        <h3 className="user-profile-section-title">Muu</h3>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "16px",
-          }}
-        >
-          <div>
-            <label
-              style={{
-                display: "block",
-                fontSize: "12px",
-                color: "#6c757d",
-                marginBottom: "4px",
-              }}
-            >
-              Status
-            </label>
+        <div className="user-profile-form-grid user-profile-form-grid--two-columns">
+          <div className="user-profile-form-field">
+            <label className="user-profile-form-field-label">Status</label>
             <select
               value={form.status}
               onChange={(e) => handleInputChange("status", e.target.value)}
-              style={{
-                width: "100%",
-                padding: "8px 12px",
-                border: "1px solid #ced4da",
-                borderRadius: "4px",
-                fontSize: "14px",
-                backgroundColor: "white",
-              }}
+              className="user-profile-form-field-select"
             >
               <option value="Aktiivinen">Aktiivinen</option>
               <option value="Deactiivinen">Deactiivinen</option>
             </select>
           </div>
 
-          <div>
-            <label
-              style={{
-                display: "block",
-                fontSize: "12px",
-                color: "#6c757d",
-                marginBottom: "4px",
-              }}
-            >
-              Rooli
-            </label>
+          <div className="user-profile-form-field">
+            <label className="user-profile-form-field-label">Rooli</label>
             <select
               value={form.rooli}
               onChange={(e) => handleInputChange("rooli", e.target.value)}
-              style={{
-                width: "100%",
-                padding: "8px 12px",
-                border: "1px solid #ced4da",
-                borderRadius: "4px",
-                fontSize: "14px",
-                backgroundColor: "white",
-              }}
+              className="user-profile-form-field-select"
             >
               <option value="User">User</option>
               <option value="Admin">Admin</option>
@@ -315,25 +174,11 @@ export default function UserProfileModal({ isOpen, onClose, user, onSave }) {
         </div>
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          borderTop: "1px solid #dee2e6",
-          paddingTop: "20px",
-        }}
-      >
-        <ActionButton
-          variant="danger"
-          onClick={onClose}
-          style={{ backgroundColor: "#dc3545" }}
-        >
-          Hylkää
-        </ActionButton>
+      <div className="user-profile-actions">
         <ActionButton
           variant="success"
           onClick={handleSave}
-          style={{ backgroundColor: "#28a745" }}
+          className="user-profile-actions-save-button"
         >
           Tallenna
         </ActionButton>

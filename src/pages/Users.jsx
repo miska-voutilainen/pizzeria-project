@@ -11,6 +11,7 @@ import {
   SearchBox,
   UserContextMenu,
   UserProfileModal,
+  ViewUserDetailsModal,
 } from "../components";
 
 export default function Users() {
@@ -20,7 +21,12 @@ export default function Users() {
   const [form, setForm] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
   const [contextMenuUser, setContextMenuUser] = useState(null);
+  const [contextMenuPosition, setContextMenuPosition] = useState({
+    x: 0,
+    y: 0,
+  });
   const [profileModalUser, setProfileModalUser] = useState(null);
+  const [viewDetailsUser, setViewDetailsUser] = useState(null);
 
   const loadUsers = () => {
     api.get("/auth/users").then((r) => {
@@ -62,12 +68,44 @@ export default function Users() {
     setEditingId(null);
   };
 
-  const openContextMenu = (user) => {
+  const openContextMenu = (user, event) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const menuWidth = 180; // Approximate width of the context menu
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    // Position to the left of the button by default
+    let x = rect.left - menuWidth - 8;
+    let y = rect.top;
+
+    // If menu would go off the left edge, position to the right instead
+    if (x < 8) {
+      x = rect.right + 8;
+    }
+
+    // If menu would go off the right edge, align with right edge of viewport
+    if (x + menuWidth > viewportWidth - 8) {
+      x = viewportWidth - menuWidth - 8;
+    }
+
+    // If menu would go off the bottom edge, position above the button
+    if (y + 120 > viewportHeight - 8) {
+      // 120px is approximate menu height
+      y = rect.bottom - 120;
+    }
+
+    // Ensure menu doesn't go above viewport
+    if (y < 8) {
+      y = 8;
+    }
+
+    setContextMenuPosition({ x, y });
     setContextMenuUser(user);
   };
 
   const closeContextMenu = () => {
     setContextMenuUser(null);
+    setContextMenuPosition({ x: 0, y: 0 });
   };
 
   const openProfileModal = (user) => {
@@ -77,6 +115,10 @@ export default function Users() {
 
   const closeProfileModal = () => {
     setProfileModalUser(null);
+  };
+
+  const closeViewDetailsModal = () => {
+    setViewDetailsUser(null);
   };
 
   const saveProfile = async (updatedData) => {
@@ -95,8 +137,7 @@ export default function Users() {
   };
 
   const handleViewDetails = () => {
-    // Handle view details functionality
-    console.log("View details for:", contextMenuUser);
+    setViewDetailsUser(contextMenuUser);
     closeContextMenu();
   };
 
@@ -150,13 +191,11 @@ export default function Users() {
                   />
                 ) : (
                   <div>
-                    <div style={{ fontWeight: "500" }}>
+                    <div style={{ fontWeight: "500" }}>{u.username}</div>
+                    <small style={{ color: "#6c757d", fontSize: "11px" }}>
                       {u.firstName && u.lastName
                         ? `${u.firstName} ${u.lastName}`
-                        : u.username}
-                    </div>
-                    <small style={{ color: "#6c757d", fontSize: "11px" }}>
-                      {u.username.toLowerCase()}
+                        : "Ei nimeä"}
                     </small>
                   </div>
                 )}
@@ -257,7 +296,7 @@ export default function Users() {
                     </ActionButton>
                   </div>
                 ) : (
-                  <ActionButton onClick={() => openContextMenu(u)}>
+                  <ActionButton onClick={(e) => openContextMenu(u, e)}>
                     Muokkaa
                   </ActionButton>
                 )}
@@ -273,6 +312,7 @@ export default function Users() {
         onViewDetails={handleViewDetails}
         onEditProfile={() => openProfileModal(contextMenuUser)}
         onViewOrders={handleViewOrders}
+        position={contextMenuPosition}
       />
 
       <UserProfileModal
@@ -280,6 +320,12 @@ export default function Users() {
         onClose={closeProfileModal}
         user={profileModalUser}
         onSave={saveProfile}
+      />
+
+      <ViewUserDetailsModal
+        isOpen={!!viewDetailsUser}
+        onClose={closeViewDetailsModal}
+        user={viewDetailsUser}
       />
     </div>
   );
