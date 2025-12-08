@@ -60,6 +60,7 @@ export default function Products() {
   return (
     <section id="products-page-container">
       <h1 className="title">Tuotteet ({products.length})</h1>
+
       <div className="products-search-row">
         <Search inputPlaceholder="hae tuotteita" name="productSearch" />
         {/*TODO: Open modal on add*/}
