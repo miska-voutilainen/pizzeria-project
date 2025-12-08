@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../api";
+import api from "../../api";
 import {
   Table,
   TableHeader,
@@ -8,12 +8,17 @@ import {
   TableCell,
   ActionButton,
   StatusBadge,
-  SearchBox,
-  UserContextMenu,
   UserProfileModal,
   ViewUserDetailsModal,
   ViewUserOrdersModal,
-} from "../components";
+  UserContextMenu,
+} from "../../components";
+
+import Search from "../../components/Search/Search";
+
+import "./Users.css";
+
+import threeDotsIcon from "../../assets/images/three-dots-icon.svg";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
@@ -153,85 +158,53 @@ export default function Users() {
   };
 
   return (
-    <div style={{ padding: 40 }}>
-      <h1 style={{ color: "#333", marginBottom: 20 }}>
-        Käyttäjät ({filteredUsers.length})
-      </h1>
+    <section id="users-page-container">
+      <div>
+        <h1 className="title">Käyttäjät ({filteredUsers.length})</h1>
+      </div>
 
-      <SearchBox
-        placeholder="Hae käyttäjä"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
+      <div className="users-page-search-container">
+        <Search
+          inputPlaceholder="hae käyttäjä"
+          name="productSearch"
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableCell isHeader>Id</TableCell>
-            <TableCell isHeader>Asiakas</TableCell>
-            <TableCell isHeader>Sähköposti</TableCell>
-            <TableCell isHeader>Viimeinen kirjautuminen</TableCell>
-            <TableCell isHeader>Rooli</TableCell>
-            <TableCell isHeader>Status</TableCell>
-            <TableCell isHeader width="120px"></TableCell>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredUsers.map((u) => (
-            <TableRow key={u.userId}>
-              <TableCell>#{u.userId}</TableCell>
-              <TableCell>
-                {editingId === u.userId ? (
-                  <input
-                    value={form.username}
-                    onChange={(e) =>
-                      setForm({ ...form, username: e.target.value })
-                    }
-                    style={{
-                      width: 140,
-                      padding: "4px 8px",
-                      border: "1px solid #ced4da",
-                      borderRadius: "4px",
-                    }}
-                  />
-                ) : (
+      <div className="users-page-table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Asiakas</th>
+              <th>Sähköposti</th>
+              <th>Viimeinen kirjautuminen</th>
+              <th>Rooli</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredUsers.map((u) => (
+              <tr key={u.userId}>
+                <td>#{u.userId}</td>
+                <td>
                   <div>
-                    <div style={{ fontWeight: "500" }}>{u.username}</div>
-                    <small style={{ color: "#6c757d", fontSize: "11px" }}>
+                    <div>{u.username}</div>
+                    <small className="users-table-username">
                       {u.firstName && u.lastName
                         ? `${u.firstName} ${u.lastName}`
                         : "Ei nimeä"}
                     </small>
                   </div>
-                )}
-              </TableCell>
-              <TableCell>
-                {editingId === u.userId ? (
-                  <input
-                    value={form.email}
-                    onChange={(e) =>
-                      setForm({ ...form, email: e.target.value })
-                    }
-                    style={{
-                      width: 200,
-                      padding: "4px 8px",
-                      border: "1px solid #ced4da",
-                      borderRadius: "4px",
-                    }}
-                  />
-                ) : (
+                </td>
+                <td>
                   <div>
                     <div>{u.email}</div>
-                    {u.email.includes("@gmail.com") && (
-                      <span style={{ color: "#28a745", fontSize: "12px" }}>
-                        ✓
-                      </span>
-                    )}
+                    {u.email.includes("@gmail.com") && <span>✓</span>}
                   </div>
-                )}
-              </TableCell>
-              <TableCell>
-                <div>
+                </td>
+                <td>
                   {u.lastLoginAt
                     ? new Date(u.lastLoginAt).toLocaleDateString("fi-FI") +
                       ", " +
@@ -240,76 +213,21 @@ export default function Users() {
                         minute: "2-digit",
                       })
                     : "Ei kirjauduttu"}
-                </div>
-              </TableCell>
-              <TableCell>
-                {editingId === u.userId ? (
-                  <select
-                    value={form.role}
-                    onChange={(e) => setForm({ ...form, role: e.target.value })}
-                    style={{
-                      padding: "4px 8px",
-                      border: "1px solid #ced4da",
-                      borderRadius: "4px",
-                    }}
-                  >
-                    <option value="User">User</option>
-                    <option value="Admin">Admin</option>
-                  </select>
-                ) : (
-                  <StatusBadge status={u.role} type="user-role" />
-                )}
-              </TableCell>
-              <TableCell>
-                {editingId === u.userId ? (
-                  <select
-                    value={form.accountStatus}
-                    onChange={(e) =>
-                      setForm({ ...form, accountStatus: e.target.value })
-                    }
-                    style={{
-                      padding: "4px 8px",
-                      border: "1px solid #ced4da",
-                      borderRadius: "4px",
-                    }}
-                  >
-                    <option value="inactive">Deactiivinen</option>
-                    <option value="active">Aktiivinen</option>
-                  </select>
-                ) : (
-                  <StatusBadge
-                    status={
-                      u.accountStatus === "active"
-                        ? "Aktiivinen"
-                        : "Deactiivinen"
-                    }
-                    type="user-status"
-                  />
-                )}
-              </TableCell>
-              <TableCell>
-                {editingId === u.userId ? (
-                  <div>
-                    <ActionButton
-                      variant="success"
-                      onClick={() => saveUser(u.userId)}
-                    >
-                      Tallenna
-                    </ActionButton>
-                    <ActionButton variant="outline" onClick={cancelEdit}>
-                      Peruuta
-                    </ActionButton>
-                  </div>
-                ) : (
-                  <ActionButton onClick={(e) => openContextMenu(u, e)}>
-                    Muokkaa
-                  </ActionButton>
-                )}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+                </td>
+                <td>{u.role}</td>
+                <td>
+                  {u.accountStatus === "active" ? "Aktiivinen" : "Deaktiivinen"}
+                </td>
+                <td className="users-page-table-button">
+                  <button onClick={(e) => openContextMenu(u, e)}>
+                    <img src={threeDotsIcon} alt="three dots icon" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <UserContextMenu
         isOpen={!!contextMenuUser}
@@ -338,6 +256,6 @@ export default function Users() {
         onClose={closeViewOrdersModal}
         user={viewOrdersUser}
       />
-    </div>
+    </section>
   );
 }

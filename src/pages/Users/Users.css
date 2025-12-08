@@ -1,0 +1,47 @@
+#users-page-container {
+  width: 100%;
+  padding: 40px 60px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.users-page-search-container {
+  margin-bottom: 30px;
+}
+
+/* table */
+
+.users-page-table-container table {
+  border-collapse: collapse;
+  margin-bottom: 50px;
+}
+
+.users-page-table-container th,
+.users-page-table-container td {
+  padding: 20px 15px;
+  text-align: left;
+}
+
+.users-page-table-container tr {
+  border-bottom: 1px solid #ddd;
+}
+
+.users-table-username {
+  color: #737373;
+}
+
+/* table row button */
+
+.users-page-table-button button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.users-page-table-button button:hover {
+  opacity: 0.5;
+}
