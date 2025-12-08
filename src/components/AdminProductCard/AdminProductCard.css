@@ -1,0 +1,128 @@
+#admin-product-card-container {
+  border: 1px solid #ccc;
+  padding: 20px;
+  /* width: 350px; */
+}
+
+.admin-product-card-id-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+/* edit button */
+#admin-product-card-container button {
+  width: 32px;
+  height: 32px;
+  box-shadow: 3px 3px 0 #8faa90;
+}
+
+#admin-product-card-container button::before {
+  bottom: -2px;
+  left: 1px;
+  width: 4px;
+  height: 4px;
+}
+
+#admin-product-card-container button::after {
+  top: 1px;
+  right: -2px;
+  width: 4px;
+  height: 4px;
+}
+
+#admin-product-card-container button:hover {
+  top: 1px;
+  left: 1px;
+  box-shadow: 2px 2px 0 #8faa90;
+}
+
+#admin-product-card-container button:hover::after {
+  top: 1px;
+  right: -2px;
+  width: 3px;
+  height: 2px;
+}
+
+#admin-product-card-container button:hover::before {
+  bottom: -1.8px;
+  left: 1.5px;
+  width: 3px;
+  height: 5.5px;
+}
+
+#admin-product-card-container button:active {
+  top: 3px;
+  left: 3px;
+  box-shadow: none;
+}
+#square-button-container button:active::before {
+  bottom: 1px;
+  left: 1px;
+}
+
+#square-button-container button:active::after {
+  top: 1px;
+  right: 1px;
+}
+
+/* card if row */
+
+.product-id {
+  font-size: 1.5rem;
+  font-weight: 300;
+}
+
+/* image row */
+
+.admin-product-card-img-row {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 10%;
+}
+
+.admin-product-card-img-container {
+  width: 40%;
+}
+
+.admin-product-card-img-container img {
+  width: 100%;
+}
+
+/* text container */
+.admin-product-card-text-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 60%;
+}
+
+/* tag container */
+.admin-product-card-tag-container {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  font-size: 1rem;
+  margin-bottom: 5px;
+}
+.admin-product-card-tag-container img {
+  margin-top: 3px;
+}
+.admin-product-card-tag-container p {
+  color: var(--color-green-bright);
+  font-weight: 600;
+}
+
+.admin-product-card-title {
+  font-weight: 500;
+}
+
+.admin-product-card-price {
+  font-weight: 600;
+}
+
+.admin-product-card-description {
+  color: grey;
+}
