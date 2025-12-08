@@ -30,7 +30,7 @@ const LoginForm = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        "http://localhost:3001/api/verify-login-2fa",
+        "http://localhost:3001/api/auth/verify-login-2fa",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -76,7 +76,7 @@ const LoginForm = () => {
 
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:3001/api/login", {
+      const response = await fetch("http://localhost:3001/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

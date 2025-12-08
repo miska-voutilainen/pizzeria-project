@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuth = async () => {
     try {
-      const res = await fetch("http://localhost:3001/api/check", {
+      const res = await fetch("http://localhost:3001/api/auth/check", {
         credentials: "include",
       });
 
