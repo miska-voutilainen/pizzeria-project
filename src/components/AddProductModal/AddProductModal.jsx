@@ -1,13 +1,5 @@
 import "./AddProductModal.css";
-import Modal from "../Modal";
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableCell,
-  ActionButton,
-} from "../index";
+import Modal from "../Modal/Modal";
 
 const AddProductModal = ({
   isOpen,
@@ -24,12 +16,7 @@ const AddProductModal = ({
   if (!isOpen) return null;
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      size="large"
-      title="Manage Products"
-    >
+    <Modal isOpen={isOpen} onClose={onClose} size="large">
       <div>
         <h2>{editing ? "Edit Product" : "Add New Product"}</h2>
         <div style={{ marginBottom: 40 }}>
@@ -152,45 +139,6 @@ const AddProductModal = ({
             </button>
           )}
         </div>
-
-        <h2>All Products ({products?.length || 0})</h2>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableCell isHeader width="100px">
-                Image
-              </TableCell>
-              <TableCell isHeader>Name</TableCell>
-              <TableCell isHeader width="80px">
-                Price
-              </TableCell>
-              <TableCell isHeader width="140px">
-                Actions
-              </TableCell>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {products?.map((p) => (
-              <TableRow key={p.slug}>
-                <TableCell>
-                  <img
-                    src={p.imgUrl}
-                    width="80"
-                    style={{ borderRadius: "4px" }}
-                  />
-                </TableCell>
-                <TableCell>{p.name}</TableCell>
-                <TableCell>{p.price}€</TableCell>
-                <TableCell>
-                  <ActionButton onClick={() => startEdit(p)}>Edit</ActionButton>
-                  <ActionButton variant="danger" onClick={() => remove(p.slug)}>
-                    Delete
-                  </ActionButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
       </div>
     </Modal>
   );
