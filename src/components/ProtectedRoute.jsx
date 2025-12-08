@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import api from "../api";
+import AdminNavBar from "./AdminNavigationBar/AdminNavBar";
 
 export default function ProtectedRoute() {
   const [isAdmin, setIsAdmin] = useState(null);
@@ -18,5 +19,12 @@ export default function ProtectedRoute() {
   }, []);
 
   if (isAdmin === null) return <div>Loading...</div>;
-  return isAdmin ? <Outlet /> : <Navigate to="/login" replace />;
+  return isAdmin ? (
+    <>
+      <AdminNavBar />
+      <Outlet />
+    </>
+  ) : (
+    <Navigate to="/login" replace />
+  );
 }

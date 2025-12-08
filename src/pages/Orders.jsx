@@ -42,10 +42,16 @@ export default function Orders() {
   };
 
   // Helper function to parse items JSON
-  const parseItems = (itemsString) => {
+  const parseItems = (itemsData) => {
     try {
-      return JSON.parse(itemsString);
+      if (typeof itemsData === "string") {
+        return JSON.parse(itemsData);
+      } else if (Array.isArray(itemsData)) {
+        return itemsData;
+      }
+      return [];
     } catch (error) {
+      console.error("Error parsing items:", error);
       return [];
     }
   };
@@ -105,7 +111,7 @@ export default function Orders() {
         </TableHeader>
         <TableBody>
           {filteredOrders.map((order) => (
-            <TableRow key={order._id}>
+            <TableRow key={order.orderId}>
               <TableCell>
                 <div style={{ fontWeight: "500" }}>#{order.orderId}</div>
               </TableCell>

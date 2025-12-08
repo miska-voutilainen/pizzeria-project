@@ -94,7 +94,7 @@ const AdminNavBar = () => {
               text="Tuotteet"
               isRootPath={true}
             />
-            <AdminNavLinkItem to="/users" icon={usersIcon} text="Käytäjät" />
+            <AdminNavLinkItem to="/users" icon={usersIcon} text="Käyttäjät" />
             <AdminNavLinkItem to="/orders" icon={ordersIcon} text="Tilaukset" />
           </ul>
         </nav>

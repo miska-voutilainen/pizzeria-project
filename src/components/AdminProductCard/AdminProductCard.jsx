@@ -8,7 +8,7 @@ const AdminProductCard = ({ props }) => {
   return (
     <div id="admin-product-card-container">
       <div className="admin-product-card-id-row">
-        <p className="product-id">#654648</p>
+        <p className="product-id">#{id}</p>
         <SquareButton type={"edit"} />
       </div>
       <div className="admin-product-card-img-row">

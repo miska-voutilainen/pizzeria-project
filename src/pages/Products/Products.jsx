@@ -16,7 +16,7 @@ export default function Products() {
     price: "",
     imgUrl: "",
     category: "pizza",
-    sortOrder: 50,
+    sort_order: 50,
   });
   const [editing, setEditing] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -39,7 +39,7 @@ export default function Products() {
       price: "",
       imgUrl: "",
       category: "pizza",
-      sortOrder: 50,
+      sort_order: 50,
     });
     setEditing(null);
     load();

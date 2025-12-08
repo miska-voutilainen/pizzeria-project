@@ -7,7 +7,7 @@ export default function useAuth() {
 
   useEffect(() => {
     api
-      .get("/check")
+      .get("/auth/check")
       .then((res) => {
         if (!res.data.authenticated || res.data.user.role !== "administrator") {
           navigate("/login");

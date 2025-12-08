@@ -24,14 +24,11 @@ export default function ViewUserOrdersModal({ isOpen, onClose, user }) {
   const loadUserOrders = async () => {
     setLoading(true);
     try {
-      console.log("Fetching all orders and filtering for user:", user.userId);
       const response = await api.get(`/auth/orders`);
-      console.log("All orders response:", response.data);
       // Filter orders for this specific user
       const userOrders = response.data.filter(
         (order) => order.userId === user.userId
       );
-      console.log("Filtered user orders:", userOrders);
       setOrders(userOrders);
     } catch (error) {
       console.error("Failed to load orders:", error);
@@ -44,18 +41,14 @@ export default function ViewUserOrdersModal({ isOpen, onClose, user }) {
   // Helper function to parse items JSON
   const parseItems = (itemsData) => {
     try {
-      console.log("Parsing items:", itemsData, typeof itemsData);
       if (typeof itemsData === "string") {
-        const parsed = JSON.parse(itemsData);
-        console.log("Parsed items:", parsed);
-        return parsed;
+        return JSON.parse(itemsData);
       } else if (Array.isArray(itemsData)) {
-        console.log("Items already array:", itemsData);
         return itemsData;
       }
       return [];
     } catch (error) {
-      console.error("Error parsing items:", error, itemsData);
+      console.error("Error parsing items:", error);
       return [];
     }
   };
@@ -173,7 +166,7 @@ export default function ViewUserOrdersModal({ isOpen, onClose, user }) {
             </TableHeader>
             <TableBody>
               {orders.map((order) => (
-                <TableRow key={order._id}>
+                <TableRow key={order.orderId}>
                   <TableCell>
                     <div style={{ fontSize: "14px" }}>
                       {formatDate(order.created_at)}
