@@ -6,7 +6,7 @@ const fetchJson = async (url) => {
   return res.json();
 };
 
-export const getAllProducts = () => fetchJson("/");
-export const getPizzas = () => fetchJson("/pizza");
-export const getDrinks = () => fetchJson("/drinks");
-export const getProductBySlug = (slug) => fetchJson(`/${slug}`);
+export const getAllProducts = () => fetchJson("/api/products");
+export const getPizzas = () => fetchJson("/api/products/pizza");
+export const getDrinks = () => fetchJson("/api/products/drinks");
+export const getProductBySlug = (slug) => fetchJson(`/api/products/${slug}`);

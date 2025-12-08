@@ -29,11 +29,12 @@
   --red: #e10000;
   --background: #fdf8e2;
   --input-background: #E6E5CE;
+  --background-light: #fdf8e2;
+  --background-dark: #082109;
 
   background-color: #ffffff;
 
   /* Rendering improvements */
-  user-select: none;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -58,7 +59,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   overflow-x: hidden;
-  background-color: var(--background);
+  background-color: var(--background-light);
   font-family: var(--font-base);
 }
 

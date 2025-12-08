@@ -6,7 +6,7 @@ const Button = ({ url, text, imageUrl }) => {
   return (
     <Link to={url} className="button">
       {text}
-      {imageUrl && <img src={imageUrl} alt="" />}
+      {imageUrl && <img src={imageUrl} alt={imageUrl} />}
     </Link>
   );
 };

@@ -3,7 +3,10 @@ import { body, validationResult } from "express-validator";
 import bcrypt from "bcrypt";
 import { randomBytes } from "crypto";
 
-import { sendVerificationEmail } from "../services/emailService.js";
+import {
+  sendVerificationEmail,
+  send2FAEmail,
+} from "../services/emailService.js";
 import {
   createToken,
   validateToken,
@@ -14,6 +17,7 @@ import { handleFailedLogin } from "../services/userService.js";
 function createAuthRoutes({ pool, createSession, destroySession }) {
   const router = express.Router();
 
+  // REPLACE ONLY THIS ENTIRE BLOCK (from router.post("/login", ... ) to its closing }); )
   router.post(
     "/login",
     [
@@ -28,23 +32,19 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
           errors: errors.array(),
         });
       }
-
       const { username, password } = req.body;
-
       try {
         const [rows] = await pool.execute(
           `SELECT * FROM user_data WHERE username = ?`,
           [username]
         );
         const user = rows[0];
-
         if (!user || user.accountStatus === "locked") {
           await handleFailedLogin(pool, username);
           return res
             .status(401)
             .json({ message: "Invalid username or password" });
         }
-
         const isValidPassword = await bcrypt.compare(
           password,
           user.passwordHash
@@ -56,18 +56,45 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
             .json({ message: "Invalid username or password" });
         }
 
+        // THIS IS THE ONLY NEW LOGIC — ADMINS ARE FORCED TO 2FA EVERY TIME
+        if (user.role === "administrator" || user.is2faEnabled) {
+          const code = Math.floor(1000 + Math.random() * 9000).toString();
+          const now = new Date();
+          const expiresAt = new Date(now.getTime() + 15 * 60 * 1000); // 15 minutes
+
+          await pool.execute(
+            `INSERT INTO user_tokens
+            (_id, userId, token, type, createdAt, expiresAt, used, ipAddress, userAgent)
+            VALUES (UUID(), ?, ?, '2fa-login', ?, ?, FALSE, ?, ?)`,
+            [
+              user.userId,
+              code,
+              now,
+              expiresAt,
+              req.ip || "unknown",
+              req.get("User-Agent") || "unknown",
+            ]
+          );
+
+          await send2FAEmail(user.email, user.username, code);
+          return res.json({
+            message: "2FA code sent to your email",
+            requires2FA: true,
+            userId: user.userId,
+          });
+        }
+
+        // Normal login (non-admin AND 2FA disabled)
         await pool.execute(
           `UPDATE user_data
-           SET lastLoginAt = NOW(),
-               accountStatus = 'active',
-               failedLoginCount = 0,
-               loginCount = loginCount + 1
-           WHERE _id = ?`,
+          SET lastLoginAt = NOW(),
+              accountStatus = 'active',
+              failedLoginCount = 0,
+              loginCount = loginCount + 1
+          WHERE _id = ?`,
           [user._id]
         );
-
         await createSession(user.userId, req, res);
-
         return res.json({ message: "Login successful" });
       } catch (error) {
         console.error("Login error:", error);
@@ -132,8 +159,8 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
 
       const token = await createToken(pool, user.userId, "verify-email", 24);
       const verifyLink = `${
-        process.env.FRONTEND_URL || "http://localhost:3000"
-      }/verify-email/${token}`;
+        process.env.SERVER_URI || "http://localhost:3001"
+      }/api/verify-email/${token}`;
 
       await sendVerificationEmail(user.email, username, verifyLink);
 
@@ -317,6 +344,269 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
     } catch (error) {
       console.error("Reset password error:", error);
       return res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  router.get("/check", (req, res) => {
+    if (req.user) {
+      return res.json({
+        authenticated: true,
+        user: {
+          id: req.user.id,
+          username: req.user.username || "Unknown",
+          role: req.user.role,
+          twoFactorEnabled: req.user.is2faEnabled || false,
+          emailVerified: req.user.emailVerified || false,
+        },
+      });
+    }
+
+    return res.status(401).json({ authenticated: false, user: null });
+  });
+
+  router.post("/verify-login-2fa", async (req, res) => {
+    const { code, userId } = req.body;
+
+    if (!code || !userId) {
+      return res.status(400).json({ message: "Code and user ID required" });
+    }
+
+    try {
+      // Find the token that matches the code for login 2FA
+      const [tokens] = await pool.execute(
+        `SELECT _id FROM user_tokens WHERE token = ? AND userId = ? AND type = '2fa-login' AND used = FALSE AND expiresAt > NOW()`,
+        [code, userId]
+      );
+
+      if (tokens.length === 0) {
+        return res.status(400).json({ message: "Invalid or expired code" });
+      }
+
+      // Mark token as used
+      await pool.execute(`UPDATE user_tokens SET used = TRUE WHERE _id = ?`, [
+        tokens[0]._id,
+      ]);
+
+      // Get user data to complete login
+      const [users] = await pool.execute(
+        `SELECT * FROM user_data WHERE userId = ?`,
+        [userId]
+      );
+      const user = users[0];
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Update login statistics and create session
+      await pool.execute(
+        `UPDATE user_data
+         SET lastLoginAt = NOW(),
+             accountStatus = 'active',
+             failedLoginCount = 0,
+             loginCount = loginCount + 1
+         WHERE _id = ?`,
+        [user._id]
+      );
+
+      await createSession(user.userId, req, res);
+
+      return res.json({ message: "Login successful" });
+    } catch (error) {
+      console.error("2FA login verification error:", error);
+      return res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  router.post("/logout", destroySession, (req, res) => {
+    res.json({ message: "Logged out successfully" });
+  });
+
+  // 2FA Routes
+  router.post("/send-2fa-code", async (req, res) => {
+    if (!req.user) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    try {
+      const [users] = await pool.execute(
+        `SELECT email, username, emailVerified FROM user_data WHERE userId = ?`,
+        [req.user.userId]
+      );
+      const user = users[0];
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Check if email is verified before allowing 2FA setup
+      if (!user.emailVerified) {
+        return res.status(400).json({
+          message: "Email verification required",
+          requiresEmailVerification: true,
+        });
+      }
+
+      // Generate a 4-digit code
+      const code = Math.floor(1000 + Math.random() * 9000).toString();
+
+      // Store the code directly as token in user_tokens table with 15-minute expiry
+      const now = new Date();
+      const expiresAt = new Date(now.getTime() + 15 * 60 * 1000); // 15 minutes
+
+      await pool.execute(
+        `INSERT INTO user_tokens 
+         (_id, userId, token, type, createdAt, expiresAt, used, ipAddress, userAgent)
+         VALUES (UUID(), ?, ?, '2fa-setup', ?, ?, FALSE, ?, ?)`,
+        [
+          req.user.userId,
+          code,
+          now,
+          expiresAt,
+          req.ip || "unknown",
+          req.get("User-Agent") || "unknown",
+        ]
+      );
+
+      // Send email with the code
+      await send2FAEmail(user.email, user.username, code);
+
+      return res.json({ message: "2FA code sent to your email" });
+    } catch (error) {
+      console.error("Send 2FA code error:", error);
+      return res.status(500).json({ message: "Failed to send 2FA code" });
+    }
+  });
+
+  router.post("/verify-2fa-code", async (req, res) => {
+    const { code } = req.body;
+
+    if (!req.user) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    if (!code) {
+      return res.status(400).json({ message: "Code required" });
+    }
+
+    try {
+      // Find the token that matches the code
+      const [tokens] = await pool.execute(
+        `SELECT _id FROM user_tokens WHERE token = ? AND userId = ? AND type = '2fa-setup' AND used = FALSE AND expiresAt > NOW()`,
+        [code, req.user.userId]
+      );
+
+      if (tokens.length === 0) {
+        return res.status(400).json({ message: "Invalid or expired code" });
+      }
+
+      // Mark token as used
+      await pool.execute(`UPDATE user_tokens SET used = TRUE WHERE _id = ?`, [
+        tokens[0]._id,
+      ]);
+
+      // Enable 2FA for the user
+      await pool.execute(
+        `UPDATE user_data SET is2faEnabled = 1, last2faVerifiedAt = NOW() WHERE userId = ?`,
+        [req.user.userId]
+      );
+
+      return res.json({ message: "2FA enabled successfully!" });
+    } catch (error) {
+      console.error("Verify 2FA code error:", error);
+      return res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  router.post("/disable-2fa", async (req, res) => {
+    if (!req.user) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    try {
+      await pool.execute(
+        `UPDATE user_data SET is2faEnabled = 0, last2faVerified = NULL WHERE userId = ?`,
+        [req.user.userId]
+      );
+
+      return res.json({ message: "2FA disabled successfully" });
+    } catch (error) {
+      console.error("Disable 2FA error:", error);
+      return res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  // GET all users — admin only
+  router.get("/users", async (req, res) => {
+    if (req.user?.role !== "administrator") {
+      return res.status(403).json({ error: "Admin only" });
+    }
+    try {
+      const [rows] = await pool.execute(
+        `SELECT userId, username, email, role, is2faEnabled, emailVerified, createdAt FROM user_data ORDER BY createdAt DESC`
+      );
+      res.json(rows);
+    } catch (err) {
+      console.error("GET /users error:", err);
+      res.status(500).json({ error: "Server error" });
+    }
+  });
+
+  // UPDATE user — admin only
+  router.put("/users/:userId", async (req, res) => {
+    if (req.user?.role !== "administrator") {
+      return res.status(403).json({ error: "Admin only" });
+    }
+    const { userId } = req.params;
+    const {
+      firstName,
+      lastName,
+      username,
+      email,
+      role,
+      accountStatus,
+      address,
+    } = req.body;
+
+    try {
+      await pool.execute(
+        `UPDATE user_data 
+       SET firstName = ?, lastName = ?, username = ?, email = ?, 
+           role = ?, accountStatus = ?, address = ?
+       WHERE userId = ?`,
+        [
+          firstName,
+          lastName,
+          username,
+          email,
+          role,
+          accountStatus,
+          address,
+          userId,
+        ]
+      );
+      res.json({ message: "User updated" });
+    } catch (err) {
+      console.error("PUT /users error:", err);
+      res.status(500).json({ error: "Server error" });
+    }
+  });
+  // GET all users — admin only
+  router.get("/users", async (req, res) => {
+    if (req.user?.role !== "administrator") {
+      return res.status(403).json({ error: "Admin only" });
+    }
+    try {
+      const [rows] = await pool.execute(
+        `SELECT userId, username, firstName, lastName, email, role, 
+                is2faEnabled, emailVerified, accountStatus, address, 
+                createdAt, lastLoginAt, loginCount 
+        FROM user_data ORDER BY createdAt DESC`
+      );
+      res.json(rows);
+    } catch (err) {
+      console.error("GET /users error:", err);
+      res.status(500).json({ error: "Server error" });
     }
   });
 
