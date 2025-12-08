@@ -229,6 +229,7 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
         const userId = randomBytes(16).toString("hex");
         const passwordHash = await bcrypt.hash(password, 14);
 
+        // TODO: make userId 6 digit random with # at the start
         await pool.execute(
           `INSERT INTO user_data 
            (_id, userId, username, email, passwordHash, emailVerified, accountStatus, role, createdAt)
@@ -536,22 +537,6 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
     }
   });
 
-  // GET all users — admin only
-  router.get("/users", async (req, res) => {
-    if (req.user?.role !== "administrator") {
-      return res.status(403).json({ error: "Admin only" });
-    }
-    try {
-      const [rows] = await pool.execute(
-        `SELECT userId, username, email, role, is2faEnabled, emailVerified, createdAt FROM user_data ORDER BY createdAt DESC`
-      );
-      res.json(rows);
-    } catch (err) {
-      console.error("GET /users error:", err);
-      res.status(500).json({ error: "Server error" });
-    }
-  });
-
   // UPDATE user — admin only
   router.put("/users/:userId", async (req, res) => {
     if (req.user?.role !== "administrator") {
@@ -592,6 +577,7 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
     }
   });
   // GET all users — admin only
+  // Keep only this route and expand it:
   router.get("/users", async (req, res) => {
     if (req.user?.role !== "administrator") {
       return res.status(403).json({ error: "Admin only" });
@@ -600,12 +586,55 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
       const [rows] = await pool.execute(
         `SELECT userId, username, firstName, lastName, email, role, 
                 is2faEnabled, emailVerified, accountStatus, address, 
-                createdAt, lastLoginAt, loginCount 
+                createdAt, updatedAt, lastLoginAt, lastPasswordChange, 
+                last2faVerifiedAt, loginCount, failedLoginCount
         FROM user_data ORDER BY createdAt DESC`
       );
       res.json(rows);
     } catch (err) {
       console.error("GET /users error:", err);
+      res.status(500).json({ error: "Server error" });
+    }
+  });
+
+  // Add these routes before the "return router;" statement in your auth routes file:
+
+  // GET all orders — admin only
+  router.get("/orders", async (req, res) => {
+    if (req.user?.role !== "administrator") {
+      return res.status(403).json({ error: "Admin only" });
+    }
+    try {
+      const [rows] = await pool.execute(
+        `SELECT _id, orderId, userId, items, totalAmount, status, 
+              paymentMethod, shippingAddress, created_at, updated_at
+       FROM order_data ORDER BY created_at DESC`
+      );
+      res.json(rows);
+    } catch (err) {
+      console.error("GET /orders error:", err);
+      res.status(500).json({ error: "Server error" });
+    }
+  });
+
+  // UPDATE order status — admin only
+  router.put("/orders/:orderId", async (req, res) => {
+    if (req.user?.role !== "administrator") {
+      return res.status(403).json({ error: "Admin only" });
+    }
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    try {
+      await pool.execute(
+        `UPDATE order_data 
+       SET status = ?, updated_at = NOW() 
+       WHERE orderId = ?`,
+        [status, orderId]
+      );
+      res.json({ message: "Order status updated" });
+    } catch (err) {
+      console.error("PUT /orders error:", err);
       res.status(500).json({ error: "Server error" });
     }
   });

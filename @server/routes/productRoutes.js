@@ -73,6 +73,7 @@ function productRoutes(pool) {
   // ADD NEW PRODUCT
   router.post("/", requireAdmin, async (req, res) => {
     const {
+      id,
       name,
       slug,
       description,
