@@ -558,18 +558,54 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
       return res.status(403).json({ error: "Admin only" });
     }
     const { userId } = req.params;
-    const { username, email, role, is2faEnabled } = req.body;
+    const {
+      firstName,
+      lastName,
+      username,
+      email,
+      role,
+      accountStatus,
+      address,
+    } = req.body;
 
     try {
       await pool.execute(
         `UPDATE user_data 
-        SET username = ?, email = ?, role = ?, is2faEnabled = ?
-        WHERE userId = ?`,
-        [username, email, role, is2faEnabled === "1" ? 1 : 0, userId]
+       SET firstName = ?, lastName = ?, username = ?, email = ?, 
+           role = ?, accountStatus = ?, address = ?
+       WHERE userId = ?`,
+        [
+          firstName,
+          lastName,
+          username,
+          email,
+          role,
+          accountStatus,
+          address,
+          userId,
+        ]
       );
       res.json({ message: "User updated" });
     } catch (err) {
       console.error("PUT /users error:", err);
+      res.status(500).json({ error: "Server error" });
+    }
+  });
+  // GET all users — admin only
+  router.get("/users", async (req, res) => {
+    if (req.user?.role !== "administrator") {
+      return res.status(403).json({ error: "Admin only" });
+    }
+    try {
+      const [rows] = await pool.execute(
+        `SELECT userId, username, firstName, lastName, email, role, 
+                is2faEnabled, emailVerified, accountStatus, address, 
+                createdAt, lastLoginAt, loginCount 
+        FROM user_data ORDER BY createdAt DESC`
+      );
+      res.json(rows);
+    } catch (err) {
+      console.error("GET /users error:", err);
       res.status(500).json({ error: "Server error" });
     }
   });
