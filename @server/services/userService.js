@@ -1,7 +1,7 @@
 import { createToken } from "./tokenService.js";
 import { sendUnlockEmail } from "./emailService.js";
 
-export async function handleFailedLogin(pool, username) {
+export async function handleFailedLogin(pool, username, req = null) {
   const [rows] = await pool.execute(
     `SELECT userId, failedLoginCount, email, username 
      FROM user_data 
@@ -23,8 +23,8 @@ export async function handleFailedLogin(pool, username) {
       [newFailedCount, username]
     );
 
-    const unlockToken = await createToken(pool, user.userId, "unlock");
-    const resetToken = await createToken(pool, user.userId, "reset");
+    const unlockToken = await createToken(pool, user.userId, "unlock", 24, req);
+    const resetToken = await createToken(pool, user.userId, "reset", 24, req);
 
     const unlockLink = `http://localhost:3001/api/unlock-account/${unlockToken}`;
     const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
