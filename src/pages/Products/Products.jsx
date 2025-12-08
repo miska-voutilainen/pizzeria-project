@@ -3,6 +3,7 @@ import api from "../../api";
 import "./Products.css";
 import Search from "../../components/Search/Search";
 import SquareButton from "../../components/SquareButton/SquareButton";
+import AdminProductCard from "../../components/AdminProductCard/AdminProductCard";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -55,44 +56,16 @@ export default function Products() {
 
   return (
     <section id="products-page-container">
-      <h1 className="title">Tuotteet</h1>
-
+      <h1 className="title">Tuotteet ({products.length})</h1>
       <div className="products-search-row">
         <Search inputPlaceholder="hae tuotteita" name="productSearch" />
         <SquareButton type={"add"} />
       </div>
-
-      <h2>All Products ({products.length})</h2>
-      <table border="1" cellPadding="10" style={{ width: "100%" }}>
-        <thead>
-          <tr>
-            <th>Image</th>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((p) => (
-            <tr key={p.slug}>
-              <td>
-                <img src={p.imgUrl} width="80" />
-              </td>
-              <td>{p.name}</td>
-              <td>{p.price}€</td>
-              <td>
-                <button onClick={() => startEdit(p)}>Edit</button>
-                <button
-                  onClick={() => remove(p.slug)}
-                  style={{ background: "red", color: "white", marginLeft: 10 }}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="product-cards">
+        {products.map((p) => (
+          <AdminProductCard key={p.slug} props={p} />
+        ))}
+      </div>
     </section>
   );
 }
