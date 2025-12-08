@@ -7,9 +7,9 @@ function productRoutes(pool) {
   // Helper: get all products (public)
   const getProducts = async (category = null) => {
     const sql = category
-      ? `SELECT slug, name, description, price, imgUrl, category, sort_order AS sortOrder
+      ? `SELECT id, slug, name, description, price, imgUrl, category, sort_order AS sortOrder
          FROM product_data WHERE category = ? ORDER BY sort_order, name`
-      : `SELECT slug, name, description, price, imgUrl, category, sort_order AS sortOrder
+      : `SELECT id, slug, name, description, price, imgUrl, category, sort_order AS sortOrder
          FROM product_data ORDER BY sort_order, name`;
     const [rows] = await pool.execute(sql, category ? [category] : []);
     return rows;
@@ -50,7 +50,7 @@ function productRoutes(pool) {
     const { slug } = req.params;
     try {
       const [rows] = await pool.execute(
-        `SELECT slug, name, description, price, imgUrl, category, sort_order AS sortOrder
+        `SELECT id, slug, name, description, price, imgUrl, category, sort_order AS sortOrder
          FROM product_data WHERE slug = ?`,
         [slug]
       );
@@ -89,8 +89,8 @@ function productRoutes(pool) {
     try {
       await pool.execute(
         `INSERT INTO product_data 
-         (slug, name, description, price, imgUrl, category, sort_order)
-         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+         (id, slug, name, description, price, imgUrl, category, sort_order)
+         VALUES (NULL, ?, ?, ?, ?, ?, ?, ?)`,
         [slug, name, description || "", price, imgUrl, category, sortOrder]
       );
       res.status(201).json({ message: "Product added", slug });
@@ -111,7 +111,7 @@ function productRoutes(pool) {
     try {
       const [result] = await pool.execute(
         `UPDATE product_data 
-         SET name = ?, description = ?, price = ?, imgUrl = ?, category = ?, sort_order = ?
+         SET id = ?, name = ?, description = ?, price = ?, imgUrl = ?, category = ?, sort_order = ?
          WHERE slug = ?`,
         [
           name,
