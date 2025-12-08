@@ -8,7 +8,7 @@ const SignIn = () => {
     const dialogRef = useRef(null);
 
     useEffect(() => {
-        dialogRef.current.showModal();  // <-- важно!
+        dialogRef.current.showModal();
     }, []);
 
     return (
