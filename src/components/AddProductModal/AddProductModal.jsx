@@ -1,67 +1,8 @@
-import { useEffect, useState } from "react";
-import api from "../api";
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableCell,
-  ActionButton,
-} from "../components";
+import "./AddProductModal.css";
 
-export default function Products() {
-  const [products, setProducts] = useState([]);
-  const [form, setForm] = useState({
-    name: "",
-    slug: "",
-    description: "",
-    price: "",
-    imgUrl: "",
-    category: "pizza",
-    sortOrder: 50,
-  });
-  const [editing, setEditing] = useState(null);
-
-  const load = () => api.get("/products").then((r) => setProducts(r.data));
-  useEffect(() => {
-    load();
-  }, []);
-
-  const save = async () => {
-    if (editing) {
-      await api.put(`/products/${editing.slug}`, form);
-    } else {
-      await api.post("/products", form);
-    }
-    setForm({
-      name: "",
-      slug: "",
-      description: "",
-      price: "",
-      imgUrl: "",
-      category: "pizza",
-      sortOrder: 50,
-    });
-    setEditing(null);
-    load();
-  };
-
-  const startEdit = (p) => {
-    setForm(p);
-    setEditing(p);
-  };
-
-  const remove = async (slug) => {
-    if (confirm("Delete this product?")) {
-      await api.delete(`/products/${slug}`);
-      load();
-    }
-  };
-
+const AddProductModal = () => {
   return (
-    <div style={{ padding: 40 }}>
-      <h1>Products Admin</h1>
-
+    <div>
       <h2>{editing ? "Edit Product" : "Add New Product"}</h2>
       <div style={{ marginBottom: 40 }}>
         <input
@@ -175,4 +116,6 @@ export default function Products() {
       </Table>
     </div>
   );
-}
+};
+
+export default AddProductModal;
