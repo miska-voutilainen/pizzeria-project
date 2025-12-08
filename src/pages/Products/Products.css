@@ -1,0 +1,19 @@
+#products-page-container {
+  width: 100%;
+  padding: 40px 60px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 500;
+  margin-bottom: 2rem;
+  color: var(--color-green);
+}
+
+.products-search-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
