@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
 import api from "../api";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableCell,
+  ActionButton,
+} from "../components";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -128,36 +136,43 @@ export default function Products() {
       </div>
 
       <h2>All Products ({products.length})</h2>
-      <table border="1" cellPadding="10" style={{ width: "100%" }}>
-        <thead>
-          <tr>
-            <th>Image</th>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableCell isHeader width="100px">
+              Image
+            </TableCell>
+            <TableCell isHeader>Name</TableCell>
+            <TableCell isHeader width="80px">
+              Price
+            </TableCell>
+            <TableCell isHeader width="140px">
+              Actions
+            </TableCell>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {products.map((p) => (
-            <tr key={p.slug}>
-              <td>
-                <img src={p.imgUrl} width="80" />
-              </td>
-              <td>{p.name}</td>
-              <td>{p.price}€</td>
-              <td>
-                <button onClick={() => startEdit(p)}>Edit</button>
-                <button
-                  onClick={() => remove(p.slug)}
-                  style={{ background: "red", color: "white", marginLeft: 10 }}
-                >
+            <TableRow key={p.slug}>
+              <TableCell>
+                <img
+                  src={p.imgUrl}
+                  width="80"
+                  style={{ borderRadius: "4px" }}
+                />
+              </TableCell>
+              <TableCell>{p.name}</TableCell>
+              <TableCell>{p.price}€</TableCell>
+              <TableCell>
+                <ActionButton onClick={() => startEdit(p)}>Edit</ActionButton>
+                <ActionButton variant="danger" onClick={() => remove(p.slug)}>
                   Delete
-                </button>
-              </td>
-            </tr>
+                </ActionButton>
+              </TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </div>
   );
 }
