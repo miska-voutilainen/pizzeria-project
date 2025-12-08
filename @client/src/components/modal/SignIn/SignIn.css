@@ -62,17 +62,17 @@ dialog > div {
   line-height: normal;
 }
 
-a {
+.signInContent a {
   text-decoration: none;
   color: #919185;
   font-weight: 600;
 }
 
-a:visited {
+.signInContent a:visited {
   text-decoration: none;
 }
 
-a:hover {
+.signInContent a:hover {
   color: #1c3d19;
 }
 
