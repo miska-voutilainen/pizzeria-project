@@ -1,0 +1,13 @@
+.users-table-edit-address {
+  margin-top: 5px;
+}
+
+.users-table-edit-address button {
+  background: none;
+  cursor: pointer;
+  border: 2px solid black;
+  padding: 3px 12px;
+}
+.users-table-edit-address button:hover {
+  opacity: 0.6;
+}

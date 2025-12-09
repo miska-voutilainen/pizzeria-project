@@ -23,7 +23,6 @@ const AdminNavBar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // First get basic auth info
     api
       .get("/auth/check")
       .then((res) => {
