@@ -12,8 +12,6 @@ import App from "./App.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import MenuPage from "./pages/Menu/MenuPage.jsx";
 import UserPage from "./pages/user/UserPage.jsx";
-import LoginPage from "./pages/auth/LoginPage.jsx";
-import RegisterPage from "./pages/auth/RegisterPage.jsx";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage.jsx";
 
 import "./styles/index.css";
@@ -31,8 +29,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               <Route index element={<HomePage />} />
               <Route path="menu" element={<MenuPage />} />
               <Route path="about" element={<AboutUsPage />} />
-              <Route path="login" element={<LoginPage />} />
-              <Route path="register" element={<RegisterPage />} />
               <Route path="checkout" element={<Checkout />} />
               <Route
                 path="reset-password/:token"
