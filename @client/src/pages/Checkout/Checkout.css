@@ -1,5 +1,189 @@
+/* Checkout Header Styling */
+.checkout-header {
+  background: #1c3d19;
+  display: flex;
+  height: 94px;
+  padding: 23px 131px 23px 137px;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.checkout-header-wrapper {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  gap: 100px;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.checkout-logo {
+  display: flex;
+  width: 194px;
+  height: 36px;
+  justify-content: center;
+  align-items: center;
+}
+
+.checkout-logo img {
+  width: 149.215px;
+  height: 32.041px;
+  color: #f4eae1;
+}
+
+.checkout-nav {
+  display: flex;
+  align-items: center;
+}
+
+/* Status Tracker - Main Container */
+.checkout-status-tracker {
+  display: flex;
+  width: 264px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+/* Each status step container */
+.checkout-status-step {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkout-status-step-large {
+  display: flex;
+  width: 44px;
+  height: 51px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+}
+
+/* Checkmark for Cart */
+.checkout-checkmark-frame {
+  display: flex;
+  width: 44px;
+  height: 51px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  margin-top: -24px;
+}
+
+.checkout-checkmark-svg {
+  width: 40px;
+  height: 36px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  margin-top: 30px;
+}
+
+/* Number frames for Checkout and Done */
+.checkout-number-frame {
+  display: flex;
+  width: 36px;
+  padding: 6px 11px 1px 11px;
+  justify-content: center;
+  align-items: center;
+}
+
+.checkout-number-frame.checkout {
+  padding: 6px 11px 1px 11px;
+}
+
+.checkout-number-frame.done {
+  padding: 6px 10px 1px 10px;
+}
+
+/* Number text */
+.checkout-number {
+  display: flex;
+  width: auto;
+  height: 23px;
+  flex-direction: column;
+  justify-content: center;
+  flex-shrink: 0;
+  color: rgba(253, 248, 226, 0.3);
+  text-align: right;
+  font-family: "Roboto Slab";
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 200;
+  line-height: 0%;
+  letter-spacing: 2.56px;
+}
+
+.checkout-number-frame.done .checkout-number {
+  color: rgba(253, 248, 226, 0.3);
+  height: 24px;
+  width: 16px;
+  line-height: 131.72%;
+}
+
+.checkout-number-frame.checkout .checkout-number {
+  width: 14px;
+  height: 23px;
+  color: #ffffff;
+}
+
+/* Status text labels */
+.checkout-status-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-shrink: 0;
+  color: rgba(253, 248, 226, 0.3);
+  text-align: center;
+  font-family: "Roboto Slab";
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 131.72%;
+  letter-spacing: 1.2px;
+}
+
+.checkout-status-text.cart {
+  width: 44px;
+  height: 12px;
+}
+
+.checkout-status-text.checkout {
+  width: 76px;
+  height: 12px;
+  color: #ffffff;
+}
+
+.checkout-status-text.done {
+  width: 76px;
+  height: 11px;
+  color: rgba(253, 248, 226, 0.3);
+}
+
+/* Connecting lines */
+.checkout-connecting-line {
+  width: 66px;
+  height: 1px;
+  background: rgba(253, 248, 226, 0.3);
+  flex-shrink: 0;
+}
+
+.checkout-connecting-line.dashed {
+  background: none;
+  border-top: 1px dashed rgba(253, 248, 226, 0.3);
+  height: 0;
+}
+
 #checkout-section {
-  margin: 50px 0;
+  margin: 50px 0 0 0;
 }
 
 .checkout-section-wrapper {
@@ -25,6 +209,10 @@
 .checkout-category-tabs-container .category-tabs {
   padding: 0;
   width: 100%;
+}
+
+.checkout-pay-now-container {
+  margin-bottom: 50px;
 }
 
 /* checkout input col inputs */
