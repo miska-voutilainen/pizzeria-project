@@ -8,7 +8,7 @@ const SignIn = () => {
     const dialogRef = useRef(null);
 
     useEffect(() => {
-        dialogRef.current.showModal();
+        dialogRef.current.close();
     }, []);
 
     return (
@@ -19,7 +19,7 @@ const SignIn = () => {
                         <h1>Sign in</h1>
                         <div>
                             <p>Or</p>
-                            <a href="/register" className="textButton">create an account</a>
+                            <a href="/Register" className="textButton">create an account</a>
                         </div>
                     </div>
                     <div id="inputFields">
@@ -28,7 +28,7 @@ const SignIn = () => {
                     </div>
                     <CheckBox className="white-background" label="Remember me" id="remember-me" />
                     <div>
-                        <Button/>
+                        <Button text="Sign in" id="sign-in-button"/>
                     </div>
                     <a href="/resetPassword" className="textButton">Forgot your password?</a>
                 </div>

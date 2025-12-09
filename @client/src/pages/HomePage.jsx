@@ -10,6 +10,7 @@ import Newsletter from "../components/layout/Newsletter/Newsletter.jsx";
 import PromoSlide from "../components/layout/PromoSlide/PromoSlide.jsx";
 import WhyUs from "../components/layout/WhyUs/WhyUs.jsx";
 import {SignIn} from "../components/modal/SignIn/SignIn.jsx";
+import Register from "../components/modal/Register/Register.jsx";
 
 const HomePage = () => {
   const [pizzas, setPizzas] = useState([]);
@@ -25,7 +26,7 @@ const HomePage = () => {
 
   return (
     <div>
-        <SignIn />
+        <Register/>
       <Hero />
 
       <h1 className="page-title">─ Pizzat ─</h1>
