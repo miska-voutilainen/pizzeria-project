@@ -6,6 +6,7 @@ import { useCart } from "../../../context/CartContext.jsx";
 import "./NavigationBar.css";
 import Button from "../../ui/Button/Button.jsx";
 import CartSidebar from "../CartSidebar/CartSidebar.jsx";
+import {Modal} from "../../authModal/Modal/Modal.jsx";
 
 const NavigationBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -15,6 +16,11 @@ const NavigationBar = () => {
   const { getCartItemCount } = useCart();
 
   const cartItemCount = getCartItemCount();
+    const signInRef = React.useRef(null);
+    const openModal = () => {
+        document.body.style.overflow = "hidden";
+        signInRef.current.showModal ()
+    }
 
   useEffect(() => {
     setMenuOpen(false);
@@ -22,6 +28,7 @@ const NavigationBar = () => {
 
   return (
     <header className="navbar">
+        <Modal ref={signInRef}/>
       <div className="navbar-container">
         {/* Logo */}
         <div className="navbar-row-start">
@@ -56,7 +63,7 @@ const NavigationBar = () => {
             />
           ) : (
             <Button
-              url={"/login"}
+              onClick={() => openModal()}
               text={"Sign in"}
               imageUrl={"./user-icon.svg"}
             />
@@ -125,9 +132,9 @@ const NavigationBar = () => {
                 />
               ) : (
                 <Button
-                  url={"/login"}
                   text={"Sign in"}
                   imageUrl={"./user-icon.svg"}
+                  onClick={() => openModal()}
                 />
               )}
             </div>
