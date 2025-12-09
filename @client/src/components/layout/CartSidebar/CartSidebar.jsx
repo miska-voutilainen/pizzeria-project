@@ -190,21 +190,11 @@ const CartSidebar = ({ isOpen, onClose }) => {
                     onKeyPress={(e) => e.key === "Enter" && handleApplyCoupon()}
                     style={{ flex: 1, color: "white" }}
                   />
-                  <button
+                  <Button
                     onClick={handleApplyCoupon}
-                    style={{
-                      padding: "8px 16px",
-                      backgroundColor: "#c62828",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Apply
-                  </button>
+                    text={"Apply"}
+                    appearance="dark"
+                  />
                 </div>
               )}
               {couponMessage && (
@@ -262,6 +252,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
               url="/checkout"
               text="Checkout"
               disabled={cartItems.length === 0}
+              onClick={onClose}
             />
           </div>
         </div>
