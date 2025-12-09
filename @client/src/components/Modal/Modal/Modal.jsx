@@ -1,9 +1,8 @@
 import "./Modal.css";
-import Button from "../../../ui/Button/Button.jsx";
-import CheckBox from "../../../ui/CheckBox/CheckBox.jsx";
 import React from "react";
-import {SignIn} from "../SignIn/SignIn.jsx";
-import Register from "../Register/Register.jsx";
+import {SignIn} from "../authModal/SignIn/SignIn.jsx";
+import Register from "../authModal/Register/Register.jsx";
+import RegistrationSuccess from "../authModal/RegistrationSucsess/RegistrationSucsess.jsx";
 
 const Modal = React.forwardRef((props, ref) => {
 
@@ -20,6 +19,7 @@ const Modal = React.forwardRef((props, ref) => {
         <dialog ref={ref} className={modalContent}>
             {modalContent === "SignIn" && (<SignIn setModalContent={setModalContent} onClose={onClose}/>)}
             {modalContent === "Register" && (<Register setModalContent={setModalContent} onClose={onClose}/>)}
+            {modalContent === "RegistrationSuccess" && (<RegistrationSuccess onClose={onClose}/>)}
         </dialog>
     );
 });

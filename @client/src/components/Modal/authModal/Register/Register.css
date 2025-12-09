@@ -15,16 +15,6 @@
     align-items: flex-start;
 }
 
-#registerTitle>h1 {
-    color: #1C3D19;
-    font-size: 40px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-}
-
-
-
 #registerTitle>div{
     display: flex;
     flex-direction: row;
