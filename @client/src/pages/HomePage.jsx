@@ -9,7 +9,6 @@ import "../styles/pages/HomePage.css";
 import Newsletter from "../components/layout/Newsletter/Newsletter.jsx";
 import PromoSlide from "../components/layout/PromoSlide/PromoSlide.jsx";
 import WhyUs from "../components/layout/WhyUs/WhyUs.jsx";
-import { SignIn } from "../components/modal/SignIn/SignIn.jsx";
 import ProductCard from "../components/ui/ProductCard/ProductCard.jsx";
 import SquareButton from "../components/ui/SquareButton/SquareButton.jsx";
 import Button from "../components/ui/Button/Button.jsx";
