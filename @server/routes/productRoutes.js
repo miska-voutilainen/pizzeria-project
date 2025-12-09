@@ -70,6 +70,16 @@ function productRoutes(pool) {
     next();
   };
 
+  // Helper function to generate slug from name
+  const generateSlug = (name) => {
+    return name
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "") // Remove special characters except spaces and hyphens
+      .replace(/[\s_-]+/g, "-") // Replace spaces, underscores, and multiple hyphens with single hyphen
+      .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
+  };
+
   // ADD NEW PRODUCT
   router.post("/", requireAdmin, async (req, res) => {
     const {
@@ -82,18 +92,21 @@ function productRoutes(pool) {
       sortOrder = 50,
     } = req.body;
 
-    if (!name || !slug || !price || !imgUrl) {
+    if (!name || !price || !imgUrl) {
       return res.status(400).json({ error: "Missing required fields" });
     }
+
+    // Generate slug from name if not provided
+    const finalSlug = slug || generateSlug(name);
 
     try {
       await pool.execute(
         `INSERT INTO product_data 
          (id, slug, name, description, price, imgUrl, category, sort_order)
          VALUES (NULL, ?, ?, ?, ?, ?, ?, ?)`,
-        [slug, name, description || "", price, imgUrl, category, sortOrder]
+        [finalSlug, name, description || "", price, imgUrl, category, sortOrder]
       );
-      res.status(201).json({ message: "Product added", slug });
+      res.status(201).json({ message: "Product added", slug: finalSlug });
     } catch (err) {
       console.error("POST /products error:", err);
       if (err.code === "ER_DUP_ENTRY") {
@@ -111,7 +124,7 @@ function productRoutes(pool) {
     try {
       const [result] = await pool.execute(
         `UPDATE product_data 
-         SET id = ?, name = ?, description = ?, price = ?, imgUrl = ?, category = ?, sort_order = ?
+         SET name = ?, description = ?, price = ?, imgUrl = ?, category = ?, sort_order = ?
          WHERE slug = ?`,
         [
           name,

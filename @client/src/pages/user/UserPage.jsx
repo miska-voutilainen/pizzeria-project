@@ -18,10 +18,13 @@ const UserPage = () => {
     setMessage("");
 
     try {
-      const response = await fetch("http://localhost:3001/api/send-2fa-code", {
-        method: "POST",
-        credentials: "include",
-      });
+      const response = await fetch(
+        "http://localhost:3001/api/auth/send-2fa-code",
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
 
       if (response.ok) {
         setMessage("4-digit code sent to your email!");
@@ -55,7 +58,7 @@ const UserPage = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:3001/api/verify-2fa-code",
+        "http://localhost:3001/api/auth/verify-2fa-code",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -88,10 +91,13 @@ const UserPage = () => {
     setMessage("");
 
     try {
-      const response = await fetch("http://localhost:3001/api/disable-2fa", {
-        method: "POST",
-        credentials: "include",
-      });
+      const response = await fetch(
+        "http://localhost:3001/api/auth/disable-2fa",
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
 
       if (response.ok) {
         setMessage("2FA disabled successfully!");
@@ -112,7 +118,7 @@ const UserPage = () => {
     setLoading2FA(true);
     try {
       const response = await fetch(
-        "http://localhost:3001/api/send-verify-link",
+        "http://localhost:3001/api/auth/send-verify-link",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

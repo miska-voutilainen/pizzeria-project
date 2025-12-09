@@ -24,7 +24,7 @@ const ResetPasswordPage = () => {
 
     const checkToken = async () => {
       try {
-        const res = await fetch(`/api/reset-password/${token}`);
+        const res = await fetch(`/api/auth/reset-password/${token}`);
         const data = await res.json();
         if (!res.ok)
           throw new Error(data.message || "Invalid or expired token");
@@ -79,7 +79,7 @@ const ResetPasswordPage = () => {
     setServerMessage("");
 
     try {
-      const res = await fetch(`/api/reset-password/${token}`, {
+      const res = await fetch(`/api/auth/reset-password/${token}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password: formData.password }),

@@ -18,7 +18,6 @@ export function createSessionService(pool) {
       const [rows] = await pool.execute(
         `SELECT
             us.*,
-            u._id AS userPrimaryId,
             u.userId,
             u.username,
             u.role,
@@ -44,7 +43,7 @@ export function createSessionService(pool) {
 
       // THIS IS THE ONLY LINE I CHANGED — now req.user.role works everywhere
       req.user = {
-        id: session.userPrimaryId,
+        id: session.userId,
         userId: session.userId,
         username: session.username,
         role: session.role, // ← now guaranteed to exist
@@ -77,8 +76,8 @@ export function createSessionService(pool) {
 
     await pool.execute(
       `INSERT INTO user_sessions
-         (_id, userId, sessionToken, loginAt, expiresAt, ipAddress, userAgent, isActive)
-       VALUES (UUID(), ?, ?, NOW(), ?, ?, ?, TRUE)`,
+         (userId, sessionToken, loginAt, expiresAt, ipAddress, userAgent, isActive)
+       VALUES (?, ?, NOW(), ?, ?, ?, TRUE)`,
       [
         userId,
         sessionToken,
@@ -108,7 +107,7 @@ export function createSessionService(pool) {
     const token = req.cookies[SESSION_COOKIE_NAME];
     if (token) {
       await pool.execute(
-        `UPDATE user_sessions SET isActive = FALSE WHERE sessionToken = ?`,
+        `UPDATE user_sessions SET isActive = FALSE, logoutAt = NOW() WHERE sessionToken = ?`,
         [token]
       );
     }
@@ -117,7 +116,7 @@ export function createSessionService(pool) {
 
   const destroyAllSessions = async (userId) => {
     await pool.execute(
-      `UPDATE user_sessions SET isActive = FALSE WHERE userId = ?`,
+      `UPDATE user_sessions SET isActive = FALSE, logoutAt = NOW() WHERE userId = ?`,
       [userId]
     );
   };

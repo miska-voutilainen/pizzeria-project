@@ -40,7 +40,7 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
         );
         const user = rows[0];
         if (!user || user.accountStatus === "locked") {
-          await handleFailedLogin(pool, username);
+          await handleFailedLogin(pool, username, req);
           return res
             .status(401)
             .json({ message: "Invalid username or password" });
@@ -50,7 +50,7 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
           user.passwordHash
         );
         if (!isValidPassword) {
-          await handleFailedLogin(pool, username);
+          await handleFailedLogin(pool, username, req);
           return res
             .status(401)
             .json({ message: "Invalid username or password" });
@@ -64,8 +64,8 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
 
           await pool.execute(
             `INSERT INTO user_tokens
-            (_id, userId, token, type, createdAt, expiresAt, used, ipAddress, userAgent)
-            VALUES (UUID(), ?, ?, '2fa-login', ?, ?, FALSE, ?, ?)`,
+            (userId, token, type, createdAt, expiresAt, used, ipAddress, userAgent)
+            VALUES (?, ?, '2fa-login', ?, ?, FALSE, ?, ?)`,
             [
               user.userId,
               code,
@@ -91,8 +91,8 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
               accountStatus = 'active',
               failedLoginCount = 0,
               loginCount = loginCount + 1
-          WHERE _id = ?`,
-          [user._id]
+          WHERE userId = ?`,
+          [user.userId]
         );
         await createSession(user.userId, req, res);
         return res.json({ message: "Login successful" });
@@ -123,18 +123,18 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
       }
 
       if (user.accountStatus === "active") {
-        await markTokenUsed(pool, tokenDoc._id);
+        await markTokenUsed(pool, token);
         return res.json({ message: "Account is already active" });
       }
 
       await pool.execute(
         `UPDATE user_data 
          SET accountStatus = 'active', failedLoginCount = 0 
-         WHERE _id = ?`,
-        [user._id]
+         WHERE userId = ?`,
+        [user.userId]
       );
 
-      await markTokenUsed(pool, tokenDoc._id);
+      await markTokenUsed(pool, token);
       return res.json({ message: "Account unlocked successfully" });
     } catch (error) {
       console.error("Unlock account error:", error);
@@ -157,7 +157,13 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
         return res.json({ message: "Email already verified" });
       }
 
-      const token = await createToken(pool, user.userId, "verify-email", 24);
+      const token = await createToken(
+        pool,
+        user.userId,
+        "verify-email",
+        24,
+        req
+      );
       const verifyLink = `${
         process.env.SERVER_URI || "http://localhost:3001"
       }/api/verify-email/${token}`;
@@ -226,13 +232,12 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
           return res.status(409).json({ message: `${field} is already taken` });
         }
 
-        const userId = randomBytes(16).toString("hex");
+        const userId = Math.floor(100000 + Math.random() * 900000);
         const passwordHash = await bcrypt.hash(password, 14);
-
         await pool.execute(
           `INSERT INTO user_data 
-           (_id, userId, username, email, passwordHash, emailVerified, accountStatus, role, createdAt)
-           VALUES (UUID(), ?, ?, ?, ?, 0, 'active', 'user', NOW())`,
+           (userId, username, email, passwordHash, emailVerified, accountStatus, role, createdAt)
+           VALUES (?, ?, ?, ?, 0, 'active', 'user', NOW())`,
           [userId, username, email, passwordHash]
         );
 
@@ -262,12 +267,12 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
       const user = users[0];
 
       if (!user) {
-        await markTokenUsed(pool, tokenDoc._id);
+        await markTokenUsed(pool, token);
         return res.status(404).json({ message: "User not found" });
       }
 
       if (user.emailVerified) {
-        await markTokenUsed(pool, tokenDoc._id);
+        await markTokenUsed(pool, token);
         return res.json({ message: "Email already verified" });
       }
 
@@ -276,7 +281,7 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
         [user.userId]
       );
 
-      await markTokenUsed(pool, tokenDoc._id);
+      await markTokenUsed(pool, token);
       return res.json({ message: "Email verified! You can now log in." });
     } catch (error) {
       console.error("Verify email error:", error);
@@ -339,7 +344,7 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
         [passwordHash, user.userId]
       );
 
-      await markTokenUsed(pool, tokenDoc._id);
+      await markTokenUsed(pool, token);
       return res.json({ message: "Password reset successful" });
     } catch (error) {
       console.error("Reset password error:", error);
@@ -374,7 +379,7 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
     try {
       // Find the token that matches the code for login 2FA
       const [tokens] = await pool.execute(
-        `SELECT _id FROM user_tokens WHERE token = ? AND userId = ? AND type = '2fa-login' AND used = FALSE AND expiresAt > NOW()`,
+        `SELECT token FROM user_tokens WHERE token = ? AND userId = ? AND type = '2fa-login' AND used = FALSE AND expiresAt > NOW()`,
         [code, userId]
       );
 
@@ -383,8 +388,8 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
       }
 
       // Mark token as used
-      await pool.execute(`UPDATE user_tokens SET used = TRUE WHERE _id = ?`, [
-        tokens[0]._id,
+      await pool.execute(`UPDATE user_tokens SET used = TRUE WHERE token = ?`, [
+        code,
       ]);
 
       // Get user data to complete login
@@ -405,8 +410,8 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
              accountStatus = 'active',
              failedLoginCount = 0,
              loginCount = loginCount + 1
-         WHERE _id = ?`,
-        [user._id]
+         WHERE userId = ?`,
+        [user.userId]
       );
 
       await createSession(user.userId, req, res);
@@ -456,8 +461,8 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
 
       await pool.execute(
         `INSERT INTO user_tokens 
-         (_id, userId, token, type, createdAt, expiresAt, used, ipAddress, userAgent)
-         VALUES (UUID(), ?, ?, '2fa-setup', ?, ?, FALSE, ?, ?)`,
+         (userId, token, type, createdAt, expiresAt, used, ipAddress, userAgent)
+         VALUES (?, ?, '2fa-setup', ?, ?, FALSE, ?, ?)`,
         [
           req.user.userId,
           code,
@@ -492,7 +497,7 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
     try {
       // Find the token that matches the code
       const [tokens] = await pool.execute(
-        `SELECT _id FROM user_tokens WHERE token = ? AND userId = ? AND type = '2fa-setup' AND used = FALSE AND expiresAt > NOW()`,
+        `SELECT token FROM user_tokens WHERE token = ? AND userId = ? AND type = '2fa-setup' AND used = FALSE AND expiresAt > NOW()`,
         [code, req.user.userId]
       );
 
@@ -501,8 +506,8 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
       }
 
       // Mark token as used
-      await pool.execute(`UPDATE user_tokens SET used = TRUE WHERE _id = ?`, [
-        tokens[0]._id,
+      await pool.execute(`UPDATE user_tokens SET used = TRUE WHERE token = ?`, [
+        code,
       ]);
 
       // Enable 2FA for the user
@@ -533,22 +538,6 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
     } catch (error) {
       console.error("Disable 2FA error:", error);
       return res.status(500).json({ message: "Server error" });
-    }
-  });
-
-  // GET all users — admin only
-  router.get("/users", async (req, res) => {
-    if (req.user?.role !== "administrator") {
-      return res.status(403).json({ error: "Admin only" });
-    }
-    try {
-      const [rows] = await pool.execute(
-        `SELECT userId, username, email, role, is2faEnabled, emailVerified, createdAt FROM user_data ORDER BY createdAt DESC`
-      );
-      res.json(rows);
-    } catch (err) {
-      console.error("GET /users error:", err);
-      res.status(500).json({ error: "Server error" });
     }
   });
 
@@ -592,6 +581,7 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
     }
   });
   // GET all users — admin only
+  // Keep only this route and expand it:
   router.get("/users", async (req, res) => {
     if (req.user?.role !== "administrator") {
       return res.status(403).json({ error: "Admin only" });
@@ -600,12 +590,55 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
       const [rows] = await pool.execute(
         `SELECT userId, username, firstName, lastName, email, role, 
                 is2faEnabled, emailVerified, accountStatus, address, 
-                createdAt, lastLoginAt, loginCount 
+                createdAt, updatedAt, lastLoginAt, lastPasswordChange, 
+                last2faVerifiedAt, loginCount, failedLoginCount
         FROM user_data ORDER BY createdAt DESC`
       );
       res.json(rows);
     } catch (err) {
       console.error("GET /users error:", err);
+      res.status(500).json({ error: "Server error" });
+    }
+  });
+
+  // Add these routes before the "return router;" statement in your auth routes file:
+
+  // GET all orders — admin only
+  router.get("/orders", async (req, res) => {
+    if (req.user?.role !== "administrator") {
+      return res.status(403).json({ error: "Admin only" });
+    }
+    try {
+      const [rows] = await pool.execute(
+        `SELECT orderId, userId, items, totalAmount, status, 
+              paymentMethod, shippingAddress, created_at, updated_at
+       FROM order_data ORDER BY created_at DESC`
+      );
+      res.json(rows);
+    } catch (err) {
+      console.error("GET /orders error:", err);
+      res.status(500).json({ error: "Server error" });
+    }
+  });
+
+  // UPDATE order status — admin only
+  router.put("/orders/:orderId", async (req, res) => {
+    if (req.user?.role !== "administrator") {
+      return res.status(403).json({ error: "Admin only" });
+    }
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    try {
+      await pool.execute(
+        `UPDATE order_data 
+       SET status = ?, updated_at = NOW() 
+       WHERE orderId = ?`,
+        [status, orderId]
+      );
+      res.json({ message: "Order status updated" });
+    } catch (err) {
+      console.error("PUT /orders error:", err);
       res.status(500).json({ error: "Server error" });
     }
   });
