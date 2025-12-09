@@ -17,11 +17,33 @@ export default function Orders() {
   const [editingAddress, setEditingAddress] = useState(null);
   const [tempAddress, setTempAddress] = useState("");
 
-  const loadOrders = () => {
-    api.get("/auth/orders").then((r) => {
-      setOrders(r.data);
-      setFilteredOrders(r.data);
-    });
+  const loadOrders = async () => {
+    try {
+      const r = await api.get("/auth/orders");
+
+      // Fetch all users to get their names
+      const usersRes = await api.get("/auth/users");
+      const userMap = {};
+      usersRes.data.forEach((user) => {
+        userMap[user.userId] = `${user.firstName} ${user.lastName}`;
+      });
+
+      // Enrich orders with customer names
+      const ordersWithUserData = r.data.map((order) => ({
+        ...order,
+        customerName: userMap[order.userId] || order.userId,
+      }));
+
+      setOrders(ordersWithUserData);
+      setFilteredOrders(ordersWithUserData);
+    } catch (error) {
+      console.error("Failed to load orders:", error);
+      // Fallback: just load orders without names
+      api.get("/auth/orders").then((r) => {
+        setOrders(r.data);
+        setFilteredOrders(r.data);
+      });
+    }
   };
 
   useEffect(() => {
@@ -192,7 +214,9 @@ export default function Orders() {
                 <div>{formatDate(order.created_at)}</div>
               </TableCell>
               <TableCell>
-                <div style={{ fontWeight: "500" }}>{order.userId}</div>
+                <div style={{ fontWeight: "500" }}>
+                  {order.customerName || order.userId}
+                </div>
                 {editingAddress === order.orderId ? (
                   <div style={{ marginTop: "4px" }}>
                     <input
