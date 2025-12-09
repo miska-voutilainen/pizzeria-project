@@ -58,33 +58,49 @@ const Checkout = () => {
                 placeholder="Puhelinnumero"
               />
             </div>
-            <div className="checkout-input-row">
-              <label htmlFor="delivry-address">Toimitusosoite</label>
-              <InputField
-                type="text"
-                name={"delivry-address"}
-                id={"delivry-address"}
-                placeholder="Toimitussosoite"
-              />
-            </div>
-            <div className="checkout-input-row">
-              <label htmlFor="postcode">Postinumero</label>
-              <InputField
-                type="text"
-                name={"postcode"}
-                id={"postcode"}
-                placeholder="Postinumero"
-              />
-            </div>
-            <div className="checkout-input-row">
-              <label htmlFor="region">Kunta</label>
-              <InputField
-                type="text"
-                name={"region"}
-                id={"region"}
-                placeholder="Kunta"
-              />
-            </div>
+            {deliveryType === "delivery" ? (
+              <>
+                <div className="checkout-input-row">
+                  <label htmlFor="delivery-address">Toimitusosoite</label>
+                  <InputField
+                    type="text"
+                    name={"delivery-address"}
+                    id={"delivery-address"}
+                    placeholder="Toimitussosoite"
+                  />
+                </div>
+                <div className="checkout-input-row">
+                  <label htmlFor="postcode">Postinumero</label>
+                  <InputField
+                    type="text"
+                    name={"postcode"}
+                    id={"postcode"}
+                    placeholder="Postinumero"
+                  />
+                </div>
+                <div className="checkout-input-row">
+                  <label htmlFor="region">Kunta</label>
+                  <InputField
+                    type="text"
+                    name={"region"}
+                    id={"region"}
+                    placeholder="Kunta"
+                  />
+                </div>
+              </>
+            ) : (
+              <div className="checkout-input-row">
+                <label htmlFor="pizzeria-address">Pizzerian osoite</label>
+                <InputField
+                  type="text"
+                  name={"pizzeria-address"}
+                  id={"pizzeria-address"}
+                  placeholder="Pizzerian osoite"
+                  value="Kauppakatu 123, 00100 Helsinki"
+                  readOnly
+                />
+              </div>
+            )}
             <div className="checkout-inputs-user-sign-in">
               <TextButton text={"Kirjaudu tai luo tili"} />
             </div>
