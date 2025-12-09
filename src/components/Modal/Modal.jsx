@@ -1,7 +1,23 @@
+import { useEffect } from "react";
 import "./Modal.css";
 import closeIcon from "../../assets/images/close-x-icon.svg";
 
 export default function Modal({ isOpen, onClose, children, title }) {
+  useEffect(() => {
+    if (isOpen) {
+      // Disable body scroll when modal is open
+      document.body.style.overflow = "hidden";
+    } else {
+      // Re-enable body scroll when modal is closed
+      document.body.style.overflow = "unset";
+    }
+
+    // Cleanup function to ensure scroll is restored if component unmounts
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   // const handleBackdropClick = (e) => {

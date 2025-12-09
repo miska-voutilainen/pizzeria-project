@@ -8,11 +8,14 @@ import {
   TableCell,
   StatusBadge,
 } from "../components";
+import Search from "../components/Search/Search";
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [editingAddress, setEditingAddress] = useState(null);
+  const [tempAddress, setTempAddress] = useState("");
 
   const loadOrders = () => {
     api.get("/auth/orders").then((r) => {
@@ -38,6 +41,77 @@ export default function Orders() {
   const updateStatus = async (orderId, newStatus) => {
     await api.put(`/auth/orders/${orderId}`, { status: newStatus });
     loadOrders();
+  };
+
+  const startEditAddress = (orderId, currentAddress) => {
+    setEditingAddress(orderId);
+    // Parse current address to string format
+    let addressString = "";
+    try {
+      if (typeof currentAddress === "string") {
+        const parsed = JSON.parse(currentAddress);
+        addressString = `${parsed.street}, ${parsed.city}`;
+      } else if (typeof currentAddress === "object" && currentAddress) {
+        addressString = `${currentAddress.street}, ${currentAddress.city}`;
+      } else {
+        addressString = currentAddress || "";
+      }
+    } catch (error) {
+      addressString = currentAddress || "";
+    }
+    setTempAddress(addressString);
+  };
+
+  const saveAddress = async (orderId) => {
+    try {
+      console.log("Attempting to update address for order:", orderId);
+      console.log("New address string:", tempAddress);
+
+      // Parse the address string back to JSON format expected by database
+      // Expected format: "Street, PostalCode City" or "Street, City"
+      const addressParts = tempAddress.split(", ");
+      let addressObj = {
+        street: addressParts[0] || "",
+        city: "",
+        postalCode: "",
+      };
+
+      if (addressParts.length >= 2) {
+        const cityPart = addressParts[1];
+        // Try to extract postal code if it exists (numbers at start)
+        const postalCodeMatch = cityPart.match(/^(\d+)\s+(.+)$/);
+        if (postalCodeMatch) {
+          addressObj.postalCode = postalCodeMatch[1];
+          addressObj.city = postalCodeMatch[2];
+        } else {
+          addressObj.city = cityPart;
+        }
+      }
+
+      console.log("Formatted address object:", addressObj);
+
+      const response = await api.put(`/auth/orders/${orderId}`, {
+        shippingAddress: JSON.stringify(addressObj),
+      });
+
+      console.log("Update response:", response.data);
+      setEditingAddress(null);
+      setTempAddress("");
+      loadOrders();
+    } catch (error) {
+      console.error("Failed to update address:", error);
+      console.error("Error response:", error.response?.data);
+      alert(
+        `Failed to update address: ${
+          error.response?.data?.error || error.message
+        }`
+      );
+    }
+  };
+
+  const cancelEditAddress = () => {
+    setEditingAddress(null);
+    setTempAddress("");
   };
 
   // Helper function to parse items JSON
@@ -74,11 +148,11 @@ export default function Orders() {
       </h1>
 
       <div style={{ marginBottom: 20 }}>
-        {/* <SearchBox
-          placeholder="Hae tilauksia..."
-          value={searchTerm}
-          onChange={setSearchTerm}
-        /> */}
+        <Search
+          inputPlaceholder="hae tilauksia (tilaus ID tai käyttäjä ID)"
+          name="orderSearch"
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
       </div>
 
       <Table>
@@ -119,25 +193,107 @@ export default function Orders() {
               </TableCell>
               <TableCell>
                 <div style={{ fontWeight: "500" }}>{order.userId}</div>
-                <small style={{ color: "#6c757d", fontSize: "11px" }}>
-                  {order.shippingAddress
-                    ? (() => {
-                        try {
-                          if (typeof order.shippingAddress === "string") {
-                            const parsed = JSON.parse(order.shippingAddress);
-                            return `${parsed.street}, ${parsed.city}`;
-                          } else if (
-                            typeof order.shippingAddress === "object"
-                          ) {
-                            return `${order.shippingAddress.street}, ${order.shippingAddress.city}`;
+                {editingAddress === order.orderId ? (
+                  <div style={{ marginTop: "4px" }}>
+                    <input
+                      type="text"
+                      value={tempAddress}
+                      onChange={(e) => setTempAddress(e.target.value)}
+                      style={{
+                        fontSize: "11px",
+                        padding: "2px 4px",
+                        border: "1px solid #ced4da",
+                        borderRadius: "3px",
+                        width: "100%",
+                        marginBottom: "2px",
+                      }}
+                      placeholder="Katuosoite, Kaupunki"
+                    />
+                    <div>
+                      <button
+                        onClick={() => saveAddress(order.orderId)}
+                        style={{
+                          fontSize: "10px",
+                          padding: "2px 6px",
+                          marginRight: "4px",
+                          backgroundColor: "#28a745",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "3px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        Tallenna
+                      </button>
+                      <button
+                        onClick={cancelEditAddress}
+                        style={{
+                          fontSize: "10px",
+                          padding: "2px 6px",
+                          backgroundColor: "#6c757d",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "3px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        Peruuta
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <small style={{ color: "#6c757d", fontSize: "11px" }}>
+                      {order.shippingAddress
+                        ? (() => {
+                            try {
+                              if (typeof order.shippingAddress === "string") {
+                                const parsed = JSON.parse(
+                                  order.shippingAddress
+                                );
+                                return `${parsed.street}, ${parsed.city}`;
+                              } else if (
+                                typeof order.shippingAddress === "object"
+                              ) {
+                                return `${order.shippingAddress.street}, ${order.shippingAddress.city}`;
+                              }
+                              return (
+                                order.shippingAddress.substring(0, 20) + "..."
+                              );
+                            } catch (error) {
+                              return (
+                                order.shippingAddress.substring(0, 20) + "..."
+                              );
+                            }
+                          })()
+                        : "Ei osoitetta"}
+                    </small>
+                    {order.status !== "delivered" && (
+                      <div>
+                        <button
+                          onClick={() =>
+                            startEditAddress(
+                              order.orderId,
+                              order.shippingAddress
+                            )
                           }
-                          return order.shippingAddress.substring(0, 20) + "...";
-                        } catch (error) {
-                          return order.shippingAddress.substring(0, 20) + "...";
-                        }
-                      })()
-                    : "Ei osoitetta"}
-                </small>
+                          style={{
+                            fontSize: "10px",
+                            padding: "2px 6px",
+                            marginTop: "2px",
+                            backgroundColor: "#007bff",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "3px",
+                            cursor: "pointer",
+                          }}
+                        >
+                          Muokkaa
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
               </TableCell>
               <TableCell>
                 {parseItems(order.items)?.map((item, index) => (

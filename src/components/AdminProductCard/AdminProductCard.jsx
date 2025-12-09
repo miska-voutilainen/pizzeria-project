@@ -2,14 +2,14 @@ import SquareButton from "../SquareButton/SquareButton";
 import "./AdminProductCard.css";
 import TagIcon from "../../assets/images/tag-icon.svg";
 
-const AdminProductCard = ({ props }) => {
+const AdminProductCard = ({ props, onEdit }) => {
   const { category, imgUrl, name, price, id, description } = props;
 
   return (
     <div id="admin-product-card-container">
       <div className="admin-product-card-id-row">
         <p className="product-id">#{id}</p>
-        <SquareButton type={"edit"} />
+        <SquareButton type={"edit"} onClick={() => onEdit && onEdit(props)} />
       </div>
       <div className="admin-product-card-img-row">
         <div className="admin-product-card-img-container">

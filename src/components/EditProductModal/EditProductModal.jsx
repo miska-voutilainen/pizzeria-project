@@ -1,8 +1,16 @@
-import "./AddProductModal.css";
+import "./EditProductModal.css";
 import Modal from "../Modal/Modal";
 import Button from "../Button/Button";
 
-const AddProductModal = ({ isOpen, onClose, form, setForm, save }) => {
+const EditProductModal = ({
+  isOpen,
+  onClose,
+  product,
+  form,
+  setForm,
+  save,
+  remove,
+}) => {
   // Helper function to generate slug from name
   const generateSlug = (name) => {
     return name
@@ -15,8 +23,20 @@ const AddProductModal = ({ isOpen, onClose, form, setForm, save }) => {
 
   if (!isOpen) return null;
 
+  const handleRemove = () => {
+    if (confirm("Are you sure you want to delete this product?")) {
+      remove(product.slug);
+      onClose();
+    }
+  };
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="large" title="Lisää tuote">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="large"
+      title="Muokkaa tuotetta"
+    >
       <div className="product-modal-wrapper">
         <div className="product-modal-img-input-col form-field">
           <label htmlFor="url">
@@ -137,11 +157,14 @@ const AddProductModal = ({ isOpen, onClose, form, setForm, save }) => {
           </div>
         </div>
       </div>
-      <div className="product-modal-button">
-        <Button onClick={save} text={"Lisää"} type={"add"} />
+      <div className="product-modal-buttons">
+        <button onClick={handleRemove} className="product-modal-delete-button">
+          Poista
+        </button>
+        <Button onClick={save} text={"Tallenna"} type={"add"} />
       </div>
     </Modal>
   );
 };
 
-export default AddProductModal;
+export default EditProductModal;

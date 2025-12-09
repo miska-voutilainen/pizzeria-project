@@ -1,7 +1,7 @@
 /* View User Details Modal Styles */
 
 .view-user-details-modal {
-  /* Modal content styles handled by Modal component */
+  display: block;
 }
 
 .view-user-details-header {
@@ -76,7 +76,7 @@
 }
 
 .view-user-details-field {
-  /* Container for field */
+  display: block;
 }
 
 .view-user-details-field-label {

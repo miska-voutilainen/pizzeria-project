@@ -9,23 +9,56 @@ export default function UserProfileModal({ isOpen, onClose, user, onSave }) {
     sukunimi: "",
     kayttajanimi: "",
     sahkoposti: "",
-    katuosoite: "",
+    street: "",
+    postalCode: "",
+    city: "",
     status: "Deactiivinen",
-    rooli: "User",
+    rooli: "user",
   });
 
   // Update form when user changes
   useEffect(() => {
     if (user) {
       console.log("UserProfileModal user data:", user); // Debug
+
+      // Parse address from JSON or string
+      let street = "";
+      let postalCode = "";
+      let city = "";
+
+      if (user.address) {
+        try {
+          if (typeof user.address === "string") {
+            const parsed = JSON.parse(user.address);
+            street = parsed.street || "";
+            postalCode = parsed.postalCode || "";
+            city = parsed.city || "";
+          } else if (
+            typeof user.address === "object" &&
+            user.address !== null
+          ) {
+            street = user.address.street || "";
+            postalCode = user.address.postalCode || "";
+            city = user.address.city || "";
+          }
+        } catch (error) {
+          console.error("Error parsing address:", error);
+          street = "";
+          postalCode = "";
+          city = "";
+        }
+      }
+
       const newForm = {
         etunimi: user.firstName || "",
         sukunimi: user.lastName || "",
         kayttajanimi: user.username || "",
         sahkoposti: user.email || "",
-        katuosoite: user.address || "",
+        street: street,
+        postalCode: postalCode,
+        city: city,
         status: user.accountStatus === "active" ? "Aktiivinen" : "Deactiivinen",
-        rooli: user.role || "User",
+        rooli: user.role || "user",
       };
       console.log("Setting form to:", newForm); // Debug
       setForm(newForm);
@@ -33,16 +66,46 @@ export default function UserProfileModal({ isOpen, onClose, user, onSave }) {
   }, [user]);
 
   const handleSave = async () => {
-    await onSave({
+    console.log("Saving user profile...");
+
+    // Map display role values to database role values
+    const roleMap = {
+      User: "user",
+      Administrator: "administrator",
+      user: "user",
+      administrator: "administrator",
+    };
+
+    // Format address as JSON object
+    const addressObj = {
+      street: form.street || "",
+      postalCode: form.postalCode || "",
+      city: form.city || "",
+    };
+
+    // Only include address if at least one field is filled
+    let addressValue = null;
+    if (addressObj.street || addressObj.postalCode || addressObj.city) {
+      addressValue = JSON.stringify(addressObj);
+    }
+
+    const saveData = {
       firstName: form.etunimi,
       lastName: form.sukunimi,
       username: form.kayttajanimi,
       email: form.sahkoposti,
-      role: form.rooli,
+      role: roleMap[form.rooli] || form.rooli, // Map to database value
       accountStatus: form.status === "Aktiivinen" ? "active" : "inactive",
-      address: form.katuosoite,
-    });
-    onClose();
+      address: addressValue,
+    };
+    console.log("Save data:", saveData);
+    const success = await onSave(saveData);
+    if (success) {
+      console.log("Save successful, closing modal");
+      onClose();
+    } else {
+      console.log("Save failed, keeping modal open");
+    }
   };
 
   const handleInputChange = (field, value) => {
@@ -132,15 +195,39 @@ export default function UserProfileModal({ isOpen, onClose, user, onSave }) {
       <div className="user-profile-section">
         <h3 className="user-profile-section-title">Osoite</h3>
 
-        <div className="user-profile-form-field">
-          <label className="user-profile-form-field-label">Osoite</label>
-          <textarea
-            value={form.katuosoite}
-            onChange={(e) => handleInputChange("katuosoite", e.target.value)}
-            rows="2"
-            className="user-profile-form-field-textarea"
-            placeholder="Esim. Pizzatie 5, 00510 Helsinki"
-          />
+        <div className="user-profile-form-grid user-profile-form-grid--three-columns">
+          <div className="user-profile-form-field">
+            <label className="user-profile-form-field-label">Katuosoite</label>
+            <input
+              type="text"
+              value={form.street}
+              onChange={(e) => handleInputChange("street", e.target.value)}
+              className="user-profile-form-field-input"
+              placeholder="Esim. Pizzatie 5"
+            />
+          </div>
+
+          <div className="user-profile-form-field">
+            <label className="user-profile-form-field-label">Postinumero</label>
+            <input
+              type="text"
+              value={form.postalCode}
+              onChange={(e) => handleInputChange("postalCode", e.target.value)}
+              className="user-profile-form-field-input"
+              placeholder="Esim. 00510"
+            />
+          </div>
+
+          <div className="user-profile-form-field">
+            <label className="user-profile-form-field-label">Kaupunki</label>
+            <input
+              type="text"
+              value={form.city}
+              onChange={(e) => handleInputChange("city", e.target.value)}
+              className="user-profile-form-field-input"
+              placeholder="Esim. Helsinki"
+            />
+          </div>
         </div>
       </div>
 
@@ -167,8 +254,8 @@ export default function UserProfileModal({ isOpen, onClose, user, onSave }) {
               onChange={(e) => handleInputChange("rooli", e.target.value)}
               className="user-profile-form-field-select"
             >
-              <option value="User">User</option>
-              <option value="Admin">Admin</option>
+              <option value="user">User</option>
+              <option value="administrator">Administrator</option>
             </select>
           </div>
         </div>

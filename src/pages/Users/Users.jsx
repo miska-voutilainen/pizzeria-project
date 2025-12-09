@@ -50,7 +50,8 @@ export default function Users() {
     const filtered = users.filter(
       (user) =>
         user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase())
+        user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.userId.toString().includes(searchTerm)
     );
     setFilteredUsers(filtered);
   }, [searchTerm, users]);
@@ -128,23 +129,51 @@ export default function Users() {
     setViewDetailsUser(null);
   };
 
+  const handleEditFromDetails = (user) => {
+    setViewDetailsUser(null); // Close details modal
+    setProfileModalUser(user); // Open edit modal
+  };
+
   const closeViewOrdersModal = () => {
     setViewOrdersUser(null);
   };
 
   const saveProfile = async (updatedData) => {
     if (profileModalUser) {
-      await api.put(`/auth/users/${profileModalUser.userId}`, {
-        firstName: updatedData.firstName,
-        lastName: updatedData.lastName,
-        username: updatedData.username,
-        email: updatedData.email,
-        role: updatedData.role,
-        accountStatus: updatedData.accountStatus,
-        address: updatedData.address,
-      });
-      loadUsers();
+      try {
+        console.log("Saving user profile:", updatedData);
+
+        // Handle address field - convert empty string to null for JSON column
+        let addressValue = updatedData.address;
+        if (!addressValue || addressValue.trim() === "") {
+          addressValue = null; // Send null instead of empty string for JSON column
+        }
+
+        const response = await api.put(
+          `/auth/users/${profileModalUser.userId}`,
+          {
+            firstName: updatedData.firstName,
+            lastName: updatedData.lastName,
+            username: updatedData.username,
+            email: updatedData.email,
+            role: updatedData.role,
+            accountStatus: updatedData.accountStatus,
+            address: addressValue,
+          }
+        );
+        console.log("Save response:", response.data);
+        setProfileModalUser(null);
+        loadUsers();
+        return true;
+      } catch (error) {
+        console.error("Failed to save user profile:", error);
+        alert(
+          `Failed to save: ${error.response?.data?.error || error.message}`
+        );
+        return false;
+      }
     }
+    return false;
   };
 
   const handleViewDetails = () => {
@@ -165,7 +194,7 @@ export default function Users() {
 
       <div className="users-page-search-container">
         <Search
-          inputPlaceholder="hae käyttäjä"
+          inputPlaceholder="hae käyttäjää (nimi, email tai ID)"
           name="productSearch"
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -199,9 +228,18 @@ export default function Users() {
                   </div>
                 </td>
                 <td>
-                  <div>
-                    <div>{u.email}</div>
-                    {u.email.includes("@gmail.com") && <span>✓</span>}
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <span>{u.email}</span>
+                    <span
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        color: u.emailVerified ? "#28a745" : "#dc3545",
+                        marginLeft: "8px",
+                      }}
+                    >
+                      {u.emailVerified ? "1" : "0"}
+                    </span>
                   </div>
                 </td>
                 <td>
@@ -249,6 +287,7 @@ export default function Users() {
         isOpen={!!viewDetailsUser}
         onClose={closeViewDetailsModal}
         user={viewDetailsUser}
+        onEdit={handleEditFromDetails}
       />
 
       <ViewUserOrdersModal

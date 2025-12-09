@@ -52,22 +52,49 @@
   margin-left: 5px;
 }
 
-.required-indicator {
-  color: #dc3545;
-  font-weight: bold;
-}
-
 .form-field input,
 .form-field textarea,
 .form-field select {
   padding: 10px;
+  border-radius: 5px;
   border: 1px solid #ccc;
-  font-size: 1rem;
+  font-size: 14px;
 }
 
-/* add button */
-.product-modal-button {
+.form-field textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.product-modal-buttons {
   display: flex;
-  justify-content: end;
-  margin-top: 40px;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.product-modal-delete-button {
+  background-color: #dc3545;
+  color: white;
+  padding: 13px 22px;
+  display: flex;
+  gap: 10px;
+  font-weight: bold;
+  font-size: 18px;
+  text-decoration: none;
+  transition: 0.3s ease;
+  white-space: nowrap;
+  text-align: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+}
+
+.product-modal-delete-button:hover {
+  opacity: 0.8;
+}
+
+.required-indicator {
+  color: #dc3545;
+  font-weight: bold;
 }

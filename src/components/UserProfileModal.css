@@ -1,7 +1,7 @@
 /* User Profile Modal Styles */
 
 .user-profile-modal {
-  /* Modal content styles handled by Modal component */
+  display: block;
 }
 
 .user-profile-header {
@@ -57,7 +57,7 @@
 }
 
 .user-profile-form-field {
-  /* Container for form field */
+  display: block;
 }
 
 .user-profile-form-field-label {

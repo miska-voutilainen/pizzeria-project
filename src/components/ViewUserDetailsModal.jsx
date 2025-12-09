@@ -24,22 +24,31 @@ export default function ViewUserDetailsModal({
     );
   };
 
-  // Parse address into components (if it's a single string)
+  // Parse address into components
   const parseAddress = (address) => {
     if (!address) return { katuosoite: "", postinumero: "", kaupunki: "" };
 
-    // Try to parse "Street Number, PostalCode City" format
-    const addressParts = address.split(", ");
-    if (addressParts.length >= 2) {
-      const katuosoite = addressParts[0];
-      const postcodeCity = addressParts[1].split(" ");
-      const postinumero = postcodeCity[0] || "";
-      const kaupunki = postcodeCity.slice(1).join(" ") || "";
-
-      return { katuosoite, postinumero, kaupunki };
+    try {
+      // Try to parse JSON format
+      if (typeof address === "string") {
+        const parsed = JSON.parse(address);
+        return {
+          katuosoite: parsed.street || "",
+          postinumero: parsed.postalCode || "",
+          kaupunki: parsed.city || "",
+        };
+      } else if (typeof address === "object") {
+        return {
+          katuosoite: address.street || "",
+          postinumero: address.postalCode || "",
+          kaupunki: address.city || "",
+        };
+      }
+    } catch (error) {
+      console.error("Error parsing address:", error);
     }
 
-    return { katuosoite: address, postinumero: "", kaupunki: "" };
+    return { katuosoite: "", postinumero: "", kaupunki: "" };
   };
 
   const addressInfo = parseAddress(user.address);
