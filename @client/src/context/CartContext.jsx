@@ -14,13 +14,13 @@ export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [isInitialized, setIsInitialized] = useState(false);
   const [coupon, setCoupon] = useState(null);
-  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [couponPercentage, setCouponPercentage] = useState(0);
 
   // Load cart from localStorage on mount
   useEffect(() => {
     const savedCart = localStorage.getItem("pizzeria-cart");
     const savedCoupon = localStorage.getItem("pizzeria-coupon");
-    const savedDiscount = localStorage.getItem("pizzeria-discount");
+    const savedPercentage = localStorage.getItem("pizzeria-percentage");
 
     if (savedCart) {
       try {
@@ -36,8 +36,8 @@ export const CartProvider = ({ children }) => {
       setCoupon(savedCoupon);
     }
 
-    if (savedDiscount) {
-      setCouponDiscount(parseFloat(savedDiscount));
+    if (savedPercentage) {
+      setCouponPercentage(parseInt(savedPercentage));
     }
 
     setIsInitialized(true);
@@ -100,7 +100,8 @@ export const CartProvider = ({ children }) => {
 
   const getDiscountedTotal = () => {
     const total = getCartTotal();
-    return total - couponDiscount;
+    const discountAmount = (total * couponPercentage) / 100;
+    return total - discountAmount;
   };
 
   const applyCoupon = async (couponCode) => {
@@ -119,13 +120,32 @@ export const CartProvider = ({ children }) => {
       const data = await response.json();
 
       if (data.valid) {
-        const total = getCartTotal();
-        const discount = (total * data.discount) / 100;
+        const cartTotal = getCartTotal();
+        const discountAmount = (cartTotal * data.discount) / 100;
+
+        // Log coupon usage to database
+        try {
+          await fetch("http://localhost:3001/api/newsletter/log-coupon", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              coupon: couponCode,
+              cartTotal: cartTotal.toFixed(2),
+              discountAmount: discountAmount.toFixed(2),
+              email: null, // Add email if user is logged in
+            }),
+          });
+        } catch (logError) {
+          console.error("Error logging coupon usage:", logError);
+          // Don't prevent coupon application if logging fails
+        }
 
         setCoupon(couponCode);
-        setCouponDiscount(discount);
+        setCouponPercentage(data.discount);
         localStorage.setItem("pizzeria-coupon", couponCode);
-        localStorage.setItem("pizzeria-discount", discount.toString());
+        localStorage.setItem("pizzeria-percentage", data.discount.toString());
 
         return {
           success: true,
@@ -143,9 +163,9 @@ export const CartProvider = ({ children }) => {
 
   const removeCoupon = () => {
     setCoupon(null);
-    setCouponDiscount(0);
+    setCouponPercentage(0);
     localStorage.removeItem("pizzeria-coupon");
-    localStorage.removeItem("pizzeria-discount");
+    localStorage.removeItem("pizzeria-percentage");
   };
 
   const getCartItemCount = () => {
@@ -163,7 +183,7 @@ export const CartProvider = ({ children }) => {
     applyCoupon,
     removeCoupon,
     coupon,
-    couponDiscount,
+    couponPercentage,
     getCartItemCount,
   };
 

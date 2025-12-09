@@ -8,6 +8,7 @@ import createAuthRoutes from "./routes/authRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import newsletterRoutes from "./routes/newsletterRoutes.js";
+import couponRoutes from "./routes/couponRoutes.js";
 import { createSessionService } from "./services/sessionService.js";
 
 dotenv.config({ path: ".env.development" });
@@ -36,6 +37,7 @@ dotenv.config({ path: ".env.development" });
   app.use("/api/products", productRoutes(pool));
   app.use("/api/orders", orderRoutes(pool));
   app.use("/api/newsletter", newsletterRoutes(pool));
+  app.use("/api/coupons", couponRoutes(pool));
 
   const PORT = process.env.PORT || 3001;
   app.listen(PORT, () => {
