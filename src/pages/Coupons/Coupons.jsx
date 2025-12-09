@@ -147,13 +147,30 @@ export default function Coupons() {
                 <TableCell className="coupons-page-table-button">
                   <button
                     onClick={() => handleEdit(coupon)}
-                    style={{ marginRight: "10px" }}
+                    style={{
+                      padding: "4px 8px",
+                      marginRight: "8px",
+                      backgroundColor: "#228b22",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "3px",
+                      cursor: "pointer",
+                      fontSize: "12px",
+                    }}
                   >
                     Muokkaa
                   </button>
                   <button
                     onClick={() => handleDelete(coupon.id)}
-                    style={{ color: "red" }}
+                    style={{
+                      padding: "4px 8px",
+                      backgroundColor: "#dc3545",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "3px",
+                      cursor: "pointer",
+                      fontSize: "12px",
+                    }}
                   >
                     Poista
                   </button>

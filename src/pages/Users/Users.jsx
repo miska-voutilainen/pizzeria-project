@@ -19,6 +19,8 @@ import Search from "../../components/Search/Search";
 import "./Users.css";
 
 import threeDotsIcon from "../../assets/images/three-dots-icon.svg";
+import emailYesIcon from "../../assets/images/email-yes-icon.svg";
+import emailNoIcon from "../../assets/images/email-no-icon.svg";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
@@ -228,18 +230,89 @@ export default function Users() {
                   </div>
                 </td>
                 <td>
-                  <div style={{ display: "flex", alignItems: "center" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      position: "relative",
+                    }}
+                  >
                     <span>{u.email}</span>
-                    <span
+                    <div
                       style={{
-                        fontSize: "12px",
-                        fontWeight: "bold",
-                        color: u.emailVerified ? "#28a745" : "#dc3545",
+                        position: "relative",
                         marginLeft: "8px",
+                        cursor: "pointer",
+                      }}
+                      onMouseEnter={(e) => {
+                        const tooltip =
+                          e.currentTarget.querySelector("[data-tooltip]");
+                        if (tooltip) tooltip.style.opacity = "1";
+                      }}
+                      onMouseLeave={(e) => {
+                        const tooltip =
+                          e.currentTarget.querySelector("[data-tooltip]");
+                        if (tooltip) tooltip.style.opacity = "0";
                       }}
                     >
-                      {u.emailVerified ? "1" : "0"}
-                    </span>
+                      <img
+                        src={u.emailVerified ? emailYesIcon : emailNoIcon}
+                        alt={
+                          u.emailVerified
+                            ? "email verified"
+                            : "email not verified"
+                        }
+                        style={{
+                          width: "12px",
+                          height: "12px",
+                          transition: "transform 0.2s ease",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.transform = "scale(1.2)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.transform = "scale(1)";
+                        }}
+                      />
+                      <div
+                        data-tooltip
+                        style={{
+                          position: "absolute",
+                          top: "-38px",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          backgroundColor: "#1f2937",
+                          color: "#f3f4f6",
+                          padding: "6px 10px",
+                          borderRadius: "4px",
+                          fontSize: "12px",
+                          fontWeight: "500",
+                          whiteSpace: "nowrap",
+                          opacity: "0",
+                          transition: "opacity 0.2s ease",
+                          pointerEvents: "none",
+                          zIndex: "1000",
+                          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+                        }}
+                      >
+                        <div
+                          style={{
+                            position: "absolute",
+                            bottom: "-6px",
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            width: "0",
+                            height: "0",
+                            borderLeft: "6px solid transparent",
+                            borderRight: "6px solid transparent",
+                            borderTop: "6px solid #1f2937",
+                          }}
+                        />
+                        {u.emailVerified
+                          ? "Email verified"
+                          : "Email not verified"}
+                      </div>
+                    </div>
                   </div>
                 </td>
                 <td>
