@@ -14,7 +14,12 @@ import {
 } from "../services/tokenService.js";
 import { handleFailedLogin } from "../services/userService.js";
 
-function createAuthRoutes({ pool, createSession, destroySession }) {
+function createAuthRoutes({
+  pool,
+  createSession,
+  destroySession,
+  destroyAllSessions,
+}) {
   const router = express.Router();
 
   // REPLACE ONLY THIS ENTIRE BLOCK (from router.post("/login", ... ) to its closing }); )
@@ -414,6 +419,12 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
         [user.userId]
       );
 
+      // Delete any existing sessions for this user before creating a new one
+      // (handles the PRIMARY key constraint on userId)
+      await pool.execute(`DELETE FROM user_sessions WHERE userId = ?`, [
+        user.userId,
+      ]);
+
       await createSession(user.userId, req, res);
 
       return res.json({ message: "Login successful" });
@@ -622,21 +633,38 @@ function createAuthRoutes({ pool, createSession, destroySession }) {
   });
 
   // UPDATE order status — admin only
+  // UPDATE order (status and/or address) — admin only
   router.put("/orders/:orderId", async (req, res) => {
-    if (req.user?.role !== "administrator") {
+    if (req.user?.role !== "administrator")
       return res.status(403).json({ error: "Admin only" });
-    }
-    const { orderId } = req.params;
-    const { status } = req.body;
+
+    const { status, shippingAddress } = req.body;
 
     try {
-      await pool.execute(
-        `UPDATE order_data 
-       SET status = ?, updated_at = NOW() 
-       WHERE orderId = ?`,
-        [status, orderId]
-      );
-      res.json({ message: "Order status updated" });
+      // Build dynamic query based on what fields are provided
+      if (status !== undefined && shippingAddress !== undefined) {
+        // Both fields provided
+        await pool.execute(
+          `UPDATE order_data SET status = ?, shippingAddress = ?, updated_at = NOW() WHERE orderId = ?`,
+          [status, shippingAddress, req.params.orderId]
+        );
+      } else if (status !== undefined) {
+        // Only status provided
+        await pool.execute(
+          `UPDATE order_data SET status = ?, updated_at = NOW() WHERE orderId = ?`,
+          [status, req.params.orderId]
+        );
+      } else if (shippingAddress !== undefined) {
+        // Only address provided
+        await pool.execute(
+          `UPDATE order_data SET shippingAddress = ?, updated_at = NOW() WHERE orderId = ?`,
+          [shippingAddress, req.params.orderId]
+        );
+      } else {
+        return res.status(400).json({ error: "No fields to update" });
+      }
+
+      res.json({ message: "Order updated successfully" });
     } catch (err) {
       console.error("PUT /orders error:", err);
       res.status(500).json({ error: "Server error" });

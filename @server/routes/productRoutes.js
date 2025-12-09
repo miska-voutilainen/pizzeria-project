@@ -80,6 +80,21 @@ function productRoutes(pool) {
       .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
   };
 
+  // Helper function to generate a unique 6-digit ID
+  const generateUniqueId = async () => {
+    let id;
+    let exists = true;
+    while (exists) {
+      id = Math.floor(100000 + Math.random() * 900000).toString();
+      const [rows] = await pool.execute(
+        `SELECT id FROM product_data WHERE id = ?`,
+        [id]
+      );
+      exists = rows.length > 0;
+    }
+    return id;
+  };
+
   // ADD NEW PRODUCT
   router.post("/", requireAdmin, async (req, res) => {
     const {
@@ -100,13 +115,25 @@ function productRoutes(pool) {
     const finalSlug = slug || generateSlug(name);
 
     try {
+      // Generate a unique 6-digit ID
+      const id = await generateUniqueId();
+
       await pool.execute(
         `INSERT INTO product_data 
          (id, slug, name, description, price, imgUrl, category, sort_order)
-         VALUES (NULL, ?, ?, ?, ?, ?, ?, ?)`,
-        [finalSlug, name, description || "", price, imgUrl, category, sortOrder]
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          id,
+          finalSlug,
+          name,
+          description || "",
+          price,
+          imgUrl,
+          category,
+          sortOrder,
+        ]
       );
-      res.status(201).json({ message: "Product added", slug: finalSlug });
+      res.status(201).json({ message: "Product added", slug: finalSlug, id });
     } catch (err) {
       console.error("POST /products error:", err);
       if (err.code === "ER_DUP_ENTRY") {
