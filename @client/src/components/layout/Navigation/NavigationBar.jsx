@@ -6,7 +6,7 @@ import { useCart } from "../../../context/CartContext.jsx";
 import "./NavigationBar.css";
 import Button from "../../ui/Button/Button.jsx";
 import CartSidebar from "../CartSidebar/CartSidebar.jsx";
-import {Modal} from "../../Modal/authModal/Modal/Modal.jsx";
+import {Modal} from "../../Modal/Modal/Modal.jsx";
 
 const NavigationBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);

@@ -32,7 +32,7 @@ const Register = ({setModalContent,onClose}) => {
                     <InputField type="password" name="confirm-password" id="confirm-password" value={confirmPassword} onChange={setConfirmPassword} placeholder="Confirm password"/>
                 </div>
                 <div>
-                    <Button text="Create an account" id="register-button"/>
+                    <Button text="Create an account" id="register-button" onClick={()=>setModalContent("RegistrationSuccess")}/>
                 </div>
             </div>
         </div>

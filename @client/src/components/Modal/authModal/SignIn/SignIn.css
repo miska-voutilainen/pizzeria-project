@@ -16,15 +16,6 @@
     align-items: flex-start;
 }
 
-#signInTitle>h1 {
-    color: #1C3D19;
-    font-size: 40px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-}
-
-
 
 #signInTitle>div{
     display: flex;

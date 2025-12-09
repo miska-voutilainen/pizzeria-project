@@ -1,0 +1,74 @@
+dialog {
+    background: var(--background);
+    border: none;
+    z-index: 9999;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+}
+
+.SignIn, .Register {
+    width: 843px;
+    height: 590px;
+}
+
+dialog>div{
+    border: 3px solid #A88F67;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+dialog::backdrop {
+    background: rgba(0, 0, 0, 0.40);
+    backdrop-filter: blur(1px);
+}
+
+.SignIn>div, .Register>div {
+    width: 806px;
+    height: 543px;
+}
+
+
+#sign-in-button, #register-button {
+    width: 536px;
+    height: 43px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+dialog h1{
+    color: #1C3D19;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.RegistrationSuccess {
+    width: 1043px;
+    height: 606px;
+}
+
+.RegistrationSuccess>div {
+    width: 1006px;
+    height: 559px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+}
+
+
+
+
+
