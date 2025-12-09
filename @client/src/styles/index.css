@@ -27,11 +27,12 @@
   /* Colors */
   color: rgba(0, 0, 0, 0.87);
   --red: #e10000;
+  --color-green: #1b4618;
   --background: #fdf8e2;
-  --input-background: #E6E5CE;
+  --input-background: #e6e5ce;
   --background-light: #fdf8e2;
   --background-dark: #082109;
-  --input-placeholder: rgba(28, 61, 25, 0.20);
+  --input-placeholder: rgba(28, 61, 25, 0.2);
 
   background-color: #ffffff;
 

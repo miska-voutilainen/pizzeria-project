@@ -2,6 +2,9 @@
 .navbar {
   width: 100vw;
   background-color: #1c3d19;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .navbar-container {
