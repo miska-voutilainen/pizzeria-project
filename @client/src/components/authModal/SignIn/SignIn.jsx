@@ -1,19 +1,15 @@
 import "./SignIn.css";
-import {useEffect, useRef} from "react";
 import Button from "../../ui/Button/Button.jsx";
 import CheckBox from "../../ui/CheckBox/CheckBox.jsx";
+import React from "react";
+import CloseButton from "../../ui/СloseButton/CloseButton.jsx";
 
-const SignIn = () => {
+const SignIn = ({setModalContent,onClose}) => {
 
-    const dialogRef = useRef(null);
-
-    useEffect(() => {
-        dialogRef.current.close();
-    }, []);
 
     return (
-        <dialog ref={dialogRef}>
             <div>
+                <CloseButton onClick={onClose} />
                 <div id="signInContent">
                     <div id="signInTitle">
                         <h1>Sign in</h1>
@@ -33,7 +29,6 @@ const SignIn = () => {
                     <a href="/resetPassword" className="textButton">Forgot your password?</a>
                 </div>
             </div>
-        </dialog>
     );
 }
 

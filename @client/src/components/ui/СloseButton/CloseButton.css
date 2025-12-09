@@ -1,0 +1,9 @@
+.close-button {
+    position: absolute;
+    scale: 1.8;
+    top: 15px;
+    right: 15px;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
