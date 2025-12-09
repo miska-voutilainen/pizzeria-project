@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./Newsletter.css";
 
 import image from "../../../assets/images/newsletter-image.jpg";
+import InputSubmit from "../../ui/InputSubmit/InputSubmit";
 
 const Newsletter = () => {
   const [email, setEmail] = useState("");
@@ -84,7 +85,8 @@ const Newsletter = () => {
           </ul>
           <form className="newsletter-inputs" onSubmit={handleSubmit}>
             <label htmlFor="email">*T & Cs apply</label>
-            <div className="newsletter-inputs-email">
+            {/* commented out for new component below */}
+            {/* <div className="newsletter-inputs-email">
               <input
                 type="email"
                 id="email"
@@ -97,7 +99,18 @@ const Newsletter = () => {
               <button type="submit" disabled={loading}>
                 {loading ? "Sending..." : "Submit"}
               </button>
-            </div>
+            </div> */}
+            <InputSubmit
+              value={email}
+              setValue={setEmail}
+              loading={loading}
+              placeholder={"john.smith@gmail.com"}
+              type={"email"}
+              id={"email"}
+              name={"email"}
+              submitText={"Submit"}
+              appearance={"dark"}
+            />
             <div className="newsletter-inputs-accept-terms">
               <input
                 type="checkbox"
