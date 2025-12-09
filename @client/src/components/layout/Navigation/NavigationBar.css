@@ -2,6 +2,9 @@
 .navbar {
   width: 100vw;
   background-color: #1c3d19;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .navbar-container {
@@ -9,7 +12,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--navbar-container-padding-sides);
+  /* padding: var(--navbar-container-padding-sides); */
+  width: 90%;
   height: var(--navbar-height);
   margin: 0 auto;
 }

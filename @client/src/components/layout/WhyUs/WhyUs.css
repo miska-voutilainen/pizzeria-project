@@ -4,7 +4,7 @@
 
 .info-title {
   text-align: center;
-  color: #1b4618;
+  color: var(--color-green);
   font-family: var(--font-base);
   font-size: 55px;
   font-weight: 400;
@@ -44,12 +44,12 @@
 .info-name {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #1b4618;
+  color: var(--color-green);
   margin: 0;
 }
 
 .info-description {
-  color: #1b4618;
+  color: var(--color-green);
   font-size: 1rem;
   line-height: 1.5;
   margin: 0;

@@ -9,7 +9,10 @@ import "../styles/pages/HomePage.css";
 import Newsletter from "../components/layout/Newsletter/Newsletter.jsx";
 import PromoSlide from "../components/layout/PromoSlide/PromoSlide.jsx";
 import WhyUs from "../components/layout/WhyUs/WhyUs.jsx";
-import {SignIn} from "../components/modal/SignIn/SignIn.jsx";
+import { SignIn } from "../components/modal/SignIn/SignIn.jsx";
+import ProductCard from "../components/ui/ProductCard/ProductCard.jsx";
+import SquareButton from "../components/ui/SquareButton/SquareButton.jsx";
+import Button from "../components/ui/Button/Button.jsx";
 
 const HomePage = () => {
   const [pizzas, setPizzas] = useState([]);
@@ -25,45 +28,25 @@ const HomePage = () => {
 
   return (
     <div>
-        <SignIn />
+      {/* <SignIn /> */}
       <Hero />
 
-      <h1 className="page-title">─ Pizzat ─</h1>
-
-      <div className="product-grid">
-        {displayedPizzas.length > 0 ? (
-          displayedPizzas.map((pizza) => (
-            <article key={pizza.slug} className="product-card">
-              <div className="product-image-container">
-                <img
-                  src={pizza.imgUrl}
-                  alt={pizza.name}
-                  className="product-image"
-                  loading="lazy"
-                />
-              </div>
-              <div className="product-content">
-                <h2 className="product-name">{pizza.name}</h2>
-                <p className="product-description">{pizza.description}</p>
-                <span className="product-price">{pizza.price} €</span>
-              </div>
-            </article>
-          ))
-        ) : (
-          <p className="loading-text">Loading pizzas...</p>
-        )}
-      </div>
-
-      {pizzas.length > 8 && (
-        <div className="text-center">
-          <button
-            onClick={() => navigate("/menu")}
-            className="view-menu-button"
-          >
-            View Full Menu
-          </button>
+      <section id="home-products">
+        <h1 className="page-title">─ Pizzat ─</h1>
+        <div className="product-grid">
+          {displayedPizzas.length > 0 ? (
+            displayedPizzas.map((pizza) => (
+              <ProductCard key={pizza.slug} pizza={pizza} />
+            ))
+          ) : (
+            <p className="loading-text">Loading pizzas...</p>
+          )}
         </div>
-      )}
+
+        <div className="products-view-all-btn-container">
+          <Button url="/menu" text="Full menu" />
+        </div>
+      </section>
 
       <WhyUs />
       <Newsletter />

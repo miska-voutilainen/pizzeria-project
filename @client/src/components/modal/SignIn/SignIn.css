@@ -95,7 +95,7 @@ dialog > div {
   border: none;
 }
 
-input::placeholder {
+#inputFields input::placeholder {
   color: var(--input-placeholder);
   font-size: 15px;
   font-style: normal;

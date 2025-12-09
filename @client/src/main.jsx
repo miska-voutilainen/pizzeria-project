@@ -5,10 +5,11 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import { AuthProvider } from "./context/AuthContext.jsx";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute.jsx";
+import ScrollToTop from "./components/ScrollToTop/ScrollToTop.jsx";
 
 import App from "./App.jsx";
 import HomePage from "./pages/HomePage.jsx";
-import MenuPage from "./pages/MenuPage.jsx";
+import MenuPage from "./pages/Menu/MenuPage.jsx";
 import UserPage from "./pages/user/UserPage.jsx";
 import LoginPage from "./pages/auth/LoginPage.jsx";
 import RegisterPage from "./pages/auth/RegisterPage.jsx";
@@ -21,6 +22,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<App />}>
             <Route index element={<HomePage />} />

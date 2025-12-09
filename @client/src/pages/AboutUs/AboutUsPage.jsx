@@ -3,6 +3,7 @@ import "./AboutUsPage.css";
 import aboutUsLeft from "../../assets/images/about-us-left.png";
 import aboutUsRight from "../../assets/images/about-us-right.png";
 import mapPlaceholder from "../../assets/images/map-placeholder.jpg";
+import SquareButton from "../../components/ui/SquareButton/SquareButton";
 
 const AboutUsPage = () => {
   return (
