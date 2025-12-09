@@ -3,9 +3,12 @@ import Button from "../../ui/Button/Button.jsx";
 import CheckBox from "../../ui/CheckBox/CheckBox.jsx";
 import React from "react";
 import CloseButton from "../../ui/СloseButton/CloseButton.jsx";
+import InputField from "../../ui/inputField/InputField.jsx";
 
 const SignIn = ({setModalContent,onClose}) => {
 
+    const [email, setEmail] = React.useState("");
+    const [password, setPassword] = React.useState("");
 
     return (
             <div>
@@ -19,8 +22,8 @@ const SignIn = ({setModalContent,onClose}) => {
                         </div>
                     </div>
                     <div id="inputFields">
-                        <input type="email" name="email" id="email" placeholder="Email"/>
-                        <input type="password" name="password" id="password" placeholder="Password"/>
+                        <InputField type="email" name="email" id="email" placeholder="Email" value={email} onChange={setEmail} placeholder="Email" />
+                        <InputField type="password" name="password" id="password" value={password} onChange={setPassword} placeholder="Password" />
                     </div>
                     <CheckBox className="white-background" label="Remember me" id="remember-me" />
                     <div>

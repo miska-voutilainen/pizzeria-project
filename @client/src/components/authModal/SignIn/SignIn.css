@@ -89,28 +89,6 @@ a:hover {
     gap: 15px;
 }
 
-#inputFields>input {
-    display: flex;
-    height: 43px;
-    padding: 5px 20px 5px 20px;
-    width: 536px;
-    align-items: center;
-    align-self: stretch;
-    background: var(--input-background);
-    box-shadow: 0 0 10px 0 rgba(28, 61, 25, 0.08) inset;
-    border: none;
-}
-
-input::Placeholder{
-    color: var(--input-placeholder);
-    font-size: 15px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    letter-spacing: 0.45px;
-    font-family: var(--font-base);
-}
-
 
 #sign-in-button{
     width: 536px;
