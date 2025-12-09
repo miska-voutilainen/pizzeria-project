@@ -19,7 +19,7 @@ export default function Orders() {
 
   const loadOrders = async () => {
     try {
-      const r = await api.get("/auth/orders");
+      const r = await api.get("/orders");
 
       // Fetch all users to get their names
       const usersRes = await api.get("/auth/users");
@@ -39,7 +39,7 @@ export default function Orders() {
     } catch (error) {
       console.error("Failed to load orders:", error);
       // Fallback: just load orders without names
-      api.get("/auth/orders").then((r) => {
+      api.get("/orders").then((r) => {
         setOrders(r.data);
         setFilteredOrders(r.data);
       });
@@ -61,7 +61,7 @@ export default function Orders() {
   }, [searchTerm, orders]);
 
   const updateStatus = async (orderId, newStatus) => {
-    await api.put(`/auth/orders/${orderId}`, { status: newStatus });
+    await api.put(`/orders/${orderId}`, { status: newStatus });
     loadOrders();
   };
 
@@ -112,7 +112,7 @@ export default function Orders() {
 
       console.log("Formatted address object:", addressObj);
 
-      const response = await api.put(`/auth/orders/${orderId}`, {
+      const response = await api.put(`/orders/${orderId}`, {
         shippingAddress: JSON.stringify(addressObj),
       });
 
@@ -215,7 +215,8 @@ export default function Orders() {
               </TableCell>
               <TableCell>
                 <div style={{ fontWeight: "500" }}>
-                  {order.customerName || order.userId}
+                  {order.customerName || "Unknown"}{" "}
+                  {order.userId && `(${order.userId})`}
                 </div>
                 {editingAddress === order.orderId ? (
                   <div style={{ marginTop: "4px" }}>

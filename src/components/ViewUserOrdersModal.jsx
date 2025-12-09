@@ -24,10 +24,10 @@ export default function ViewUserOrdersModal({ isOpen, onClose, user }) {
   const loadUserOrders = async () => {
     setLoading(true);
     try {
-      const response = await api.get(`/auth/orders`);
+      const response = await api.get(`/orders`);
       // Filter orders for this specific user
       const userOrders = response.data.filter(
-        (order) => order.userId === user.userId
+        (order) => Number(order.userId) === Number(user.userId)
       );
       setOrders(userOrders);
     } catch (error) {
