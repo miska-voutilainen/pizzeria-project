@@ -93,11 +93,9 @@ export function createSessionService(pool) {
       sameSite: "lax",
       maxAge: expiresInDays * SESSION_MAX_AGE_MS,
       path: "/",
-      // THIS LINE IS CRITICAL for subdomains (localhost + future admin.pizzeria-web.com)
+      // Don't set domain for localhost - let browser handle it
       domain:
-        process.env.NODE_ENV === "production"
-          ? ".pizzeria-web.com"
-          : ".localhost",
+        process.env.NODE_ENV === "production" ? ".pizzeria-web.com" : undefined,
     });
 
     return sessionToken;
@@ -111,7 +109,11 @@ export function createSessionService(pool) {
         [token]
       );
     }
-    res.clearCookie(SESSION_COOKIE_NAME, { path: "/", domain: ".localhost" });
+    res.clearCookie(SESSION_COOKIE_NAME, {
+      path: "/",
+      domain:
+        process.env.NODE_ENV === "production" ? ".pizzeria-web.com" : undefined,
+    });
   };
 
   const destroyAllSessions = async (userId) => {
