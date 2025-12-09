@@ -79,31 +79,6 @@
   max-width: 350px;
 }
 
-.newsletter-inputs-email input[type="email"] {
-  width: 100%;
-  padding: 10px;
-  background-color: #224724;
-  border: none;
-  color: white;
-  font-family: "Roboto Slab";
-  font-size: 1rem;
-}
-
-.newsletter-inputs-email input[type="submit"] {
-  padding: 0px 15px;
-  cursor: pointer;
-  background-color: var(--background-light);
-  border: none;
-  color: var(--background-dark);
-  font-weight: 700;
-  font-size: 1rem;
-  font-family: "Roboto Slab";
-}
-
-.newsletter-inputs-email input[type="submit"]:hover {
-  opacity: 0.8;
-}
-
 /* accept terms checkbox */
 
 .newsletter-inputs-accept-terms {
