@@ -2,13 +2,19 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext.jsx";
+import { useCart } from "../../../context/CartContext.jsx";
 import "./NavigationBar.css";
 import Button from "../../ui/Button/Button.jsx";
+import CartSidebar from "../CartSidebar/CartSidebar.jsx";
 
 const NavigationBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const location = useLocation();
   const { user } = useAuth();
+  const { getCartItemCount } = useCart();
+
+  const cartItemCount = getCartItemCount();
 
   useEffect(() => {
     setMenuOpen(false);
@@ -43,31 +49,12 @@ const NavigationBar = () => {
         <div className="navbar-row-end">
           {/* USER BUTTON — Logged in */}
           {user ? (
-            // <Link to="/user" className="user-profile-button">
-            //   <span className="user-name">{user.username}</span>
-            //   <svg
-            //     className="user-icon"
-            //     viewBox="0 0 24 24"
-            //     width="24"
-            //     height="24"
-            //     stroke="currentColor"
-            //     fill="none"
-            //   >
-            //     <circle cx="12" cy="7" r="4" />
-            //     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-            //   </svg>
-            // </Link>
             <Button
               url={"/user"}
               text={user.username}
               imageUrl={"./user-icon.svg"}
             />
           ) : (
-            /* SIGN IN — Not logged in */
-            // <Link to="/login" className="signin-button">
-            //   <span>Sign innnn</span>
-            //   <img src="/user-icon.svg" alt="" className="signin-icon" />
-            // </Link>
             <Button
               url={"/login"}
               text={"Sign in"}
@@ -75,16 +62,30 @@ const NavigationBar = () => {
             />
           )}
 
-          <Link to="/cart" className="cart-link">
+          <button
+            className="nav-cart-button"
+            onClick={() => setCartOpen(true)}
+            aria-label="Open cart"
+          >
             <img src="/SVGRepo_shopping_cart.svg" alt="Cart" />
-          </Link>
+            {cartItemCount > 0 && (
+              <span className="cart-badge">{cartItemCount}</span>
+            )}
+          </button>
         </div>
 
         {/* Mobile Controls */}
         <div className="mobile-navbar-column-end">
-          <Link to="/cart">
+          <button
+            className="nav-cart-button"
+            onClick={() => setCartOpen(true)}
+            aria-label="Open cart"
+          >
             <img src="/SVGRepo_shopping_cart.svg" alt="Cart" />
-          </Link>
+            {cartItemCount > 0 && (
+              <span className="cart-badge">{cartItemCount}</span>
+            )}
+          </button>
           <button
             className="menuButton"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -117,30 +118,12 @@ const NavigationBar = () => {
 
             <div className="mobile-menu-column-end">
               {user ? (
-                // <Link to="/user" className="mobile-user-profile-button">
-                //   <span>{user.username}</span>
-                //   <svg
-                //     className="user-icon"
-                //     viewBox="0 0 24 24"
-                //     width="24"
-                //     height="24"
-                //     stroke="currentColor"
-                //     fill="none"
-                //   >
-                //     <circle cx="12" cy="7" r="4" />
-                //     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                //   </svg>
-                // </Link>
                 <Button
                   url={"/user"}
                   text={user.username}
                   imageUrl={"./user-icon.svg"}
                 />
               ) : (
-                // <Link to="/login" className="mobile-signin-button">
-                //   <span>Sign in</span>
-                //   <img src="/user-icon.svg" alt="" />
-                // </Link>
                 <Button
                   url={"/login"}
                   text={"Sign in"}
@@ -150,6 +133,9 @@ const NavigationBar = () => {
             </div>
           </div>
         )}
+
+        {/* Cart Sidebar */}
+        <CartSidebar isOpen={cartOpen} onClose={() => setCartOpen(false)} />
       </div>
     </header>
   );
