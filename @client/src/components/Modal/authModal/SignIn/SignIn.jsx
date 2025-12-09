@@ -28,7 +28,7 @@ const SignIn = ({setModalContent,onClose}) => {
                     </div>
                     <CheckBox className="white-background" label="Remember me" id="remember-me" />
                     <div>
-                        <Button text="Sign in" id="sign-in-button"/>
+                        <Button text="Sign in" id="sign-in-button" className="modal-button" onClick={()=>setModalContent("TwoFactor")}/>
                     </div>
                     <TextButton text="create an account" onClick={() => setModalContent("ResetPassword")} />
                 </div>
