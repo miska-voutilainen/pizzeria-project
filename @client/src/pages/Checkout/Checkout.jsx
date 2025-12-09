@@ -5,6 +5,8 @@ import InputField from "../../components/ui/InputField/InputField";
 import InputSubmit from "../../components/ui/InputSubmit/InputSubmit";
 import TextButton from "../../components/ui/TextButton/TextButton";
 import { useCart } from "../../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 // Import payment method images
 import mobilepayImg from "../../assets/images/paymentMethods/MobilePay_logo.svg";
@@ -14,9 +16,123 @@ import klarnaImg from "../../assets/images/paymentMethods/Klarna_Payment_Badge.s
 import cardImg from "../../assets/images/paymentMethods/visa-and-mastercard-logos.svg";
 
 const Checkout = () => {
+  const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState("mobilepay");
   const [deliveryType, setDeliveryType] = useState("delivery");
-  const { cartItems, getCartTotal } = useCart();
+  const [couponInput, setCouponInput] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    address: "",
+    postcode: "",
+    city: "",
+  });
+  const { user } = useAuth();
+  const {
+    cartItems,
+    getCartTotal,
+    applyCoupon,
+    removeCoupon,
+    coupon,
+    couponPercentage,
+    getDiscountedTotal,
+    clearCart,
+  } = useCart();
+
+  const handleFormChange = (fieldName) => (value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [fieldName]: value,
+    }));
+  };
+
+  const handleApplyCoupon = async (e) => {
+    e.preventDefault();
+    if (!couponInput.trim()) return;
+
+    // Remove old coupon if one exists
+    if (coupon) {
+      removeCoupon();
+    }
+
+    const result = await applyCoupon(couponInput);
+    if (result.success) {
+      setCouponInput("");
+    }
+  };
+
+  const handlePlaceOrder = async (e) => {
+    e.preventDefault();
+
+    // Validate required fields
+    if (!formData.name || !formData.phone) {
+      alert("Please fill in name and phone number");
+      return;
+    }
+
+    if (
+      deliveryType === "delivery" &&
+      (!formData.address || !formData.postcode || !formData.city)
+    ) {
+      alert("Please fill in all delivery address fields");
+      return;
+    }
+
+    try {
+      // Only send essential item data
+      const orderItems = cartItems.map((item) => ({
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+      }));
+
+      const orderData = {
+        items: orderItems,
+        totalAmount:
+          coupon && couponPercentage > 0
+            ? getDiscountedTotal()
+            : getCartTotal(),
+        paymentMethod,
+        deliveryType,
+        shippingAddress:
+          deliveryType === "delivery"
+            ? {
+                street: formData.address,
+                postalCode: formData.postcode,
+                city: formData.city,
+              }
+            : null,
+        customerName: formData.name,
+        customerPhone: formData.phone,
+        couponApplied: coupon || null,
+        discountAmount:
+          coupon && couponPercentage > 0
+            ? (getCartTotal() * couponPercentage) / 100
+            : 0,
+      };
+
+      const response = await fetch("http://localhost:3001/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(orderData),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        clearCart();
+        navigate(`/order-confirmation?orderId=${result.orderId}`);
+      } else {
+        alert("Error creating order: " + result.error);
+      }
+    } catch (error) {
+      console.error("Error placing order:", error);
+      alert("Error placing order. Please try again.");
+    }
+  };
 
   return (
     <section id="checkout-section">
@@ -47,60 +163,76 @@ const Checkout = () => {
                 name={"name"}
                 id={"name"}
                 placeholder="Etunimi"
+                value={formData.name}
+                onChange={handleFormChange("name")}
               />
             </div>
             <div className="checkout-input-row">
-              <label htmlFor="phone-number">Puhelinnumero</label>
+              <label htmlFor="phone">Puhelinnumero</label>
               <InputField
                 type="tel"
-                name={"phone-number"}
-                id={"phone-number"}
+                name={"phone"}
+                id={"phone"}
                 placeholder="Puhelinnumero"
+                value={formData.phone}
+                onChange={handleFormChange("phone")}
               />
             </div>
-            <div className="checkout-input-row">
-              <label htmlFor="delivry-address">Toimitusosoite</label>
-              <InputField
-                type="text"
-                name={"delivry-address"}
-                id={"delivry-address"}
-                placeholder="Toimitussosoite"
-              />
-            </div>
-            <div className="checkout-input-row">
-              <label htmlFor="postcode">Postinumero</label>
-              <InputField
-                type="text"
-                name={"postcode"}
-                id={"postcode"}
-                placeholder="Postinumero"
-              />
-            </div>
-            <div className="checkout-input-row">
-              <label htmlFor="region">Kunta</label>
-              <InputField
-                type="text"
-                name={"region"}
-                id={"region"}
-                placeholder="Kunta"
-              />
-            </div>
+            {deliveryType === "delivery" && (
+              <>
+                <div className="checkout-input-row">
+                  <label htmlFor="address">Toimitusosoite</label>
+                  <InputField
+                    type="text"
+                    name={"address"}
+                    id={"address"}
+                    placeholder="Toimitussosoite"
+                    value={formData.address}
+                    onChange={handleFormChange("address")}
+                  />
+                </div>
+                <div className="checkout-input-row">
+                  <label htmlFor="postcode">Postinumero</label>
+                  <InputField
+                    type="text"
+                    name={"postcode"}
+                    id={"postcode"}
+                    placeholder="Postinumero"
+                    value={formData.postcode}
+                    onChange={handleFormChange("postcode")}
+                  />
+                </div>
+                <div className="checkout-input-row">
+                  <label htmlFor="city">Kaupunki</label>
+                  <InputField
+                    type="text"
+                    name={"city"}
+                    id={"city"}
+                    placeholder="Kaupunki"
+                    value={formData.city}
+                    onChange={handleFormChange("city")}
+                  />
+                </div>
+              </>
+            )}
             <div className="checkout-inputs-user-sign-in">
-              <TextButton text={"Kirjaudu tai luo tili"} />
+              {!user && <TextButton text={"Kirjaudu tai luo tili"} />}
             </div>
           </div>
           <div className="promocode-container">
             <h2>Alennuskoodi</h2>
-            <div>
+            <form onSubmit={handleApplyCoupon}>
               <InputSubmit
-                placeholder={"john.smith@gmail.com"}
-                type={"email"}
+                placeholder={"Enter discount code"}
+                type={"text"}
                 id={"email"}
                 name={"email"}
                 submitText={"Apply"}
                 appearance={"light"}
+                value={coupon || couponInput}
+                setValue={setCouponInput}
               />
-            </div>
+            </form>
           </div>
           <div className="checkout-payment-methods-container">
             <div className="checkout-payment-methods-container-wrapper">
@@ -171,7 +303,7 @@ const Checkout = () => {
 
           <div className="checkout-pay-now-container">
             <Button
-              url={"/order-confirmation"}
+              onClick={handlePlaceOrder}
               text={"Maksa"}
               id={"place-order-button"}
             />
@@ -222,9 +354,18 @@ const Checkout = () => {
                     <span>{getCartTotal().toFixed(2)} €</span>
                   </p>
                 </div>
-                <div className="checkout-orders-footer-text-item">
-                  <p>Code</p>
-                </div>
+                {coupon && couponPercentage > 0 && (
+                  <div className="checkout-orders-footer-text-item">
+                    <p>
+                      <span>Alennus ({couponPercentage}%)</span>
+                      <span>
+                        -
+                        {((getCartTotal() * couponPercentage) / 100).toFixed(2)}
+                        €
+                      </span>
+                    </p>
+                  </div>
+                )}
                 <div className="checkout-orders-footer-text-item">
                   <p>
                     <span>Delivery</span> <span>Free</span>
@@ -233,7 +374,13 @@ const Checkout = () => {
                 <div className="checkout-orders-footer-text-item">
                   <h3>
                     <span>Order summary</span>
-                    <span>{getCartTotal().toFixed(2)} €</span>
+                    <span>
+                      {(coupon && couponPercentage > 0
+                        ? getDiscountedTotal()
+                        : getCartTotal()
+                      ).toFixed(2)}{" "}
+                      €
+                    </span>
                   </h3>
                 </div>
               </div>

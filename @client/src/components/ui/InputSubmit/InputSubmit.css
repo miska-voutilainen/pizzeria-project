@@ -4,7 +4,8 @@
   max-width: 350px;
 }
 
-.input-submit-container input[type="email"] {
+.input-submit-container input[type="email"],
+.input-submit-container input[type="text"] {
   width: 100%;
   padding: 10px;
   background-color: #224724;
@@ -35,7 +36,8 @@
   border-color: var(--color-green) !important;
 }
 
-.input-submit-container.light input[type="email"] {
+.input-submit-container.light input[type="email"],
+.input-submit-container.light input[type="text"] {
   background-color: #e6e5ce !important;
   color: var(--color-green) !important;
 }
