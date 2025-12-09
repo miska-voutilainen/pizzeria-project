@@ -18,6 +18,7 @@ import ResetPasswordPage from "./pages/auth/ResetPasswordPage.jsx";
 
 import "./styles/index.css";
 import AboutUsPage from "./pages/AboutUs/AboutUsPage.jsx";
+import Checkout from "./pages/Checkout/Checkout.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -32,6 +33,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               <Route path="about" element={<AboutUsPage />} />
               <Route path="login" element={<LoginPage />} />
               <Route path="register" element={<RegisterPage />} />
+              <Route path="checkout" element={<Checkout />} />
               <Route
                 path="reset-password/:token"
                 element={<ResetPasswordPage />}
