@@ -178,7 +178,6 @@ const Checkout = () => {
                 onChange={handleFormChange("phone")}
               />
             </div>
-<<<<<<< HEAD
             {deliveryType === "delivery" && (
               <>
                 <div className="checkout-input-row">
@@ -215,6 +214,19 @@ const Checkout = () => {
                   />
                 </div>
               </>
+            )}
+            {deliveryType === "takeaway" && (
+              <div className="checkout-input-row">
+                <label htmlFor="pizzeria-address">Pizzerian osoite</label>
+                <InputField
+                  type="text"
+                  name={"pizzeria-address"}
+                  id={"pizzeria-address"}
+                  placeholder="Pizzerian osoite"
+                  value="Kauppakatu 123, 00100 Helsinki"
+                  readOnly
+                />
+              </div>
             )}
             <div className="checkout-inputs-user-sign-in">
               {!user && <TextButton text={"Kirjaudu tai luo tili"} />}
