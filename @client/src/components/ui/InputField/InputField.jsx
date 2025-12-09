@@ -9,7 +9,7 @@ const InputField = ({type, name, id, placeholder, value, onChange}) => {
             id={id}
             placeholder={placeholder}
             value={value}
-            onChange={onChange}
+            onChange={(e) => onChange(e.target.value)}
             className="greyInput"
         />
     )
