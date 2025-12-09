@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import Products from "./pages/Products/Products";
 import Users from "./pages/Users/Users";
 import Orders from "./pages/Orders";
+import Coupons from "./pages/Coupons/Coupons";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
@@ -15,6 +16,7 @@ export default function App() {
         <Route path="/products" element={<Products />} />
         <Route path="/users" element={<Users />} />
         <Route path="/orders" element={<Orders />} />
+        <Route path="/coupons" element={<Coupons />} />
       </Route>
     </Routes>
   );

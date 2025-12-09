@@ -9,6 +9,7 @@ import signOutIcon from "../../assets/images/sign-out-icon.svg";
 import usersIcon from "../../assets/images/users-icon.svg";
 import productsIcon from "../../assets/images/products-icon.svg";
 import ordersIcon from "../../assets/images/orders-icon.svg";
+import couponsIcon from "../../assets/images/coupon-icon.svg";
 import pizzawebLogo from "../../assets/images/pizzaweb-logo.svg";
 import api from "../../api";
 
@@ -141,6 +142,11 @@ const AdminNavBar = () => {
             />
             <AdminNavLinkItem to="/users" icon={usersIcon} text="Käyttäjät" />
             <AdminNavLinkItem to="/orders" icon={ordersIcon} text="Tilaukset" />
+            <AdminNavLinkItem
+              to="/coupons"
+              icon={couponsIcon}
+              text="Kupongit"
+            />
           </ul>
         </nav>
       </div>

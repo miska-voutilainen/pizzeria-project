@@ -1,0 +1,52 @@
+#coupons-page-container {
+  width: 100%;
+  padding: 40px 60px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 500;
+  margin-bottom: 2rem;
+  color: var(--color-green);
+}
+
+.coupons-search-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+/* table */
+
+.coupons-page-table-container table {
+  border-collapse: collapse;
+  margin-bottom: 50px;
+}
+
+.coupons-page-table-container th,
+.coupons-page-table-container td {
+  padding: 20px 15px;
+  text-align: left;
+}
+
+.coupons-page-table-container tr {
+  border-bottom: 1px solid #ddd;
+}
+
+/* table row button */
+
+.coupons-page-table-button button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.coupons-page-table-button button:hover {
+  opacity: 0.5;
+}

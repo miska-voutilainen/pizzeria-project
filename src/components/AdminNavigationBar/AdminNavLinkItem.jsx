@@ -15,7 +15,7 @@ const AdminNavLinkItem = ({ to, icon, text, isRootPath = false }) => {
       >
         {({ isActive }) => (
           <>
-            <img src={icon} alt={`${text} icon`} />
+            {icon && <img src={icon} alt={`${text} icon`} />}
             {text}
             {(isActive || (isRootPath && window.location.pathname === "/")) && (
               <>

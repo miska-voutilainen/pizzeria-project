@@ -1,0 +1,44 @@
+.coupon-modal-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 400px;
+  padding: 20px;
+}
+
+.coupon-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.coupon-form-group label {
+  color: grey;
+  margin-left: 5px;
+  font-weight: 500;
+}
+
+.required-indicator {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.coupon-form-group input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  border-radius: 4px;
+}
+
+.coupon-form-group input:focus {
+  outline: none;
+  border-color: #228b22;
+  box-shadow: 0 0 0 3px rgba(34, 139, 34, 0.1);
+}
+
+.coupon-modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
