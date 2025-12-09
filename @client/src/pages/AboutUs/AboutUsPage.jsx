@@ -1,11 +1,47 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import "./AboutUsPage.css";
 import aboutUsLeft from "../../assets/images/about-us-left.png";
 import aboutUsRight from "../../assets/images/about-us-right.png";
-import mapPlaceholder from "../../assets/images/map-placeholder.jpg";
 import SquareButton from "../../components/ui/SquareButton/SquareButton";
 
 const AboutUsPage = () => {
+  const mapRef = useRef(null);
+
+  useEffect(() => {
+    // Load Google Maps API dynamically
+    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+    if (!window.google && apiKey) {
+      const script = document.createElement("script");
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}`;
+      script.async = true;
+      script.defer = false;
+      script.onload = () => {
+        initializeMap();
+      };
+      document.head.appendChild(script);
+    } else if (window.google) {
+      initializeMap();
+    }
+  }, []);
+
+  const initializeMap = () => {
+    if (mapRef.current && window.google) {
+      const location = { lat: 60.1665, lng: 24.9355 };
+      const map = new window.google.maps.Map(mapRef.current, {
+        zoom: 16,
+        center: location,
+        mapTypeControl: false,
+        fullscreenControl: false,
+        streetViewControl: false,
+      });
+
+      new window.google.maps.Marker({
+        position: location,
+        map: map,
+        title: "Pizzeria - Lönnrotinkatu",
+      });
+    }
+  };
   return (
     <>
       <section id="our-story">
@@ -60,19 +96,26 @@ const AboutUsPage = () => {
               <h1>Yhteystiedot</h1>
 
               <ul>
-                <li>Pizzakatu 6, 00170 Helsinki</li>
+                <li>Kalevankatu 2, 00100 Helsinki</li>
+                <br />
                 <li>
-                  <a href="tel:+358508353552">+358 50 8353 552</a>
+                  Aukioloajat:<br></br> ma - pe 10:00 - 18:00<br></br>la - su
+                  12:00 - 16:00
                 </li>
+                <br />
                 <li>
-                  <a href="mailto:hello@pizza-web.fi">hello@pizza-web.fi</a>
+                  <a href="mailto:support@pizzeria-web.com">
+                    support@pizzeria-web.com
+                  </a>
                 </li>
               </ul>
             </div>
 
-            <div className="contact-info-map">
-              <img src={mapPlaceholder} alt="map placeholder" />
-            </div>
+            <div
+              className="contact-info-map"
+              ref={mapRef}
+              style={{ width: "550px", height: "400px", borderRadius: "8px" }}
+            ></div>
           </div>
         </div>
       </section>

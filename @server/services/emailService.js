@@ -150,13 +150,20 @@ export const sendUnlockEmail = async (
   }
 };
 
-export const send2FAEmail = async (email, username, code) => {
+export const send2FAEmail = async (
+  email,
+  username,
+  code,
+  customHtml = null
+) => {
   const mailOptions = {
     from: `"Pizzeria" <${process.env.EMAIL_ADDRESS}>`,
     to: email,
-    subject: "Your 2FA Setup Code",
-    text: `Hi ${username},\n\nYour 2FA setup code is: ${code}\n\nThis code expires in 15 minutes.`,
-    html: `
+    subject: customHtml ? "Newsletter Subscription" : "Your 2FA Setup Code",
+    text: `Hi ${username},\n\nYour code is: ${code}\n\nThis code expires in 15 minutes.`,
+    html:
+      customHtml ||
+      `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; background: #f9f9f9; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
         <h2 style="color: #c62828; text-align: center; margin-bottom: 20px;">Pizzeria</h2>
         <p style="font-size: 16px; color: #333;">Hi <strong>${username}</strong>,</p>
@@ -180,10 +187,10 @@ export const send2FAEmail = async (email, username, code) => {
   try {
     const t = await getTransporter();
     const info = await t.sendMail(mailOptions);
-    console.log("2FA code email sent:", info.messageId);
+    console.log("Email sent:", info.messageId);
     return info;
   } catch (error) {
-    console.error("Failed to send 2FA email:", error.message);
+    console.error("Failed to send email:", error.message);
     throw error;
   }
 };

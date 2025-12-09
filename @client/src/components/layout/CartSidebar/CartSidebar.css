@@ -1,3 +1,8 @@
+/* Make coupon input placeholder text white */
+.cart-footer-discount-container input::placeholder {
+  color: #fff !important;
+  opacity: 1;
+}
 /* overlay */
 .cart-overlay {
   position: fixed;

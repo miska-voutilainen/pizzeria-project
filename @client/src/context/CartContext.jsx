@@ -13,10 +13,15 @@ export const useCart = () => {
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [coupon, setCoupon] = useState(null);
+  const [couponDiscount, setCouponDiscount] = useState(0);
 
   // Load cart from localStorage on mount
   useEffect(() => {
     const savedCart = localStorage.getItem("pizzeria-cart");
+    const savedCoupon = localStorage.getItem("pizzeria-coupon");
+    const savedDiscount = localStorage.getItem("pizzeria-discount");
+
     if (savedCart) {
       try {
         const parsedCart = JSON.parse(savedCart);
@@ -26,6 +31,15 @@ export const CartProvider = ({ children }) => {
         localStorage.removeItem("pizzeria-cart");
       }
     }
+
+    if (savedCoupon) {
+      setCoupon(savedCoupon);
+    }
+
+    if (savedDiscount) {
+      setCouponDiscount(parseFloat(savedDiscount));
+    }
+
     setIsInitialized(true);
   }, []);
 
@@ -84,6 +98,56 @@ export const CartProvider = ({ children }) => {
     );
   };
 
+  const getDiscountedTotal = () => {
+    const total = getCartTotal();
+    return total - couponDiscount;
+  };
+
+  const applyCoupon = async (couponCode) => {
+    try {
+      const response = await fetch(
+        "http://localhost:3001/api/newsletter/validate-coupon",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ coupon: couponCode }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.valid) {
+        const total = getCartTotal();
+        const discount = (total * data.discount) / 100;
+
+        setCoupon(couponCode);
+        setCouponDiscount(discount);
+        localStorage.setItem("pizzeria-coupon", couponCode);
+        localStorage.setItem("pizzeria-discount", discount.toString());
+
+        return {
+          success: true,
+          message: data.message,
+          discount: data.discount,
+        };
+      } else {
+        return { success: false, message: data.message };
+      }
+    } catch (error) {
+      console.error("Error validating coupon:", error);
+      return { success: false, message: "Error validating coupon" };
+    }
+  };
+
+  const removeCoupon = () => {
+    setCoupon(null);
+    setCouponDiscount(0);
+    localStorage.removeItem("pizzeria-coupon");
+    localStorage.removeItem("pizzeria-discount");
+  };
+
   const getCartItemCount = () => {
     return cartItems.reduce((total, item) => total + item.quantity, 0);
   };
@@ -95,6 +159,11 @@ export const CartProvider = ({ children }) => {
     updateQuantity,
     clearCart,
     getCartTotal,
+    getDiscountedTotal,
+    applyCoupon,
+    removeCoupon,
+    coupon,
+    couponDiscount,
     getCartItemCount,
   };
 

@@ -1,11 +1,61 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Newsletter.css";
 
 import image from "../../../assets/images/newsletter-image.jpg";
 
-import "./Newsletter.css";
-
 const Newsletter = () => {
+  const [email, setEmail] = useState("");
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMessage("");
+    setError("");
+
+    // Validation
+    if (!email.trim()) {
+      setError("Please enter an email address");
+      return;
+    }
+
+    if (!agreeTerms) {
+      setError("Please accept the terms and conditions");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        "http://localhost:3001/api/newsletter/subscribe",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || "Failed to subscribe");
+        return;
+      }
+
+      setMessage("Success! Check your email for your coupon code.");
+      setEmail("");
+      setAgreeTerms(false);
+    } catch (err) {
+      setError("An error occurred. Please try again later.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section id="newsletter">
       <div className="newsletter-wrapper">
@@ -32,7 +82,7 @@ const Newsletter = () => {
               <span>Viikottaisia alennuksia</span>
             </li>
           </ul>
-          <div className="newsletter-inputs">
+          <form className="newsletter-inputs" onSubmit={handleSubmit}>
             <label htmlFor="email">*T & Cs apply</label>
             <div className="newsletter-inputs-email">
               <input
@@ -40,19 +90,32 @@ const Newsletter = () => {
                 id="email"
                 name="email"
                 placeholder="john.smith@gmail.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
               />
-              <input type="submit" value="Submit" />
+              <button type="submit" disabled={loading}>
+                {loading ? "Sending..." : "Submit"}
+              </button>
             </div>
             <div className="newsletter-inputs-accept-terms">
               <input
                 type="checkbox"
                 id="accept-terms"
                 name="accept-terms"
-                value="accept-terms"
+                checked={agreeTerms}
+                onChange={(e) => setAgreeTerms(e.target.checked)}
+                disabled={loading}
               />
-              <label for="accept-terms">Accept terms</label>
+              <label htmlFor="accept-terms">Accept terms</label>
             </div>
-          </div>
+            {error && (
+              <p style={{ color: "red", marginTop: "10px" }}>{error}</p>
+            )}
+            {message && (
+              <p style={{ color: "green", marginTop: "10px" }}>{message}</p>
+            )}
+          </form>
         </div>
       </div>
     </section>
