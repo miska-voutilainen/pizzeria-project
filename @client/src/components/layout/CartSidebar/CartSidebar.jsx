@@ -259,7 +259,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
               </p>
             </div>
             <Button
-              url="/cart"
+              url="/checkout"
               text="Checkout"
               disabled={cartItems.length === 0}
             />
