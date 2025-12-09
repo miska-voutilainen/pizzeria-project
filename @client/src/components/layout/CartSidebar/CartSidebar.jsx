@@ -1,0 +1,151 @@
+import React, { useState, useEffect } from "react";
+import { useCart } from "../../../context/CartContext";
+import "./CartSidebar.css";
+import CloseButonDark from "../../../assets/images/close-dark.svg";
+import Button from "../../ui/Button/Button";
+import TrashIcon from "../../../assets/images/trash-icon.svg";
+
+const CartSidebar = ({ isOpen, onClose }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const {
+    cartItems,
+    removeFromCart,
+    updateQuantity,
+    getCartTotal,
+    getCartItemCount,
+  } = useCart();
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsVisible(true);
+      setTimeout(() => setIsAnimating(true), 10);
+    } else {
+      setIsAnimating(false);
+      const timer = setTimeout(() => setIsVisible(false), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
+  if (!isVisible) return null;
+
+  return (
+    <>
+      {/* Overlay */}
+      <div
+        className="cart-overlay"
+        onClick={onClose}
+        style={{ opacity: isAnimating ? 1 : 0 }}
+      ></div>
+
+      {/* Sidebar */}
+      <div className={`cart-sidebar ${isAnimating ? "open" : ""}`}>
+        <div className="cart-sidebar-wrapper">
+          <div className="cart-header">
+            <h2>
+              {cartItems.length === 0
+                ? "Shopping Cart"
+                : `${getCartItemCount()} items for ${getCartTotal().toFixed(
+                    2
+                  )}€`}
+            </h2>
+            <button className="close-cart" onClick={onClose}>
+              <img src={CloseButonDark} alt="Close" />
+            </button>
+          </div>
+
+          <div className="cart-content">
+            {cartItems.length === 0 ? (
+              <p>Your cart is empty</p>
+            ) : (
+              <>
+                <div className="cart-items">
+                  {cartItems.map((item) => (
+                    <article key={item.slug} className="cart-item">
+                      <div className="cart-item-image-container">
+                        <img
+                          src={item.imgUrl}
+                          alt={item.name}
+                          className="cart-item-image"
+                        />
+                      </div>
+                      <div className="cart-item-info">
+                        <div className="cart-item-info-top-row">
+                          <h4>{item.name}</h4>
+                          <button
+                            onClick={() => removeFromCart(item.slug)}
+                            className="remove-btn"
+                          >
+                            <img src={TrashIcon} alt="trash icon" />
+                          </button>
+                        </div>
+                        <div className="cart-item-info-bottom-row">
+                          <p>{item.price}€</p>
+                          <div className="cart-item-controls">
+                            <button
+                              onClick={() =>
+                                updateQuantity(item.slug, item.quantity - 1)
+                              }
+                              className="quantity-btn"
+                            >
+                              -
+                            </button>
+                            <span className="quantity">{item.quantity}</span>
+                            <button
+                              onClick={() =>
+                                updateQuantity(item.slug, item.quantity + 1)
+                              }
+                              className="quantity-btn"
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+        <div className="cart-footer">
+          <div className="cart-footer-wrapper">
+            <div className="cart-footer-discount-container">
+              <input type="text" placeholder="Use code" name="code" />
+            </div>
+            <div>
+              <p>
+                <span>
+                  {cartItems.length === 0
+                    ? "Shopping Cart"
+                    : `${getCartItemCount()} items`}
+                </span>
+                <span>{getCartTotal().toFixed(2)}€</span>
+              </p>
+            </div>
+            <div>
+              <p>
+                <span>Shipping</span>
+                <span>Free</span>
+              </p>
+            </div>
+            <div className="cart-total">
+              <p>
+                <span>Order summary</span>
+                <span>{getCartTotal().toFixed(2)} €</span>
+              </p>
+            </div>
+            <Button
+              url="/cart"
+              text="Checkout"
+              disabled={cartItems.length === 0}
+            />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default CartSidebar;

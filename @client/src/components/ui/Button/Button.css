@@ -13,6 +13,13 @@
   justify-content: center;
 }
 
+.button.disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .button img {
   width: 17px;
 }

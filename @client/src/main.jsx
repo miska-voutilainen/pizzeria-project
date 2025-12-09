@@ -4,6 +4,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import { AuthProvider } from "./context/AuthContext.jsx";
+import { CartProvider } from "./context/CartContext.jsx";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute.jsx";
 import ScrollToTop from "./components/ScrollToTop/ScrollToTop.jsx";
 
@@ -22,31 +23,33 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <ScrollToTop />
-        <Routes>
-          <Route path="/" element={<App />}>
-            <Route index element={<HomePage />} />
-            <Route path="menu" element={<MenuPage />} />
-            <Route path="about" element={<AboutUsPage />} />
-            <Route path="login" element={<LoginPage />} />
-            <Route path="register" element={<RegisterPage />} />
-            <Route
-              path="reset-password/:token"
-              element={<ResetPasswordPage />}
-            />
+        <CartProvider>
+          <ScrollToTop />
+          <Routes>
+            <Route path="/" element={<App />}>
+              <Route index element={<HomePage />} />
+              <Route path="menu" element={<MenuPage />} />
+              <Route path="about" element={<AboutUsPage />} />
+              <Route path="login" element={<LoginPage />} />
+              <Route path="register" element={<RegisterPage />} />
+              <Route
+                path="reset-password/:token"
+                element={<ResetPasswordPage />}
+              />
 
-            <Route
-              path="user"
-              element={
-                <ProtectedRoute>
-                  <UserPage />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="user"
+                element={
+                  <ProtectedRoute>
+                    <UserPage />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Route>
-        </Routes>
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Route>
+          </Routes>
+        </CartProvider>
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
