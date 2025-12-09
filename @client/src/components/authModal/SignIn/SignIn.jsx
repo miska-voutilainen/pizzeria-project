@@ -4,6 +4,7 @@ import CheckBox from "../../ui/CheckBox/CheckBox.jsx";
 import React from "react";
 import CloseButton from "../../ui/СloseButton/CloseButton.jsx";
 import InputField from "../../ui/inputField/InputField.jsx";
+import TextButton from "../../ui/TextButton/TextButton.jsx";
 
 const SignIn = ({setModalContent,onClose}) => {
 
@@ -18,7 +19,7 @@ const SignIn = ({setModalContent,onClose}) => {
                         <h1>Sign in</h1>
                         <div>
                             <p>Or</p>
-                            <a href="/Register" className="textButton">create an account</a>
+                            <TextButton text="create an account" onClick={() => setModalContent("Register")} />
                         </div>
                     </div>
                     <div id="inputFields">
@@ -29,7 +30,7 @@ const SignIn = ({setModalContent,onClose}) => {
                     <div>
                         <Button text="Sign in" id="sign-in-button"/>
                     </div>
-                    <a href="/resetPassword" className="textButton">Forgot your password?</a>
+                    <TextButton text="create an account" onClick={() => setModalContent("ResetPassword")} />
                 </div>
             </div>
     );
