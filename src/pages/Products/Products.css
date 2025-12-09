@@ -1,8 +1,9 @@
 #products-page-container {
   width: 100%;
   padding: 40px 60px;
-  max-width: 1400px;
-  margin: 0 auto;
+  max-width: var(--page-max-width);
+  /* max-width: 1400px; */
+  /* margin: 0 auto; */
 }
 
 .title {
@@ -22,6 +23,6 @@
 
 .product-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
   gap: 20px;
 }

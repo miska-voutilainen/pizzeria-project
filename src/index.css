@@ -6,6 +6,8 @@
 
   font-family: var(--font-base);
 
+  --page-max-width: 1200px;
+
   /* colors */
   --background-dark: #082109;
   --color-green: #1c3d19;

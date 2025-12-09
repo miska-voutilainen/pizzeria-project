@@ -1,8 +1,8 @@
 #users-page-container {
   width: 100%;
   padding: 40px 60px;
-  max-width: 1400px;
-  margin: 0 auto;
+  max-width: var(--page-max-width);
+  /* margin: 0 auto; */
 }
 
 .users-page-search-container {
@@ -11,7 +11,12 @@
 
 /* table */
 
+.users-page-table-container {
+  width: 100%;
+}
+
 .users-page-table-container table {
+  width: 100%;
   border-collapse: collapse;
   margin-bottom: 50px;
 }
