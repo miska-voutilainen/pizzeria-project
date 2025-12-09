@@ -1,8 +1,9 @@
 import "./Modal.css";
-import Button from "../../ui/Button/Button.jsx";
-import CheckBox from "../../ui/CheckBox/CheckBox.jsx";
+import Button from "../../../ui/Button/Button.jsx";
+import CheckBox from "../../../ui/CheckBox/CheckBox.jsx";
 import React from "react";
 import {SignIn} from "../SignIn/SignIn.jsx";
+import Register from "../Register/Register.jsx";
 
 const Modal = React.forwardRef((props, ref) => {
 
@@ -18,7 +19,7 @@ const Modal = React.forwardRef((props, ref) => {
     return (
         <dialog ref={ref} className={modalContent}>
             {modalContent === "SignIn" && (<SignIn setModalContent={setModalContent} onClose={onClose}/>)}
-            {modalContent === "LogIn" && (<LogIn setModalContent={setModalContent} onClose={onClose}/>)}
+            {modalContent === "Register" && (<Register setModalContent={setModalContent} onClose={onClose}/>)}
         </dialog>
     );
 });

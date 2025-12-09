@@ -1,0 +1,55 @@
+
+#registerContent{
+    display: flex;
+    width: 536px;
+    height: 430px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 25px;
+}
+
+
+#registerTitle {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#registerTitle>h1 {
+    color: #1C3D19;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+
+
+#registerTitle>div{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    color: #1C3D19;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+
+#inputFields{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+
+#sign-in-button{
+    width: 536px;
+    height: 43px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
