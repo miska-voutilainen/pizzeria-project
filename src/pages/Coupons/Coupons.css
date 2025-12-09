@@ -1,8 +1,8 @@
 #coupons-page-container {
   width: 100%;
   padding: 40px 60px;
-  max-width: 1400px;
-  margin: 0 auto;
+  max-width: var(--page-max-width);
+  /* margin: 0 auto; */
 }
 
 .title {
@@ -15,12 +15,17 @@
 .coupons-search-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
 }
 
 /* table */
 
+.coupons-page-table-container {
+  width: 100%;
+}
+
 .coupons-page-table-container table {
+  width: 100%;
   border-collapse: collapse;
   margin-bottom: 50px;
 }
@@ -36,15 +41,20 @@
 }
 
 /* table row button */
-
+.coupons-page-table-button {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 .coupons-page-table-button button {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px 20px;
+  padding: 3px 12px;
   background: none;
   border: none;
   cursor: pointer;
+  border: 2px solid black;
 }
 
 .coupons-page-table-button button:hover {

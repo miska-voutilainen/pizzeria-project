@@ -1,3 +1,24 @@
+/* Table styling */
+.users-page-table-container {
+  width: 100%;
+}
+
+.users-page-table-container table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 50px;
+}
+
+.users-page-table-container th,
+.users-page-table-container td {
+  padding: 20px 15px;
+  text-align: left;
+}
+
+.users-page-table-container tr {
+  border-bottom: 1px solid #ddd;
+}
+
 .users-table-edit-address {
   margin-top: 5px;
 }

@@ -1,13 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../api";
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableCell,
-  StatusBadge,
-} from "../../components";
+import { StatusBadge } from "../../components";
 import Search from "../../components/Search/Search";
 import SquareButton from "../../components/SquareButton/SquareButton";
 import AddCouponModal from "../../components/AddCouponModal/AddCouponModal";
@@ -120,65 +113,47 @@ export default function Coupons() {
   };
 
   return (
-    <div id="coupons-page-container">
+    <section id="coupons-page-container">
       <h1 className="title">Kupongit ({filteredCoupons.length})</h1>
 
       <div className="coupons-search-row">
-        <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        {/* <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} /> */}
+        <div className="users-page-search-container">
+          <Search
+            inputPlaceholder="hae kuponkeja"
+            name="couponSearch"
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
         <SquareButton type="add" onClick={handleAddNew} />
       </div>
 
-      <div className="coupons-page-table-container">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableCell>Koodi</TableCell>
-              <TableCell>Alennus %</TableCell>
-              <TableCell>Voimassa saakka</TableCell>
-              <TableCell>Toiminnot</TableCell>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
+      <div className="users-page-table-container coupons-page-table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Koodi</th>
+              <th>Alennus %</th>
+              <th>Voimassa saakka</th>
+              <th>Toiminnot</th>
+            </tr>
+          </thead>
+          <tbody>
             {filteredCoupons.map((coupon) => (
-              <TableRow key={coupon.id}>
-                <TableCell>{coupon.coupon}</TableCell>
-                <TableCell>{coupon.discount_percent || "-"}%</TableCell>
-                <TableCell>{coupon.expires_at || "-"}</TableCell>
-                <TableCell className="coupons-page-table-button">
-                  <button
-                    onClick={() => handleEdit(coupon)}
-                    style={{
-                      padding: "4px 8px",
-                      marginRight: "8px",
-                      backgroundColor: "#228b22",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "3px",
-                      cursor: "pointer",
-                      fontSize: "12px",
-                    }}
-                  >
-                    Muokkaa
-                  </button>
-                  <button
-                    onClick={() => handleDelete(coupon.id)}
-                    style={{
-                      padding: "4px 8px",
-                      backgroundColor: "#dc3545",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "3px",
-                      cursor: "pointer",
-                      fontSize: "12px",
-                    }}
-                  >
+              <tr key={coupon.id}>
+                <td>{coupon.coupon}</td>
+                <td>{coupon.discount_percent || "-"}%</td>
+                <td>{coupon.expires_at || "-"}</td>
+                <td className="coupons-page-table-button">
+                  <button onClick={() => handleEdit(coupon)}>Muokkaa</button>
+                  <button onClick={() => handleDelete(coupon.id)}>
                     Poista
                   </button>
-                </TableCell>
-              </TableRow>
+                </td>
+              </tr>
             ))}
-          </TableBody>
-        </Table>
+          </tbody>
+        </table>
       </div>
 
       <AddCouponModal
@@ -189,6 +164,6 @@ export default function Coupons() {
         save={handleSave}
         editing={editing}
       />
-    </div>
+    </section>
   );
 }
