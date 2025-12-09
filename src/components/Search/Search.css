@@ -6,6 +6,7 @@
   padding: 10px 25px;
   padding-left: 35px;
   border: 1px solid grey;
+  width: 280px;
 }
 
 .search-container input:focus {

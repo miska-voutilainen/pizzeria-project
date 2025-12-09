@@ -20,6 +20,12 @@
 .users-page-table-container td {
   padding: 20px 15px;
   text-align: left;
+  white-space: nowrap;
+}
+
+.users-page-table-container th {
+  padding-bottom: 10px;
+  white-space: nowrap;
 }
 
 .users-page-table-container tr {

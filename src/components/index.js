@@ -7,7 +7,7 @@ export { default as TableCell } from "./TableCell";
 
 // UI Components
 export { default as ActionButton } from "./ActionButton";
-export { default as StatusBadge } from "./StatusBadge";
+export { default as StatusBadge } from "./StatusBadge/StatusBadge";
 
 // Modal Components
 export { default as Modal } from "./Modal/Modal";
