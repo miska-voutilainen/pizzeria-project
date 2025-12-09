@@ -178,6 +178,7 @@ const Checkout = () => {
                 onChange={handleFormChange("phone")}
               />
             </div>
+<<<<<<< HEAD
             {deliveryType === "delivery" && (
               <>
                 <div className="checkout-input-row">

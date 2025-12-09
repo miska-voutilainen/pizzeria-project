@@ -237,6 +237,9 @@
   font-size: 1rem;
   font-family: inherit;
 }
+.cart-footer-discount-container input::placeholder {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
 
 .cart-footer-discount-container input:focus {
   outline: none;
