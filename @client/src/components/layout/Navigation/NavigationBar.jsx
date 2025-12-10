@@ -45,7 +45,7 @@ const NavigationBar = () => {
               <Link to="/menu">Menu</Link>
             </li>
             <li>
-              <a onClick={() => setModalWindow("MakeYourOwnPizza")}>Luo oma pizza</a>
+              <a className="make-your-own-pizza" onClick={() => setModalWindow("MakeYourOwnPizza")}>Luo oma pizza</a>
             </li>
             <li>
               <Link to="/about">About us</Link>

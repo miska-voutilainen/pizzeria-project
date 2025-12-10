@@ -1,0 +1,77 @@
+#make-your-own-pizza-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 31px;
+    padding: 21px 29px 21px 29px;
+}
+
+#pizza-image{
+    width: 485px;
+    height: 524px;
+}
+
+#make-your-own-pizza-right-side{
+    width: 515px;
+    height: 716px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 25px;
+}
+
+#make-your-own-pizza-button{
+    width: 515px;
+    height: 47px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#make-your-own-pizza-description{
+    width: 451px;
+    height: 80px;
+    color: #547351;
+    font-size: 0.9375rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+#make-your-own-pizza-text{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#make-your-own-pizza-container h2{
+    color: #1C3D19;
+    height: 34px;
+    flex-shrink: 0;
+    align-self: stretch;
+    font-size: 1.625rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    letter-spacing: 0.26px;
+}
+
+#add-ingredients{
+    display: flex;
+    height: 438px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 15px;
+    flex-shrink: 0;
+    align-self: stretch;
+}
+
+#ingredients-list{
+    display: flex;
+    height: 323px;
+    align-items: flex-start;
+    gap: 27px;
+    flex-shrink: 0;
+    align-self: stretch;
+}

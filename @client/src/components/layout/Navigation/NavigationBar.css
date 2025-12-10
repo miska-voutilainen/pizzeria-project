@@ -195,6 +195,9 @@
   width: 100%;
 }
 
+.make-your-own-pizza{
+    cursor: pointer;
+}
 /* ---------------------------- */
 /* RESPONSIVE NAVIGATION */
 /* ---------------------------- */
