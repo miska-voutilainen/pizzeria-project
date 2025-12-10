@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../api";
 import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableCell,
   ActionButton,
   StatusBadge,
   UserProfileModal,

@@ -56,7 +56,7 @@ const AddCouponModal = ({ isOpen, onClose, form, setForm, save, editing }) => {
             text={editing ? "Päivitä" : "Lisää kuponki"}
             style="primary"
           />
-          <Button onClick={onClose} text="Peruuta" style="secondary" />
+          {/* <Button onClick={onClose} text="Peruuta" style="secondary" /> */}
         </div>
       </div>
     </Modal>

@@ -3,6 +3,7 @@ import Modal from "../Modal/Modal";
 import ActionButton from "../ActionButton";
 import "./UserProfileModal.css";
 import Button from "../Button/Button";
+import UserDetailsModalHeader from "../UserDetailsModalHeader/UserDetailsModalHeader";
 
 export default function UserProfileModal({ isOpen, onClose, user, onSave }) {
   const [form, setForm] = useState({
@@ -134,21 +135,7 @@ export default function UserProfileModal({ isOpen, onClose, user, onSave }) {
       size="large"
       className="view-user-details-modal"
     >
-      <div className="view-user-details-header">
-        <div className="view-user-details-header-user-id">
-          <p>#{user.userId}</p>
-        </div>
-        <div className="view-user-details-header-user-name">
-          <h3>
-            {user.firstName && user.lastName
-              ? `${user.firstName} ${user.lastName}`
-              : user.username}
-          </h3>
-        </div>
-        <div className="view-user-details-header-last-login">
-          <p>Viimeinen kirjautuminen: {formatDate(user.lastLoginAt)}</p>
-        </div>
-      </div>
+      <UserDetailsModalHeader user={user} formatDate={formatDate} />
 
       <hr className="view-user-details-section-divider" />
 
