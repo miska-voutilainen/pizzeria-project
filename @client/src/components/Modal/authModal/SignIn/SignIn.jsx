@@ -140,6 +140,7 @@ const SignIn = ({ setModalContent, onClose, redirectPath }) => {
               }
               placeholder="0000"
               maxLength="4"
+              autoComplete="off"
               style={{
                 textAlign: "center",
                 fontSize: "18px",
@@ -212,7 +213,7 @@ const SignIn = ({ setModalContent, onClose, redirectPath }) => {
               }}
               placeholder="Password"
             />
-              {errors.password && <p className="error">{errors.password}</p>}
+            {errors.password && <p className="error">{errors.password}</p>}
           </div>
           <CheckBox
             className="white-background"

@@ -6,28 +6,36 @@ import RegistrationSuccess from "../authModal/RegistrationSucsess/RegistrationSu
 
 const Modal = React.forwardRef((props, ref) => {
   const [modalContent, setModalContent] = React.useState("SignIn");
+  const [modalKey, setModalKey] = React.useState(0);
   const { redirectPath } = props;
 
   const onClose = () => {
     ref.current.close();
     document.body.style.overflow = "";
     setModalContent("SignIn");
+    // Force remount of child components by changing the key
+    setModalKey((prev) => prev + 1);
   };
 
   return (
     <dialog ref={ref} className={modalContent}>
       {modalContent === "SignIn" && (
         <SignIn
+          key={`signin-${modalKey}`}
           setModalContent={setModalContent}
           onClose={onClose}
           redirectPath={redirectPath}
         />
       )}
       {modalContent === "Register" && (
-        <Register setModalContent={setModalContent} onClose={onClose} />
+        <Register
+          key={`register-${modalKey}`}
+          setModalContent={setModalContent}
+          onClose={onClose}
+        />
       )}
       {modalContent === "RegistrationSuccess" && (
-        <RegistrationSuccess onClose={onClose} />
+        <RegistrationSuccess key={`success-${modalKey}`} onClose={onClose} />
       )}
     </dialog>
   );
