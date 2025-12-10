@@ -325,6 +325,7 @@ const Checkout = () => {
                   />
                 </div>
               )}
+              <TextButton text={"Valitse pizzeria"} />
               <div className="checkout-inputs-user-sign-in">
                 {!user && (
                   <TextButton
