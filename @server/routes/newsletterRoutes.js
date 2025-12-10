@@ -27,7 +27,7 @@ function newsletterRoutes(pool) {
     try {
       // Check if email already has a valid (unused) coupon
       const [existingCoupons] = await pool.execute(
-        `SELECT id FROM coupons 
+        `SELECT id FROM user_coupons 
          WHERE LOWER(email) = LOWER(?) AND used = 0 AND expiresAt > NOW()`,
         [email]
       );
@@ -44,7 +44,7 @@ function newsletterRoutes(pool) {
 
       // Store coupon in database
       await pool.execute(
-        `INSERT INTO coupons (email, coupon, createdAt, expiresAt, used)
+        `INSERT INTO user_coupons (email, coupon, createdAt, expiresAt, used)
          VALUES (?, ?, NOW(), ?, 0)`,
         [email, couponCode, expiresAt]
       );
@@ -104,21 +104,41 @@ function newsletterRoutes(pool) {
     }
 
     try {
-      const [coupons] = await pool.execute(
-        `SELECT id, used, expiresAt FROM coupons 
-         WHERE coupon = ? AND expiresAt > NOW()`,
-        [coupon.toUpperCase()]
+      const couponCode = coupon.toUpperCase();
+
+      // First, check general coupons table
+      const [generalCoupons] = await pool.execute(
+        `SELECT id, discount_percent FROM coupons 
+         WHERE LOWER(coupon) = LOWER(?) AND (expires_at IS NULL OR expires_at > NOW())`,
+        [couponCode]
       );
 
-      if (coupons.length === 0) {
+      if (generalCoupons.length > 0) {
+        const couponRecord = generalCoupons[0];
+        return res.json({
+          valid: true,
+          message: "Coupon is valid!",
+          discount: couponRecord.discount_percent,
+          type: "general",
+        });
+      }
+
+      // If not found in general coupons, check user_coupons table
+      const [userCoupons] = await pool.execute(
+        `SELECT id, used, expiresAt FROM user_coupons 
+         WHERE coupon = ? AND expiresAt > NOW()`,
+        [couponCode]
+      );
+
+      if (userCoupons.length === 0) {
         return res
           .status(400)
           .json({ valid: false, message: "Invalid or expired coupon" });
       }
 
-      const couponRecord = coupons[0];
+      const userCouponRecord = userCoupons[0];
 
-      if (couponRecord.used) {
+      if (userCouponRecord.used) {
         return res
           .status(400)
           .json({ valid: false, message: "Coupon already used" });
@@ -128,6 +148,7 @@ function newsletterRoutes(pool) {
         valid: true,
         message: "Coupon is valid!",
         discount: 10,
+        type: "user",
       });
     } catch (error) {
       console.error("Validate coupon error:", error);

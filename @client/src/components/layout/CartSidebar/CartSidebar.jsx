@@ -20,7 +20,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
     applyCoupon,
     removeCoupon,
     coupon,
-    couponDiscount,
+    couponPercentage,
     getCartItemCount,
   } = useCart();
 
@@ -99,11 +99,13 @@ const CartSidebar = ({ isOpen, onClose }) => {
                   {cartItems.map((item) => (
                     <article key={item.slug} className="cart-item">
                       <div className="cart-item-image-container">
-                        <img
-                          src={item.imgUrl}
-                          alt={item.name}
-                          className="cart-item-image"
-                        />
+                        {item.imgUrl ? (
+                          <img
+                            src={item.imgUrl}
+                            alt={item.name}
+                            className="cart-item-image"
+                          />
+                        ) : null}
                       </div>
                       <div className="cart-item-info">
                         <div className="cart-item-info-top-row">
@@ -228,11 +230,13 @@ const CartSidebar = ({ isOpen, onClose }) => {
                 <span>{getCartTotal().toFixed(2)}€</span>
               </p>
             </div>
-            {coupon && couponDiscount > 0 && (
+            {coupon && couponPercentage > 0 && (
               <div style={{ color: "#2e7d32", fontWeight: "bold" }}>
                 <p>
-                  <span>Discount (10%)</span>
-                  <span>-{couponDiscount.toFixed(2)}€</span>
+                  <span>Alennus ({couponPercentage}%)</span>
+                  <span>
+                    -{((getCartTotal() * couponPercentage) / 100).toFixed(2)}€
+                  </span>
                 </p>
               </div>
             )}
@@ -246,7 +250,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
               <p>
                 <span>Order summary</span>
                 <span>
-                  {(coupon && couponDiscount > 0
+                  {(coupon && couponPercentage > 0
                     ? getDiscountedTotal()
                     : getCartTotal()
                   ).toFixed(2)}{" "}
@@ -255,7 +259,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
               </p>
             </div>
             <Button
-              url="/cart"
+              url="/checkout"
               text="Checkout"
               disabled={cartItems.length === 0}
             />
