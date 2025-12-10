@@ -1,4 +1,5 @@
 import { useCart } from "../../../context/CartContext";
+import RaisedButtonWide from "../RaisedButtonWide/RaisedButtonWide";
 import SquareButton from "../SquareButton/SquareButton";
 import "./ProductCard.css";
 
@@ -24,7 +25,12 @@ const ProductCard = ({ pizza }) => {
         <p className="product-description">{pizza.description}</p>
         <div className="product-card-price-row">
           <span className="product-price">{pizza.price} €</span>
-          <SquareButton type="add" product={pizza} onClick={handleAddToCart} />
+          <RaisedButtonWide
+            type="cart"
+            product={pizza}
+            onClick={handleAddToCart}
+            text="Lisää"
+          />
         </div>
       </div>
     </article>
