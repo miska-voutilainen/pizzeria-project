@@ -612,61 +612,52 @@ function createAuthRoutes({
     }
   });
 
-  // Add these routes before the "return router;" statement in your auth routes file:
-
-  // GET all orders — admin only
+  // GET all orders — admin only (can filter by userId via query param)
   router.get("/orders", async (req, res) => {
     if (req.user?.role !== "administrator") {
       return res.status(403).json({ error: "Admin only" });
     }
-    try {
-      const [rows] = await pool.execute(
-        `SELECT orderId, userId, items, totalAmount, status, 
-              paymentMethod, shippingAddress, created_at, updated_at
-       FROM order_data ORDER BY created_at DESC`
-      );
-      res.json(rows);
-    } catch (err) {
-      console.error("GET /orders error:", err);
-      res.status(500).json({ error: "Server error" });
-    }
-  });
-
-  // UPDATE order status — admin only
-  // UPDATE order (status and/or address) — admin only
-  router.put("/orders/:orderId", async (req, res) => {
-    if (req.user?.role !== "administrator")
-      return res.status(403).json({ error: "Admin only" });
-
-    const { status, shippingAddress } = req.body;
 
     try {
-      // Build dynamic query based on what fields are provided
-      if (status !== undefined && shippingAddress !== undefined) {
-        // Both fields provided
-        await pool.execute(
-          `UPDATE order_data SET status = ?, shippingAddress = ?, updated_at = NOW() WHERE orderId = ?`,
-          [status, shippingAddress, req.params.orderId]
-        );
-      } else if (status !== undefined) {
-        // Only status provided
-        await pool.execute(
-          `UPDATE order_data SET status = ?, updated_at = NOW() WHERE orderId = ?`,
-          [status, req.params.orderId]
-        );
-      } else if (shippingAddress !== undefined) {
-        // Only address provided
-        await pool.execute(
-          `UPDATE order_data SET shippingAddress = ?, updated_at = NOW() WHERE orderId = ?`,
-          [shippingAddress, req.params.orderId]
-        );
-      } else {
-        return res.status(400).json({ error: "No fields to update" });
+      const { userId } = req.query; // Optional query parameter to filter by userId
+      let query = `
+      SELECT 
+        o.*,
+        JSON_UNQUOTE(o.items) as items,
+        JSON_UNQUOTE(o.shippingAddress) as shippingAddress,
+        u.username,
+        u.email
+      FROM order_data o
+      LEFT JOIN user_data u ON o.userId = u.userId
+      `;
+
+      const params = [];
+      if (userId) {
+        query += `WHERE o.userId = ? `;
+        params.push(userId);
       }
 
-      res.json({ message: "Order updated successfully" });
+      query += `ORDER BY o.created_at DESC`;
+
+      const [rows] = await pool.execute(query, params);
+
+      const parsedRows = rows.map((row) => ({
+        ...row,
+        items: row.items
+          ? typeof row.items === "string"
+            ? JSON.parse(row.items)
+            : row.items
+          : [],
+        shippingAddress: row.shippingAddress
+          ? typeof row.shippingAddress === "string"
+            ? JSON.parse(row.shippingAddress)
+            : row.shippingAddress
+          : null,
+      }));
+
+      res.json(parsedRows);
     } catch (err) {
-      console.error("PUT /orders error:", err);
+      console.error("GET /orders error:", err);
       res.status(500).json({ error: "Server error" });
     }
   });

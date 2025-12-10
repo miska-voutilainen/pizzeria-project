@@ -185,6 +185,7 @@ export const CartProvider = ({ children }) => {
     coupon,
     couponPercentage,
     getCartItemCount,
+    isInitialized,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

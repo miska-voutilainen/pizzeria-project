@@ -9,7 +9,6 @@ const Modal = React.forwardRef((props, ref) => {
 
     const [modalContent, setModalContent] = React.useState("SignIn");
 
-
     const onClose = () => {
         ref.current.close()
         document.body.style.overflow = "";

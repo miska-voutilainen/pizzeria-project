@@ -11,6 +11,8 @@
   white-space: nowrap;
   text-align: center;
   justify-content: center;
+  border: none;
+  cursor: pointer;
 }
 
 .button.disabled {
@@ -26,4 +28,17 @@
 
 .button:hover {
   opacity: 0.8;
+}
+
+/* appearance dark */
+
+.button-dark {
+  background-color: var(--background-dark);
+  color: var(--background-light);
+  border: 1px solid var(--color-border);
+}
+
+.button-dark:hover {
+  /* background-color: #333; */
+  opacity: 0.6;
 }
