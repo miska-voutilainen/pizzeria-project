@@ -1,5 +1,5 @@
 import "./Modal.css";
-import React from "react";
+import React, {useEffect} from "react";
 import {SignIn} from "../authModal/SignIn/SignIn.jsx";
 import Register from "../authModal/Register/Register.jsx";
 import RegistrationSuccess from "../authModal/RegistrationSucsess/RegistrationSucsess.jsx";
@@ -14,10 +14,18 @@ const Modal = React.forwardRef((props, ref) => {
     const [modalKey, setModalKey] = React.useState(0);
     const {redirectPath} = props;
 
+    useEffect(() => {
+        if (props.window && ref.current) {
+            setModalContent(props.window);
+            ref.current.showModal();
+        }
+    }, [props.window]);
+
     const onClose = () => {
         ref.current.close();
         document.body.style.overflow = "";
-        setModalContent(props.window);
+        props.setModalWindow(null);
+        setModalContent(null);
         // Force remount of child components by changing the key
         setModalKey((prev) => prev + 1);
     };
@@ -53,6 +61,9 @@ const Modal = React.forwardRef((props, ref) => {
             )}
             {(modalContent === "ResetPasswordSuccess" || modalContent==="EmailConfirmationSuccess") && (
                 <EmailPasswordSuccess key={`emailPasswordSuccess-${modalKey}`} onClose={onClose} modalContent={modalContent}/>
+            )}
+            {modalContent === "MakeYourOwnPizza" && (
+                <MakeYourOwnPizza key={`MakeYouOwnPizza-${modalKey}`} onClose={onClose}/>
             )}
         </dialog>
     );
