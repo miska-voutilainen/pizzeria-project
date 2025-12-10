@@ -11,6 +11,16 @@ const Button = ({
 }) => {
   const buttonClass = `button ${appearance === "dark" ? "button-dark" : ""}`;
 
+  // If no URL is provided, render as a regular button
+  if (!url) {
+    return (
+      <button className={buttonClass} onClick={onClick} id={id}>
+        {text}
+        {imageUrl && <img src={imageUrl} alt={imageUrl} />}
+      </button>
+    );
+  }
+
   return (
     <Link to={url} className={buttonClass} onClick={onClick} id={id}>
       {text}

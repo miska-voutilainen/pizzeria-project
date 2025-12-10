@@ -16,6 +16,7 @@ import AboutUsPage from "./pages/AboutUs/AboutUsPage.jsx";
 import Checkout from "./pages/Checkout/Checkout.jsx";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage.jsx";
 import OrderConfirmation from "./pages/OrderConfirmation/OrderConfirmation.jsx";
+import CheckoutProtectedRoute from "./components/CheckoutProtectedRoute/CheckoutProtectedRoute.jsx";
 
 import "./styles/index.css";
 
@@ -30,7 +31,14 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               <Route index element={<HomePage />} />
               <Route path="menu" element={<MenuPage />} />
               <Route path="about" element={<AboutUsPage />} />
-              <Route path="checkout" element={<Checkout />} />
+              <Route
+                path="checkout"
+                element={
+                  <CheckoutProtectedRoute>
+                    <Checkout />
+                  </CheckoutProtectedRoute>
+                }
+              />
               <Route
                 path="order-confirmation"
                 element={<OrderConfirmation />}

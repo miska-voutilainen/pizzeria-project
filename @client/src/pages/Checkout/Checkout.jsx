@@ -216,7 +216,7 @@ const Checkout = () => {
                   type="text"
                   name={"name"}
                   id={"name"}
-                  placeholder="Etunimi"
+                  placeholder="Matti Meikäläinen"
                   value={formData.name}
                   onChange={handleFormChange("name")}
                 />

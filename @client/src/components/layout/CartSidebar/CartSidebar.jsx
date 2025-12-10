@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useCart } from "../../../context/CartContext";
+import { useNavigate } from "react-router-dom";
 import "./CartSidebar.css";
 import CloseButonDark from "../../../assets/images/close-dark.svg";
 import Button from "../../ui/Button/Button";
 import TrashIcon from "../../../assets/images/trash-icon.svg";
 
 const CartSidebar = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [emptyCartMessage, setEmptyCartMessage] = useState(false);
   const {
     cartItems,
     removeFromCart,
@@ -26,6 +29,16 @@ const CartSidebar = ({ isOpen, onClose }) => {
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
+
+  const handleCheckoutClick = () => {
+    if (cartItems.length === 0) {
+      setEmptyCartMessage(true);
+      setTimeout(() => setEmptyCartMessage(false), 3000);
+    } else {
+      onClose();
+      navigate("/checkout");
+    }
+  };
 
   if (!isVisible) return null;
 
@@ -56,7 +69,20 @@ const CartSidebar = ({ isOpen, onClose }) => {
 
           <div className="cart-content">
             {cartItems.length === 0 ? (
-              <p>Your cart is empty</p>
+              <>
+                <p>Your cart is empty</p>
+                {emptyCartMessage && (
+                  <p
+                    style={{
+                      color: "#e74c3c",
+                      marginTop: "10px",
+                      fontSize: "14px",
+                    }}
+                  >
+                    Please add items to your cart before checkout
+                  </p>
+                )}
+              </>
             ) : (
               <>
                 <div className="cart-items">
@@ -135,12 +161,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
                 <span>{getCartTotal().toFixed(2)} €</span>
               </p>
             </div>
-            <Button
-              url="/checkout"
-              text="Checkout"
-              disabled={cartItems.length === 0}
-              onClick={onClose}
-            />
+            <Button text="Checkout" onClick={handleCheckoutClick} />
           </div>
         </div>
       </div>
