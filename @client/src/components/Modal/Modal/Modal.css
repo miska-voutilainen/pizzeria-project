@@ -12,6 +12,11 @@ dialog {
     width: 843px;
 }
 
+.TwoFactor{
+    width:723px;
+    height:735px;
+}
+
 dialog>div{
     border: 3px solid #A88F67;
     display: flex;
@@ -32,6 +37,21 @@ dialog::backdrop {
     height: 543px;
 }
 
+.TwoFactor{
+    width: 723px;
+    height: 735px;
+}
+
+.TwoFactor>div{
+    width:685px;
+    height:683px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 61px;
+}
+
 
 #sign-in-button, #register-button {
     width: 536px;
@@ -40,6 +60,15 @@ dialog::backdrop {
     justify-content: center;
     align-items: center;
 }
+
+#two-factor-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 411px;
+    height: 43px;
+}
+
 
 dialog h1{
     color: #1C3D19;
@@ -71,6 +100,9 @@ dialog form{
     gap: 20px;
 }
 
+dialog input:focus{
+    outline: 2px solid #A88F67;
+}
 
 
 
