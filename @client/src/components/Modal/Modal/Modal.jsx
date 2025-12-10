@@ -5,6 +5,9 @@ import Register from "../authModal/Register/Register.jsx";
 import RegistrationSuccess from "../authModal/RegistrationSucsess/RegistrationSucsess.jsx";
 import TwoFactor from "../authModal/TwoFactor/TwoFactor.jsx";
 import Success from "../authModal/Success/Success.jsx";
+import ResetPassword from "../authModal/ResetPassword/ResetPassword.jsx";
+import EmailPasswordSuccess
+    from "../authModal/EmailPasswordSuccess/EmailPasswordSuccess.jsx";
 
 const Modal = React.forwardRef((props, ref) => {
     const [modalContent, setModalContent] = React.useState(props.window);
@@ -14,7 +17,7 @@ const Modal = React.forwardRef((props, ref) => {
     const onClose = () => {
         ref.current.close();
         document.body.style.overflow = "";
-        setModalContent("");
+        setModalContent(props.window);
         // Force remount of child components by changing the key
         setModalKey((prev) => prev + 1);
     };
@@ -44,6 +47,12 @@ const Modal = React.forwardRef((props, ref) => {
             )}
             {modalContent === "Success" && (
                 <Success key={`success-${modalKey}`} onClose={onClose}/>
+            )}
+            {modalContent === "ResetPassword" && (
+                <ResetPassword key={`resetPassword-${modalKey}`} onClose={onClose} setModalContent={setModalContent}/>
+            )}
+            {(modalContent === "ResetPasswordSuccess" || modalContent==="EmailConfirmationSuccess") && (
+                <EmailPasswordSuccess key={`emailPasswordSuccess-${modalKey}`} onClose={onClose} modalContent={modalContent}/>
             )}
         </dialog>
     );

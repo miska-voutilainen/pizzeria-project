@@ -8,8 +8,12 @@ dialog {
     position: absolute;
 }
 
-.SignIn, .Register {
+.SignIn, .Register, .ResetPassword {
     width: 843px;
+}
+
+.ResetPassword {
+    height: 410px;
 }
 
 .TwoFactor{
@@ -22,6 +26,21 @@ dialog {
     height: 735px;
 }
 
+.ResetPasswordSuccess, .EmailConfirmationSuccess{
+    width: 843px;
+    height: 506px;
+}
+
+.ResetPasswordSuccess>div, .EmailConfirmationSuccess>div{
+    width: 806px;
+    height: 469px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+    text-align: center;
+}
 dialog>div{
     border: 3px solid #A88F67;
     display: flex;
@@ -67,13 +86,21 @@ dialog::backdrop {
     gap: 61px;
 }
 
+.ResetPassword>div{
+    height: 358px;
+}
 
-#sign-in-button, #register-button {
+
+#sign-in-button, #register-button, #reset-password-button {
     width: 536px;
     height: 43px;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+#reset-password-button{
+    width: 400px;
 }
 
 #two-factor-button{
