@@ -28,7 +28,7 @@ const NavigationBar = () => {
 
   return (
     <header className="navbar">
-        <Modal ref={signInRef}/>
+        <Modal ref={signInRef} window="SignIn"/>
       <div className="navbar-container">
         {/* Logo */}
         <div className="navbar-row-start">

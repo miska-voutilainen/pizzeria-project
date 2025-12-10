@@ -230,7 +230,7 @@ const SignIn = ({ setModalContent, onClose, redirectPath }) => {
           </div>
           <TextButton
             text="Forgot password?"
-            onClick={() => setModalContent("ResetPassword")}
+            onClick={() => setModalContent("TwoFactor")}
           />
         </form>
       </div>

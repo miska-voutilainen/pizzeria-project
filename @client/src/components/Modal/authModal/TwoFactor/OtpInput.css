@@ -1,0 +1,17 @@
+.otp-wrapper {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.otp-box {
+    width: 90px;
+    height: 112px;
+    background: var(--input-background);
+    border: none;
+    box-shadow: 0 0 10px rgba(28,61,25,0.1) inset;
+    font-size: 80px;
+    text-align: center;
+    color: #1C3D19;
+    font-weight: 400;
+}
