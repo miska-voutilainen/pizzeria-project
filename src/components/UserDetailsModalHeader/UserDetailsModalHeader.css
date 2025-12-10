@@ -1,0 +1,73 @@
+/* User Details Modal Header styles (small helpers) */
+
+.view-user-details-header {
+  margin-bottom: 24px;
+}
+
+.view-user-details-header-user-id {
+  color: #6c757d;
+  font-size: 1rem;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.view-user-details-header-user-id p {
+  margin: 0;
+}
+
+.copy-userid-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s all;
+  width: 18px;
+}
+
+.copy-userid-button:hover {
+  opacity: 0.6;
+}
+
+.copy-userid-button:active {
+  opacity: 0.2;
+}
+
+.copy-userid-button img {
+  width: 100%;
+  height: auto;
+}
+
+.view-user-details-header-user-name h3 {
+  margin-bottom: 8px;
+  color: var(--color-green);
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.view-user-details-header-last-login {
+  color: #6c757d;
+  font-size: 1rem;
+  margin-bottom: 24px;
+}
+
+/* Flash effect when user id is copied */
+.view-user-details-header-user-id .userid-copied {
+  animation: userid-flash 0.4s ease-in-out;
+  border-radius: 4px;
+}
+
+@keyframes userid-flash {
+  0% {
+    background-color: transparent;
+  }
+  10% {
+    background-color: rgba(60, 148, 83, 0.797); /* bright yellow */
+  }
+  50% {
+    background-color: rgba(30, 90, 46, 0.6);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
