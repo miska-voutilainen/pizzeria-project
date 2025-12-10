@@ -56,3 +56,8 @@
 .users-page-table-button button:hover {
   opacity: 0.5;
 }
+
+/* email verified tooltip */
+/* .email-verified-tooltip {
+  background-color: var(--background-dark);
+} */
