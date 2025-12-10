@@ -4,6 +4,7 @@ import ProductCard from "../../components/ui/ProductCard/ProductCard.jsx";
 import "./MenuPage.css";
 import Newsletter from "../../components/layout/Newsletter/Newsletter.jsx";
 import PromoSlide from "../../components/layout/PromoSlide/PromoSlide.jsx";
+import RadioButton from "../../components/ui/RadioButton/RadioButton.jsx";
 
 const categories = [
   { id: "pizza", label: "Pizzas", fetch: getPizzas },
@@ -36,13 +37,19 @@ const MenuPage = () => {
       <section id="menu-page">
         <div className="category-tabs">
           {categories.map((cat) => (
-            <button
+            // <button
+            //   key={cat.id}
+            //   onClick={() => setActiveTab(cat.id)}
+            //   className={`category-tab ${activeTab === cat.id ? "active" : ""}`}
+            // >
+            //   {cat.label}
+            // </button>
+            <RadioButton
+              text={cat.label}
               key={cat.id}
               onClick={() => setActiveTab(cat.id)}
-              className={`category-tab ${activeTab === cat.id ? "active" : ""}`}
-            >
-              {cat.label}
-            </button>
+              active={activeTab === cat.id}
+            />
           ))}
         </div>
 
