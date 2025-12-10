@@ -34,64 +34,33 @@ export default function UserContextMenu({
   return (
     <>
       {/* Overlay */}
-      <div
-        className="user-context-menu-container"
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 999,
-        }}
-        onClick={onClose}
-      />
+      <div className="user-context-menu-container" onClick={onClose} />
 
       {/* Context Menu */}
       <div
+        className="user-context-menu"
         style={{
-          position: "fixed",
           top: position?.y || 0,
-          left: position?.x || 0,
-          backgroundColor: "white",
-          borderRadius: "8px",
-          padding: "4px",
-          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.15)",
-          border: "1px solid #dee2e6",
-          zIndex: 1000,
-          minWidth: "180px",
+          left: (position?.x || 0) + 15,
         }}
         onClick={(e) => e.stopPropagation()}
       >
         {menuItems.map((item, index) => (
-          <button
-            key={index}
-            onClick={item.onClick}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              width: "100%",
-              padding: "8px 12px",
-              border: "none",
-              background: "none",
-              cursor: "pointer",
-              fontSize: "14px",
-              color: "#333",
-              borderRadius: "4px",
-              marginBottom: index < menuItems.length - 1 ? "2px" : "0",
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = "#f8f9fa";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = "transparent";
-            }}
-          >
-            <span style={{ marginRight: "8px", fontSize: "16px" }}>
-              <img src={item.icon} alt={item.icon} />
-            </span>
-            {item.label}
-          </button>
+          <div className="user-context-menu-item-wrapper" key={index}>
+            <button
+              onClick={item.onClick}
+              className={`user-context-menu-item${
+                index < menuItems.length - 1
+                  ? " user-context-menu-item--spaced"
+                  : ""
+              }`}
+            >
+              <span className="user-context-menu-item-icon">
+                <img src={item.icon} alt={item.icon} />
+              </span>
+              {item.label}
+            </button>
+          </div>
         ))}
       </div>
     </>

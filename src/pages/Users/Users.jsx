@@ -276,12 +276,13 @@ export default function Users() {
                       />
                       <div
                         data-tooltip
+                        className="email-verified-tooltip"
                         style={{
                           position: "absolute",
                           top: "-38px",
                           left: "50%",
                           transform: "translateX(-50%)",
-                          backgroundColor: "#1f2937",
+                          backgroundColor: "#082109",
                           color: "#f3f4f6",
                           padding: "6px 10px",
                           borderRadius: "4px",
@@ -298,14 +299,14 @@ export default function Users() {
                         <div
                           style={{
                             position: "absolute",
-                            bottom: "-6px",
+                            bottom: "-5px",
                             left: "50%",
                             transform: "translateX(-50%)",
                             width: "0",
                             height: "0",
                             borderLeft: "6px solid transparent",
                             borderRight: "6px solid transparent",
-                            borderTop: "6px solid #1f2937",
+                            borderTop: "6px solid #082109",
                           }}
                         />
                         {u.emailVerified
