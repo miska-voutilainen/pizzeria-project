@@ -1,0 +1,23 @@
+#user-page {
+  padding: 40px 0px;
+}
+
+.user-page-wrapper {
+  display: flex;
+  gap: 20px;
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+}
+
+.user-page-user-card {
+  width: 50%;
+}
+
+.user-page-orders-card {
+  width: 50%;
+}
+
+.user-page-orders-card {
+  border-left: 1px solid #e6e6e6;
+  padding-left: 24px;
+}
