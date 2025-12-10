@@ -6,15 +6,20 @@ import Footer from "./components/layout/Footer/Footer.jsx";
 const App = () => {
   const location = useLocation();
   const isOrderConfirmation = location.pathname === "/order-confirmation";
+  const isEmailConfirmation = location.pathname === "/email-confirmation";
   const isCheckout = location.pathname === "/checkout";
 
   return (
     <>
-      {!isOrderConfirmation && !isCheckout && <NavigationBar />}
+      {!isOrderConfirmation && !isEmailConfirmation && !isCheckout && (
+        <NavigationBar />
+      )}
       <main>
         <Outlet />
       </main>
-      {!isOrderConfirmation && !isCheckout && <Footer />}
+      {!isOrderConfirmation && !isEmailConfirmation && !isCheckout && (
+        <Footer />
+      )}
     </>
   );
 };

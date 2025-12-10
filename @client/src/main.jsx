@@ -16,6 +16,7 @@ import AboutUsPage from "./pages/AboutUs/AboutUsPage.jsx";
 import Checkout from "./pages/Checkout/Checkout.jsx";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage.jsx";
 import OrderConfirmation from "./pages/OrderConfirmation/OrderConfirmation.jsx";
+import EmailConfirmation from "./pages/EmailConfirmation/EmailConfirmation.jsx";
 import CheckoutProtectedRoute from "./components/CheckoutProtectedRoute/CheckoutProtectedRoute.jsx";
 
 import "./styles/index.css";
@@ -42,6 +43,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               <Route
                 path="order-confirmation"
                 element={<OrderConfirmation />}
+              />
+              <Route
+                path="email-confirmation"
+                element={<EmailConfirmation />}
               />
               <Route
                 path="reset-password/:token"

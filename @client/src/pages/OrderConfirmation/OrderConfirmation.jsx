@@ -76,7 +76,11 @@ const OrderConfirmation = () => {
           <header className="order-confirmation-header">
             <div className="order-confirmation-header-wrapper">
               <div className="order-confirmation-logo">
-                <img src={pizzaWebLogo} alt="Pizza Web Logo" />
+                <img
+                  src={pizzaWebLogo}
+                  alt="Pizza Web Logo"
+                  onClick={() => navigate("/")}
+                />
               </div>
               <nav className="order-confirmation-nav">
                 <div className="order-status-tracker">
