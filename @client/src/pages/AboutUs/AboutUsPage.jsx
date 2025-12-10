@@ -51,7 +51,7 @@ const AboutUsPage = () => {
           alt="our-story-background"
         />
         <div className="our-story-wrapper">
-          <h1>Tarinamme</h1>
+          <h1>Our story</h1>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
@@ -73,7 +73,7 @@ const AboutUsPage = () => {
       </section>
       <section id="philosophy">
         <div className="philosophy-wrapper">
-          <h1>Filosofiamme</h1>
+          <h1>Our philosophy</h1>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -93,14 +93,14 @@ const AboutUsPage = () => {
         <div className="contact-info-wrapper">
           <div className="contact-info-content">
             <div>
-              <h1>Yhteystiedot</h1>
+              <h1>Contact us</h1>
 
               <ul>
                 <li>Kalevankatu 2, 00100 Helsinki</li>
                 <br />
                 <li>
-                  Aukioloajat:<br></br> ma - pe 10:00 - 18:00<br></br>la - su
-                  12:00 - 16:00
+                  Open:<br></br> Mon - Fri 10:00 - 18:00<br></br>Sat - Sun 12:00
+                  - 16:00
                 </li>
                 <br />
                 <li>

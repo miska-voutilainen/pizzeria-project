@@ -23,6 +23,7 @@ export const handleFailedLogin = async (pool, username, req) => {
     const unlockLink = `${
       process.env.SERVER_URI || "http://localhost:3001"
     }/api/auth/unlock-account/${unlockToken}`;
+    // TODO: Email redirects to wrong URI: http://localhost:3001/api/auth/reset-password/:token.
     const resetLink = `${
       process.env.CLIENT_URI || "http://localhost:3000"
     }/reset-password/${resetToken}`;

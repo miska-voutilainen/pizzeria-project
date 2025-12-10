@@ -77,10 +77,10 @@ const Newsletter = () => {
           <h1>Subscribe and get 10% off!*</h1>
           <ul>
             <li>
-              <span>10% alennus ensimmäisestä tilauksesta!</span>
+              <span>10% off your first order!</span>
             </li>
             <li>
-              <span>Viikottaisia alennuksia</span>
+              <span>Weekly discounts!</span>
             </li>
           </ul>
           <form className="newsletter-inputs" onSubmit={handleSubmit}>
