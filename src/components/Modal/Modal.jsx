@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import ReactDOM from "react-dom";
 import "./Modal.css";
 import closeIcon from "../../assets/images/close-x-icon.svg";
 
@@ -26,9 +27,18 @@ export default function Modal({ isOpen, onClose, children, title }) {
   //   }
   // };
 
-  return (
-    <div className="modal-background-overlay" onClick={onClose}>
-      <dialog open id="dialog-container" onClick={(e) => e.stopPropagation()}>
+  const modalContent = (
+    <div
+      className="modal-background-overlay"
+      onClick={onClose}
+      style={{ fontFamily: "Inter, sans-serif" }}
+    >
+      <dialog
+        open
+        id="dialog-container"
+        onClick={(e) => e.stopPropagation()}
+        style={{ fontFamily: "Inter, sans-serif" }}
+      >
         {title && (
           <div className="dialog-title-container">
             <h2 className="modal-title">{title}</h2>
@@ -42,4 +52,6 @@ export default function Modal({ isOpen, onClose, children, title }) {
       </dialog>
     </div>
   );
+
+  return ReactDOM.createPortal(modalContent, document.body);
 }

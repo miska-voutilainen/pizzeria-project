@@ -47,9 +47,14 @@ export default function Orders() {
   useEffect(() => {
     const filtered = orders.filter(
       (order) =>
-        order.orderId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.userId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.status.toLowerCase().includes(searchTerm.toLowerCase())
+        String(order.orderId)
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        String(order.userId).toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(order.customerName)
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        String(order.status).toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredOrders(filtered);
   }, [searchTerm, orders]);
