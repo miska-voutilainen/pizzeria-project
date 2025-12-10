@@ -1,6 +1,6 @@
 /* User Profile Modal Styles */
 
-.user-profile-modal {
+/* .user-profile-modal {
   display: block;
 }
 
@@ -109,10 +109,10 @@
 
 .user-profile-actions-save-button {
   background-color: #28a745;
-}
+} */
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .user-profile-form-grid--three-columns {
     grid-template-columns: 1fr;
   }
@@ -139,4 +139,4 @@
   .user-profile-section-title {
     font-size: 14px;
   }
-}
+} */
