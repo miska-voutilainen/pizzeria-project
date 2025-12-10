@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Modal from "../Modal/Modal";
 import ActionButton from "../ActionButton";
 import "./UserProfileModal.css";
+import Button from "../Button/Button";
 
 export default function UserProfileModal({ isOpen, onClose, user, onSave }) {
   const [form, setForm] = useState({
@@ -114,161 +115,239 @@ export default function UserProfileModal({ isOpen, onClose, user, onSave }) {
 
   if (!user) return null;
 
+  const formatDate = (dateString) => {
+    if (!dateString) return "Ei tietoa";
+    return (
+      new Date(dateString).toLocaleDateString("fi-FI") +
+      ", " +
+      new Date(dateString).toLocaleTimeString("fi-FI", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    );
+  };
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
       size="large"
-      title="Muokkaa profiilia"
-      className="user-profile-modal"
+      className="view-user-details-modal"
     >
-      <div className="user-profile-header">
-        <div className="user-profile-header-user-id">#{user.userId}</div>
-        <div className="user-profile-header-user-name">
-          {user.firstName && user.lastName
-            ? `${user.firstName} ${user.lastName}`
-            : user.username}
+      <div className="view-user-details-header">
+        <div className="view-user-details-header-user-id">
+          <p>#{user.userId}</p>
         </div>
-        <div className="user-profile-header-last-login">
-          Viimeinen kirjautuminen:{" "}
-          {user.lastLoginAt
-            ? new Date(user.lastLoginAt).toLocaleDateString("fi-FI") +
-              ", " +
-              new Date(user.lastLoginAt).toLocaleTimeString("fi-FI", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })
-            : "Ei koskaan"}
+        <div className="view-user-details-header-user-name">
+          <h3>
+            {user.firstName && user.lastName
+              ? `${user.firstName} ${user.lastName}`
+              : user.username}
+          </h3>
+        </div>
+        <div className="view-user-details-header-last-login">
+          <p>Viimeinen kirjautuminen: {formatDate(user.lastLoginAt)}</p>
         </div>
       </div>
 
-      <div className="user-profile-section">
-        <h3 className="user-profile-section-title">Henkilötiedot</h3>
+      <hr className="view-user-details-section-divider" />
 
-        <div className="user-profile-form-grid user-profile-form-grid--three-columns">
-          <div className="user-profile-form-field">
-            <label className="user-profile-form-field-label">Etunimi</label>
-            <input
-              type="text"
-              value={form.etunimi}
-              onChange={(e) => handleInputChange("etunimi", e.target.value)}
-              className="user-profile-form-field-input"
-            />
+      <div className="view-user-details-section">
+        <h3 className="view-user-details-section-title">Henkilötiedot</h3>
+
+        <div className="view-user-details-grid view-user-details-grid--five-columns">
+          <div className="view-user-details-field">
+            <label>Etunimi</label>
+            <div>
+              <input
+                type="text"
+                value={form.etunimi}
+                onChange={(e) => handleInputChange("etunimi", e.target.value)}
+                placeholder="Mikko"
+              />
+            </div>
           </div>
 
-          <div className="user-profile-form-field">
-            <label className="user-profile-form-field-label">Sukunimi</label>
-            <input
-              type="text"
-              value={form.sukunimi}
-              onChange={(e) => handleInputChange("sukunimi", e.target.value)}
-              className="user-profile-form-field-input"
-            />
+          <div className="view-user-details-field">
+            <label>Sukunimi</label>
+            <div>
+              <input
+                type="text"
+                value={form.sukunimi}
+                onChange={(e) => handleInputChange("sukunimi", e.target.value)}
+                placeholder="Virtanen"
+              />
+            </div>
           </div>
 
-          <div className="user-profile-form-field">
-            <label className="user-profile-form-field-label">
-              Käyttäjänimi
-            </label>
-            <input
-              type="text"
-              value={form.kayttajanimi}
-              onChange={(e) =>
-                handleInputChange("kayttajanimi", e.target.value)
-              }
-              className="user-profile-form-field-input"
-            />
-          </div>
-        </div>
-
-        <div className="user-profile-form-field">
-          <label className="user-profile-form-field-label">Sähköposti</label>
-          <input
-            type="email"
-            value={form.sahkoposti}
-            onChange={(e) => handleInputChange("sahkoposti", e.target.value)}
-            className="user-profile-form-field-input user-profile-form-field-input--email"
-          />
-        </div>
-      </div>
-
-      <div className="user-profile-section">
-        <h3 className="user-profile-section-title">Osoite</h3>
-
-        <div className="user-profile-form-grid user-profile-form-grid--three-columns">
-          <div className="user-profile-form-field">
-            <label className="user-profile-form-field-label">Katuosoite</label>
-            <input
-              type="text"
-              value={form.street}
-              onChange={(e) => handleInputChange("street", e.target.value)}
-              className="user-profile-form-field-input"
-              placeholder="Esim. Pizzatie 5"
-            />
+          <div className="view-user-details-field">
+            <label>Käyttäjänimi</label>
+            <div>
+              <input
+                type="text"
+                value={form.kayttajanimi}
+                onChange={(e) =>
+                  handleInputChange("kayttajanimi", e.target.value)
+                }
+                placeholder="mvirtanen"
+              />
+            </div>
           </div>
 
-          <div className="user-profile-form-field">
-            <label className="user-profile-form-field-label">Postinumero</label>
-            <input
-              type="text"
-              value={form.postalCode}
-              onChange={(e) => handleInputChange("postalCode", e.target.value)}
-              className="user-profile-form-field-input"
-              placeholder="Esim. 00510"
-            />
+          <div className="view-user-details-field">
+            <label>Sähköposti</label>
+            <div>
+              <input
+                type="email"
+                value={form.sahkoposti}
+                onChange={(e) =>
+                  handleInputChange("sahkoposti", e.target.value)
+                }
+                placeholder="m.virtanen@example.com"
+              />
+            </div>
           </div>
 
-          <div className="user-profile-form-field">
-            <label className="user-profile-form-field-label">Kaupunki</label>
-            <input
-              type="text"
-              value={form.city}
-              onChange={(e) => handleInputChange("city", e.target.value)}
-              className="user-profile-form-field-input"
-              placeholder="Esim. Helsinki"
-            />
+          <div className="view-user-details-field">
+            <label>Sähköposti vahvistettu</label>
+            <div>
+              <p>{user.emailVerified ? "Kyllä" : "Ei"}</p>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="user-profile-section user-profile-section--final">
-        <h3 className="user-profile-section-title">Muu</h3>
+      <hr className="view-user-details-section-divider" />
 
-        <div className="user-profile-form-grid user-profile-form-grid--two-columns">
-          <div className="user-profile-form-field">
-            <label className="user-profile-form-field-label">Status</label>
-            <select
-              value={form.status}
-              onChange={(e) => handleInputChange("status", e.target.value)}
-              className="user-profile-form-field-select"
-            >
-              <option value="Aktiivinen">Aktiivinen</option>
-              <option value="Deactiivinen">Deactiivinen</option>
-            </select>
+      <div className="view-user-details-section">
+        <h3 className="view-user-details-section-title">Osoitetiedot</h3>
+
+        <div className="view-user-details-grid view-user-details-grid--three-columns">
+          <div className="view-user-details-field">
+            <label>Katuosoite</label>
+            <div>
+              <input
+                type="text"
+                value={form.street}
+                onChange={(e) => handleInputChange("street", e.target.value)}
+                placeholder="Esim. Pizzatie 5"
+              />
+            </div>
           </div>
 
-          <div className="user-profile-form-field">
-            <label className="user-profile-form-field-label">Rooli</label>
-            <select
-              value={form.rooli}
-              onChange={(e) => handleInputChange("rooli", e.target.value)}
-              className="user-profile-form-field-select"
-            >
-              <option value="user">User</option>
-              <option value="administrator">Administrator</option>
-            </select>
+          <div className="view-user-details-field">
+            <label>Postinumero</label>
+            <div>
+              <input
+                type="text"
+                value={form.postalCode}
+                onChange={(e) =>
+                  handleInputChange("postalCode", e.target.value)
+                }
+                placeholder="Esim. 00510"
+              />
+            </div>
+          </div>
+
+          <div className="view-user-details-field">
+            <label>Kaupunki</label>
+            <div>
+              <input
+                type="text"
+                value={form.city}
+                onChange={(e) => handleInputChange("city", e.target.value)}
+                placeholder="Esim. Helsinki"
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="user-profile-actions">
-        <ActionButton
-          variant="success"
-          onClick={handleSave}
-          className="user-profile-actions-save-button"
-        >
-          Tallenna
-        </ActionButton>
+      <hr className="view-user-details-section-divider" />
+
+      <div className="view-user-details-section view-user-details-section--final">
+        <h3 className="view-user-details-section-title">Muu</h3>
+
+        <div className="view-user-details-grid view-user-details-grid--six-columns">
+          <div className="view-user-details-field">
+            <label>Rooli</label>
+            <div>
+              <select
+                value={form.rooli}
+                onChange={(e) => handleInputChange("rooli", e.target.value)}
+              >
+                <option value="user">User</option>
+                <option value="administrator">Administrator</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="view-user-details-field">
+            <label>2FA päällä</label>
+            <div>
+              <p>{user.is2faEnabled ? "Kyllä" : "Ei"}</p>
+            </div>
+          </div>
+
+          <div className="view-user-details-field">
+            <label>Status</label>
+            <div>
+              <select
+                value={form.status}
+                onChange={(e) => handleInputChange("status", e.target.value)}
+              >
+                <option value="Aktiivinen">Aktiivinen</option>
+                <option value="Deactiivinen">Deactiivinen</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="view-user-details-field">
+            <label>Salasana päivitetty</label>
+            <div>
+              <p>{formatDate(user.lastPasswordChange)}</p>
+            </div>
+          </div>
+
+          <div className="view-user-details-field">
+            <label>Kirjautumiset</label>
+            <div>
+              <p>{user.loginCount || 0}</p>
+            </div>
+          </div>
+
+          <div className="view-user-details-field">
+            <label>Profili päivitetty</label>
+            <div>
+              <p>{formatDate(user.updatedAt)}</p>
+            </div>
+          </div>
+
+          <div className="view-user-details-field">
+            <label>Luotu</label>
+            <div>
+              <p>{formatDate(user.createdAt)}</p>
+            </div>
+          </div>
+
+          <div className="view-user-details-field">
+            <label>2FA viimeksi päällä</label>
+            <div>
+              <p>{formatDate(user.last2faVerifiedAt)}</p>
+            </div>
+          </div>
+
+          <div className="view-user-details-field">
+            <label>Kirjautumisvirheet</label>
+            <div>
+              <p>{user.failedLoginCount || 0}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="view-user-details-actions">
+        <Button onClick={handleSave} text={"Tallenna"} />
       </div>
     </Modal>
   );
