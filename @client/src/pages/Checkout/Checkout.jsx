@@ -17,6 +17,7 @@ import applepayImg from "../../assets/images/paymentMethods/apple-pay-logo-icon.
 import googlepayImg from "../../assets/images/paymentMethods/google-pay-logo-icon.svg";
 import klarnaImg from "../../assets/images/paymentMethods/Klarna_Payment_Badge.svg";
 import cardImg from "../../assets/images/paymentMethods/visa-and-mastercard-logos.svg";
+import RadioButton from "../../components/ui/RadioButton/RadioButton";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -238,18 +239,28 @@ const Checkout = () => {
             <h1>Checkout</h1>
             <div className="checkout-category-tabs-container">
               <div className="category-tabs">
-                <button
+                {/* <button
                   className={deliveryType === "delivery" ? "active" : ""}
                   onClick={() => setDeliveryType("delivery")}
                 >
                   Delivery
-                </button>
-                <button
+                </button> */}
+                <RadioButton
+                  text={"Delivery"}
+                  onClick={() => setDeliveryType("delivery")}
+                  active={deliveryType === "delivery"}
+                />
+                <RadioButton
+                  text={"Take-away"}
+                  onClick={() => setDeliveryType("takeaway")}
+                  active={deliveryType === "takeaway"}
+                />
+                {/* <button
                   className={deliveryType === "takeaway" ? "active" : ""}
                   onClick={() => setDeliveryType("takeaway")}
                 >
                   Take-away
-                </button>
+                </button> */}
               </div>
             </div>
             <div className="checkout-inputs">

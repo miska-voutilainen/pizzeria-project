@@ -11,20 +11,3 @@
   gap: 10px;
   width: 90%;
 }
-
-.category-tabs button {
-  border: 2px solid #a88f67;
-  padding: 7px 12px;
-  background: none;
-  cursor: pointer;
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: var(--color-green);
-  font-family: inherit;
-}
-
-.category-tabs button.active {
-  background-color: var(--color-green);
-  border-color: var(--color-green);
-  color: var(--background);
-}
