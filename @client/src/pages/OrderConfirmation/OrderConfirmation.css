@@ -257,6 +257,13 @@
   padding: 0 20px;
 }
 
+.back-button-container {
+  margin-top: 20px;
+}
+.back-button-container a {
+  width: 150px;
+}
+
 /* Half Pizza Image */
 .half-pizza-container {
   width: 100%;
@@ -266,7 +273,7 @@
   align-items: flex-end;
   position: relative;
   overflow: hidden;
-  margin-top: 100px;
+  margin-top: 30px;
 }
 
 .half-pizza-img {

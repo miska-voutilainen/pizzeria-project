@@ -7,6 +7,7 @@ import TextButton from "../../components/ui/TextButton/TextButton";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { Modal } from "../../components/Modal/Modal/Modal";
 import pizzaWebLogo from "../../assets/images/Pizzaweb-logo.svg";
 import checkmarkIcon from "../../assets/images/checkmark-icon.svg";
 
@@ -19,6 +20,7 @@ import cardImg from "../../assets/images/paymentMethods/visa-and-mastercard-logo
 
 const Checkout = () => {
   const navigate = useNavigate();
+  const signInRef = React.useRef(null);
   const [paymentMethod, setPaymentMethod] = useState("mobilepay");
   const [deliveryType, setDeliveryType] = useState("delivery");
   const [couponInput, setCouponInput] = useState("");
@@ -40,6 +42,11 @@ const Checkout = () => {
     getDiscountedTotal,
     clearCart,
   } = useCart();
+
+  const openModal = () => {
+    document.body.style.overflow = "hidden";
+    signInRef.current.showModal();
+  };
 
   const handleFormChange = (fieldName) => (value) => {
     setFormData((prev) => ({
@@ -66,8 +73,13 @@ const Checkout = () => {
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
 
+    console.log("Place order clicked!");
+    console.log("Form data:", formData);
+    console.log("Delivery type:", deliveryType);
+
     // Validate required fields
     if (!formData.name || !formData.phone) {
+      console.log("Validation failed: missing name or phone");
       alert("Please fill in name and phone number");
       return;
     }
@@ -76,9 +88,12 @@ const Checkout = () => {
       deliveryType === "delivery" &&
       (!formData.address || !formData.postcode || !formData.city)
     ) {
+      console.log("Validation failed: missing delivery address fields");
       alert("Please fill in all delivery address fields");
       return;
     }
+
+    console.log("Validation passed, proceeding with order...");
 
     try {
       // Only send essential item data
@@ -113,6 +128,8 @@ const Checkout = () => {
             : 0,
       };
 
+      console.log("Sending order data:", orderData);
+
       const response = await fetch("http://localhost:3001/api/orders", {
         method: "POST",
         headers: {
@@ -122,13 +139,35 @@ const Checkout = () => {
         body: JSON.stringify(orderData),
       });
 
+      console.log("Response status:", response.status);
       const result = await response.json();
+      console.log("Response result:", result);
 
       if (result.success) {
-        clearCart();
-        navigate(`/order-confirmation?orderId=${result.orderId}`);
+        console.log(
+          "Order successful, navigating to:",
+          `/order-confirmation?orderId=${result.orderId}`
+        );
+
+        // Force navigation by using window.location as backup
+        try {
+          navigate(`/order-confirmation?orderId=${result.orderId}`, {
+            replace: true,
+          });
+          console.log("Navigation called successfully");
+        } catch (navError) {
+          console.error("Navigation failed, using window.location:", navError);
+          window.location.href = `/order-confirmation?orderId=${result.orderId}`;
+        }
+
+        // Clear cart after a delay to ensure navigation happens first
+        setTimeout(() => {
+          clearCart();
+          console.log("Cart cleared");
+        }, 500);
       } else {
-        alert("Error creating order: " + result.error);
+        console.log("Order failed:", result.error);
+        alert("Error creating order: " + (result.error || "Unknown error"));
       }
     } catch (error) {
       console.error("Error placing order:", error);
@@ -283,7 +322,12 @@ const Checkout = () => {
                 </div>
               )}
               <div className="checkout-inputs-user-sign-in">
-                {!user && <TextButton text={"Kirjaudu tai luo tili"} />}
+                {!user && (
+                  <TextButton
+                    text={"Kirjaudu tai luo tili"}
+                    onClick={openModal}
+                  />
+                )}
               </div>
             </div>
             <div className="promocode-container">
@@ -296,7 +340,7 @@ const Checkout = () => {
                   name={"email"}
                   submitText={"Apply"}
                   appearance={"light"}
-                  value={coupon || couponInput}
+                  value={couponInput}
                   setValue={setCouponInput}
                 />
               </form>
@@ -458,6 +502,7 @@ const Checkout = () => {
           </div>
         </div>
       </section>
+      <Modal ref={signInRef} redirectPath="/checkout" />
     </>
   );
 };

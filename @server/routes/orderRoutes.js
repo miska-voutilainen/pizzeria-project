@@ -76,6 +76,39 @@ export default function orderRoutes(pool) {
     }
   });
 
+  // GET single order by orderId (public endpoint for order confirmation)
+  router.get("/:orderId", async (req, res) => {
+    const { orderId } = req.params;
+
+    try {
+      const [rows] = await pool.execute(
+        `SELECT orderId, status, created_at, totalAmount, deliveryType 
+         FROM order_data 
+         WHERE orderId = ?`,
+        [orderId]
+      );
+
+      if (rows.length === 0) {
+        return res.status(404).json({ error: "Order not found" });
+      }
+
+      // Return minimal order info for confirmation
+      res.json({
+        success: true,
+        order: {
+          orderId: rows[0].orderId,
+          status: rows[0].status,
+          created_at: rows[0].created_at,
+          totalAmount: rows[0].totalAmount,
+          deliveryType: rows[0].deliveryType,
+        },
+      });
+    } catch (err) {
+      console.error("GET /:orderId error:", err);
+      res.status(500).json({ error: "Server error" });
+    }
+  });
+
   // GET user's own orders
   router.get("/my-orders", async (req, res) => {
     if (!req.user) {

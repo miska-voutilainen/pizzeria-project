@@ -6,9 +6,9 @@ import CloseButton from "../../../ui/СloseButton/CloseButton.jsx";
 import InputField from "../../../ui/InputField/InputField.jsx";
 import TextButton from "../../../ui/TextButton/TextButton.jsx";
 import { useAuth } from "../../../../context/AuthContext.jsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
-const SignIn = ({ setModalContent, onClose }) => {
+const SignIn = ({ setModalContent, onClose, redirectPath }) => {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [errors, setErrors] = React.useState({});
@@ -19,6 +19,14 @@ const SignIn = ({ setModalContent, onClose }) => {
   const [loading, setLoading] = React.useState(false);
   const { checkAuth } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Use redirectPath if provided, otherwise use current location or "/"
+  const getRedirectPath = () => {
+    if (redirectPath) return redirectPath;
+    if (location.pathname !== "/") return location.pathname;
+    return "/";
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,7 +71,7 @@ const SignIn = ({ setModalContent, onClose }) => {
       // Login successful
       await checkAuth();
       onClose();
-      navigate("/");
+      navigate(getRedirectPath());
     } catch (error) {
       console.error("2FA verification error:", error);
       setServerError(error.message);
@@ -103,7 +111,7 @@ const SignIn = ({ setModalContent, onClose }) => {
       } else {
         await checkAuth();
         onClose();
-        navigate("/");
+        navigate(getRedirectPath());
       }
     } catch (error) {
       console.error("Login error:", error);
