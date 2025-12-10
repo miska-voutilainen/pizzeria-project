@@ -6,8 +6,8 @@ import RegistrationSuccess from "../authModal/RegistrationSucsess/RegistrationSu
 import TwoFactor from "../authModal/TwoFactor/TwoFactor.jsx";
 import Success from "../authModal/Success/Success.jsx";
 import ResetPassword from "../authModal/ResetPassword/ResetPassword.jsx";
-import EmailPasswordSuccess
-    from "../authModal/EmailPasswordSuccess/EmailPasswordSuccess.jsx";
+import EmailPasswordSuccess from "../authModal/EmailPasswordSuccess/EmailPasswordSuccess.jsx";
+import MakeYourOwnPizza from "../MakeYourOwnPizza/MakeYourOwnPizza.jsx";
 
 const Modal = React.forwardRef((props, ref) => {
     const [modalContent, setModalContent] = React.useState(props.window);
@@ -63,7 +63,7 @@ const Modal = React.forwardRef((props, ref) => {
                 <EmailPasswordSuccess key={`emailPasswordSuccess-${modalKey}`} onClose={onClose} modalContent={modalContent}/>
             )}
             {modalContent === "MakeYourOwnPizza" && (
-                <MakeYourOwnPizza key={`MakeYouOwnPizza-${modalKey}`} onClose={onClose}/>
+                <MakeYourOwnPizza key={`makeYouOwnPizza-${modalKey}`} onClose={onClose}/>
             )}
         </dialog>
     );
