@@ -12,6 +12,7 @@
   text-align: center;
   justify-content: center;
   border: none;
+  cursor: pointer;
 }
 
 .button img {
@@ -20,4 +21,12 @@
 
 .button:hover {
   opacity: 0.8;
+}
+
+.button-delete {
+  background-color: var(--color-red);
+}
+
+.button-delete:hover {
+  opacity: 0.6;
 }
