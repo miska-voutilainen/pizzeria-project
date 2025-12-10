@@ -2,6 +2,7 @@
 
 .view-user-details-modal {
   display: block;
+  width: 1200px !important;
 }
 
 .view-user-details-header {
@@ -10,20 +11,20 @@
 
 .view-user-details-header-user-id {
   color: #6c757d;
-  font-size: 12px;
+  font-size: 1rem;
   margin-bottom: 4px;
 }
 
-.view-user-details-header-user-name {
-  font-size: 18px;
-  font-weight: 600;
+.view-user-details-header-user-name h3 {
   margin-bottom: 8px;
-  color: #333;
+  color: var(--color-green);
+  font-size: 2rem;
+  font-weight: 500;
 }
 
 .view-user-details-header-last-login {
   color: #6c757d;
-  font-size: 14px;
+  font-size: 1rem;
   margin-bottom: 24px;
 }
 
@@ -36,10 +37,10 @@
 }
 
 .view-user-details-section-title {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 1.2rem;
+  font-weight: 400;
   margin-bottom: 16px;
-  color: #333;
+  color: var(--color-green);
 }
 
 .view-user-details-section-divider {
@@ -51,53 +52,41 @@
 
 .view-user-details-grid {
   display: grid;
-  gap: 16px;
+  gap: 23px;
   margin-bottom: 16px;
 }
 
-.view-user-details-grid--three-columns {
-  grid-template-columns: 1fr 1fr 1fr;
-}
-
-.view-user-details-grid--two-columns {
-  grid-template-columns: 1fr 1fr;
-}
-
-.view-user-details-grid--four-columns {
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-}
-
-.view-user-details-grid--five-columns {
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-}
-
+.view-user-details-grid--two-columns,
+.view-user-details-grid--three-columns,
+.view-user-details-grid--five-columns,
 .view-user-details-grid--six-columns {
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(
+    var(--user-details-columns, auto-fill),
+    minmax(50px, 205px)
+  );
+  width: 900px;
 }
 
 .view-user-details-field {
   display: block;
 }
 
-.view-user-details-field-label {
+.view-user-details-field label {
   display: block;
-  font-size: 12px;
+  font-size: 0.8rem;
   color: #6c757d;
-  margin-bottom: 4px;
+  margin-bottom: 10px;
   font-weight: 500;
 }
 
-.view-user-details-field-value {
-  font-size: 14px;
-  color: #333;
-  font-weight: 500;
+.view-user-details-field p {
+  font-size: 1rem;
+  color: black;
 }
 
 .view-user-details-actions {
   display: flex;
   justify-content: flex-end;
-  border-top: 1px solid #dee2e6;
-  padding-top: 20px;
 }
 
 .view-user-details-actions-edit-button {
@@ -105,7 +94,7 @@
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .view-user-details-grid--three-columns,
   .view-user-details-grid--four-columns,
   .view-user-details-grid--five-columns,
@@ -126,12 +115,4 @@
   .view-user-details-grid--two-columns {
     grid-template-columns: 1fr;
   }
-
-  .view-user-details-header-user-name {
-    font-size: 16px;
-  }
-
-  .view-user-details-section-title {
-    font-size: 14px;
-  }
-}
+} */

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Modal from "./Modal/Modal";
-import ActionButton from "./ActionButton";
+import Modal from "../Modal/Modal";
+import ActionButton from "../ActionButton";
 import "./UserProfileModal.css";
 
 export default function UserProfileModal({ isOpen, onClose, user, onSave }) {

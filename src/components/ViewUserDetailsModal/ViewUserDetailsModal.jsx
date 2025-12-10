@@ -1,7 +1,8 @@
 import React from "react";
-import Modal from "./Modal/Modal";
-import ActionButton from "./ActionButton";
+import Modal from "../Modal/Modal";
+import ActionButton from "../ActionButton";
 import "./ViewUserDetailsModal.css";
+import Button from "../Button/Button";
 
 export default function ViewUserDetailsModal({
   isOpen,
@@ -58,18 +59,21 @@ export default function ViewUserDetailsModal({
       isOpen={isOpen}
       onClose={onClose}
       size="large"
-      title="Käyttäjän tiedot"
       className="view-user-details-modal"
     >
       <div className="view-user-details-header">
-        <div className="view-user-details-header-user-id">#{user.userId}</div>
+        <div className="view-user-details-header-user-id">
+          <p>#{user.userId}</p>
+        </div>
         <div className="view-user-details-header-user-name">
-          {user.firstName && user.lastName
-            ? `${user.firstName} ${user.lastName}`
-            : user.username}
+          <h3>
+            {user.firstName && user.lastName
+              ? `${user.firstName} ${user.lastName}`
+              : user.username}
+          </h3>
         </div>
         <div className="view-user-details-header-last-login">
-          Viimeinen kirjautuminen: {formatDate(user.lastLoginAt)}
+          <p>Viimeinen kirjautuminen: {formatDate(user.lastLoginAt)}</p>
         </div>
       </div>
 
@@ -80,37 +84,37 @@ export default function ViewUserDetailsModal({
 
         <div className="view-user-details-grid view-user-details-grid--five-columns">
           <div className="view-user-details-field">
-            <label className="view-user-details-field-label">Etunimi</label>
-            <div className="view-user-details-field-value">
-              {user.firstName || "-"}
+            <label>Etunimi</label>
+            <div>
+              <p>{user.firstName || "-"}</p>
             </div>
           </div>
 
           <div className="view-user-details-field">
-            <label className="view-user-details-field-label">Sukunimi</label>
-            <div className="view-user-details-field-value">
-              {user.lastName || "-"}
+            <label>Sukunimi</label>
+            <div>
+              <p>{user.lastName || "-"}</p>
             </div>
           </div>
 
           <div className="view-user-details-field">
-            <label className="view-user-details-field-label">
-              Käyttäjänimi
-            </label>
-            <div className="view-user-details-field-value">{user.username}</div>
+            <label>Käyttäjänimi</label>
+            <div>
+              <p>{user.username}</p>
+            </div>
           </div>
 
           <div className="view-user-details-field">
-            <label className="view-user-details-field-label">Sähköposti</label>
-            <div className="view-user-details-field-value">{user.email}</div>
+            <label>Sähköposti</label>
+            <div>
+              <p>{user.email}</p>
+            </div>
           </div>
 
           <div className="view-user-details-field">
-            <label className="view-user-details-field-label">
-              Sähköposti vahvistettu
-            </label>
-            <div className="view-user-details-field-value">
-              {user.emailVerified ? "Kyllä" : "Ei"}
+            <label>Sähköposti vahvistettu</label>
+            <div>
+              <p>{user.emailVerified ? "Kyllä" : "Ei"}</p>
             </div>
           </div>
         </div>
@@ -123,23 +127,23 @@ export default function ViewUserDetailsModal({
 
         <div className="view-user-details-grid view-user-details-grid--three-columns">
           <div className="view-user-details-field">
-            <label className="view-user-details-field-label">Katuosoite</label>
-            <div className="view-user-details-field-value">
-              {addressInfo.katuosoite || "-"}
+            <label>Katuosoite</label>
+            <div>
+              <p>{addressInfo.katuosoite || "-"}</p>
             </div>
           </div>
 
           <div className="view-user-details-field">
-            <label className="view-user-details-field-label">Postinumero</label>
-            <div className="view-user-details-field-value">
-              {addressInfo.postinumero || "-"}
+            <label>Postinumero</label>
+            <div>
+              <p>{addressInfo.postinumero || "-"}</p>
             </div>
           </div>
 
           <div className="view-user-details-field">
-            <label className="view-user-details-field-label">Kaupunki</label>
-            <div className="view-user-details-field-value">
-              {addressInfo.kaupunki || "-"}
+            <label>Kaupunki</label>
+            <div>
+              <p>{addressInfo.kaupunki || "-"}</p>
             </div>
           </div>
         </div>
@@ -152,93 +156,83 @@ export default function ViewUserDetailsModal({
 
         <div className="view-user-details-grid view-user-details-grid--six-columns">
           <div className="view-user-details-field">
-            <label className="view-user-details-field-label">Rooli</label>
-            <div className="view-user-details-field-value">
-              {user.role || "User"}
+            <label>Rooli</label>
+            <div>
+              <p>{user.role || "User"}</p>
             </div>
           </div>
 
           <div className="view-user-details-field">
-            <label className="view-user-details-field-label">2FA päällä</label>
-            <div className="view-user-details-field-value">
-              {user.is2faEnabled ? "Kyllä" : "Ei"}
+            <label>2FA päällä</label>
+            <div>
+              <p>{user.is2faEnabled ? "Kyllä" : "Ei"}</p>
             </div>
           </div>
 
           <div className="view-user-details-field">
-            <label className="view-user-details-field-label">Status</label>
-            <div className="view-user-details-field-value">
-              {user.accountStatus === "active" ? "Aktiivinen" : "Deactiivinen"}
+            <label>Status</label>
+            <div>
+              <p>
+                {user.accountStatus === "active"
+                  ? "Aktiivinen"
+                  : "Deactiivinen"}
+              </p>
             </div>
           </div>
 
           <div className="view-user-details-field">
-            <label className="view-user-details-field-label">
-              Salasana päivitetty
-            </label>
-            <div className="view-user-details-field-value">
-              {formatDate(user.lastPasswordChange)}
+            <label>Salasana päivitetty</label>
+            <div>
+              <p>{formatDate(user.lastPasswordChange)}</p>
             </div>
           </div>
 
           <div className="view-user-details-field">
-            <label className="view-user-details-field-label">
-              Kirjautumiset
-            </label>
-            <div className="view-user-details-field-value">
-              {user.loginCount || 0}
-            </div>
-          </div>
-        </div>
-
-        <div
-          className="view-user-details-grid view-user-details-grid--four-columns"
-          style={{ marginTop: "16px" }}
-        >
-          <div className="view-user-details-field">
-            <label className="view-user-details-field-label">
-              Profili päivitetty
-            </label>
-            <div className="view-user-details-field-value">
-              {formatDate(user.updatedAt)}
+            <label>Kirjautumiset</label>
+            <div>
+              <p>{user.loginCount || 0}</p>
             </div>
           </div>
 
           <div className="view-user-details-field">
-            <label className="view-user-details-field-label">Luotu</label>
-            <div className="view-user-details-field-value">
-              {formatDate(user.createdAt)}
+            <label>Profili päivitetty</label>
+            <div>
+              <p>{formatDate(user.updatedAt)}</p>
             </div>
           </div>
 
           <div className="view-user-details-field">
-            <label className="view-user-details-field-label">
-              2FA viimeksi päällä
-            </label>
-            <div className="view-user-details-field-value">
-              {formatDate(user.last2faVerifiedAt)}
+            <label>Luotu</label>
+            <div>
+              <p>{formatDate(user.createdAt)}</p>
             </div>
           </div>
 
           <div className="view-user-details-field">
-            <label className="view-user-details-field-label">
-              Kirjautumisvirheet
-            </label>
-            <div className="view-user-details-field-value">
-              {user.failedLoginCount || 0}
+            <label>2FA viimeksi päällä</label>
+            <div>
+              <p>{formatDate(user.last2faVerifiedAt)}</p>
+            </div>
+          </div>
+
+          <div className="view-user-details-field">
+            <label>Kirjautumisvirheet</label>
+            <div>
+              <p>{user.failedLoginCount || 0}</p>
             </div>
           </div>
         </div>
       </div>
 
       <div className="view-user-details-actions">
-        <ActionButton
+        {/* <ActionButton
           variant="success"
           onClick={() => onEdit(user)}
           className="view-user-details-actions-edit-button"
         >
           Muokkaa
-        </ActionButton>
+        </ActionButton> */}
+        <Button onClick={() => onEdit(user)} text={"Muokkaa"} type={"edit"} />
       </div>
     </Modal>
   );
