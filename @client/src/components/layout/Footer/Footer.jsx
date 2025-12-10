@@ -17,7 +17,7 @@ const Footer = () => {
               <Link to="/menu">Menu</Link>
             </li>
             <li>
-              <Link to="/omapizza">Luo oma pizza</Link>
+              <Link to="/create-pizza">Create your own pizza</Link>
             </li>
             <li>
               <Link to="/about">About us</Link>
@@ -26,7 +26,7 @@ const Footer = () => {
         </nav>
       </div>
       <div className="footer-copyright">
-        <small>Copyright ©2025 All right served | Project Grupp Sex </small>
+        <small>Copyright ©2025 All rights reserved | Project Group Six </small>
       </div>
     </footer>
   );
