@@ -89,6 +89,17 @@ export const CartProvider = ({ children }) => {
 
   const clearCart = () => {
     setCartItems([]);
+    setCoupon(null);
+    setCouponPercentage(0);
+    localStorage.removeItem("pizzeria-coupon");
+    localStorage.removeItem("pizzeria-percentage");
+  };
+
+  const clearCoupon = () => {
+    setCoupon(null);
+    setCouponPercentage(0);
+    localStorage.removeItem("pizzeria-coupon");
+    localStorage.removeItem("pizzeria-percentage");
   };
 
   const getCartTotal = () => {
@@ -178,6 +189,7 @@ export const CartProvider = ({ children }) => {
     removeFromCart,
     updateQuantity,
     clearCart,
+    clearCoupon,
     getCartTotal,
     getDiscountedTotal,
     applyCoupon,

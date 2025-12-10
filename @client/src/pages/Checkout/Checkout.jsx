@@ -181,7 +181,11 @@ const Checkout = () => {
       <header className="checkout-header">
         <div className="checkout-header-wrapper">
           <div className="checkout-logo">
-            <img src={pizzaWebLogo} alt="Pizza Web Logo" />
+            <img
+              src={pizzaWebLogo}
+              alt="Pizza Web Logo"
+              onClick={() => navigate("/")}
+            />
           </div>
           <nav className="checkout-nav">
             <div className="checkout-status-tracker">
