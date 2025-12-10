@@ -5,6 +5,7 @@ import "./CartSidebar.css";
 import CloseButonDark from "../../../assets/images/close-dark.svg";
 import Button from "../../ui/Button/Button";
 import TrashIcon from "../../../assets/images/trash-icon.svg";
+import QuantityInput from "../../ui/QuantityInput/QuantityInput";
 
 const CartSidebar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
@@ -109,7 +110,8 @@ const CartSidebar = ({ isOpen, onClose }) => {
                         </div>
                         <div className="cart-item-info-bottom-row">
                           <p>{item.price}€</p>
-                          <div className="cart-item-controls">
+                          {/* old quantity buttons */}
+                          {/* <div className="cart-item-controls">
                             <button
                               onClick={() =>
                                 updateQuantity(item.slug, item.quantity - 1)
@@ -127,7 +129,16 @@ const CartSidebar = ({ isOpen, onClose }) => {
                             >
                               +
                             </button>
-                          </div>
+                          </div> */}
+                          <QuantityInput
+                            quantity={item.quantity}
+                            onIncrease={() =>
+                              updateQuantity(item.slug, item.quantity + 1)
+                            }
+                            onDecrease={() =>
+                              updateQuantity(item.slug, item.quantity - 1)
+                            }
+                          />
                         </div>
                       </div>
                     </article>
