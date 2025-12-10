@@ -1,7 +1,7 @@
 import CloseButton from "../../../ui/СloseButton/CloseButton.jsx";
 import "./RegistrationSuccess.css";
 
-const RegistrationSucsess = ({ onClose }) => {
+const RegistrationSuccess = ({ onClose }) => {
   return (
     <div>
       <CloseButton onClick={onClose} />
@@ -14,4 +14,4 @@ const RegistrationSucsess = ({ onClose }) => {
   );
 };
 
-export default RegistrationSucsess;
+export default RegistrationSuccess;

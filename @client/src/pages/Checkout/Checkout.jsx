@@ -17,6 +17,7 @@ import applepayImg from "../../assets/images/paymentMethods/apple-pay-logo-icon.
 import googlepayImg from "../../assets/images/paymentMethods/google-pay-logo-icon.svg";
 import klarnaImg from "../../assets/images/paymentMethods/Klarna_Payment_Badge.svg";
 import cardImg from "../../assets/images/paymentMethods/visa-and-mastercard-logos.svg";
+import RadioButton from "../../components/ui/RadioButton/RadioButton";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -238,39 +239,49 @@ const Checkout = () => {
             <h1>Checkout</h1>
             <div className="checkout-category-tabs-container">
               <div className="category-tabs">
-                <button
+                {/* <button
                   className={deliveryType === "delivery" ? "active" : ""}
                   onClick={() => setDeliveryType("delivery")}
                 >
                   Delivery
-                </button>
-                <button
+                </button> */}
+                <RadioButton
+                  text={"Delivery"}
+                  onClick={() => setDeliveryType("delivery")}
+                  active={deliveryType === "delivery"}
+                />
+                <RadioButton
+                  text={"Take-away"}
+                  onClick={() => setDeliveryType("takeaway")}
+                  active={deliveryType === "takeaway"}
+                />
+                {/* <button
                   className={deliveryType === "takeaway" ? "active" : ""}
                   onClick={() => setDeliveryType("takeaway")}
                 >
                   Take-away
-                </button>
+                </button> */}
               </div>
             </div>
             <div className="checkout-inputs">
               <div className="checkout-input-row">
-                <label htmlFor="name">Nimi</label>
+                <label htmlFor="name">Name</label>
                 <InputField
                   type="text"
                   name={"name"}
                   id={"name"}
-                  placeholder="Matti Meikäläinen"
+                  placeholder="John Doe"
                   value={formData.name}
                   onChange={handleFormChange("name")}
                 />
               </div>
               <div className="checkout-input-row">
-                <label htmlFor="phone">Puhelinnumero</label>
+                <label htmlFor="phone">Phone number</label>
                 <InputField
                   type="tel"
                   name={"phone"}
                   id={"phone"}
-                  placeholder="Puhelinnumero"
+                  placeholder="Phone number"
                   value={formData.phone}
                   onChange={handleFormChange("phone")}
                 />
@@ -278,34 +289,34 @@ const Checkout = () => {
               {deliveryType === "delivery" && (
                 <>
                   <div className="checkout-input-row">
-                    <label htmlFor="address">Toimitusosoite</label>
+                    <label htmlFor="address">Delivery address</label>
                     <InputField
                       type="text"
                       name={"address"}
                       id={"address"}
-                      placeholder="Toimitussosoite"
+                      placeholder="Delivery address"
                       value={formData.address}
                       onChange={handleFormChange("address")}
                     />
                   </div>
                   <div className="checkout-input-row">
-                    <label htmlFor="postcode">Postinumero</label>
+                    <label htmlFor="postcode">Postal code</label>
                     <InputField
                       type="text"
                       name={"postcode"}
                       id={"postcode"}
-                      placeholder="Postinumero"
+                      placeholder="Postal code"
                       value={formData.postcode}
                       onChange={handleFormChange("postcode")}
                     />
                   </div>
                   <div className="checkout-input-row">
-                    <label htmlFor="city">Kaupunki</label>
+                    <label htmlFor="city">City</label>
                     <InputField
                       type="text"
                       name={"city"}
                       id={"city"}
-                      placeholder="Kaupunki"
+                      placeholder="City"
                       value={formData.city}
                       onChange={handleFormChange("city")}
                     />
@@ -314,29 +325,31 @@ const Checkout = () => {
               )}
               {deliveryType === "takeaway" && (
                 <div className="checkout-input-row">
-                  <label htmlFor="pizzeria-address">Pizzerian osoite</label>
+                  <label htmlFor="pizzeria-address">Pizzeria address</label>
                   <InputField
                     type="text"
                     name={"pizzeria-address"}
                     id={"pizzeria-address"}
-                    placeholder="Pizzerian osoite"
+                    placeholder="Pizzeria address"
                     value="Kauppakatu 123, 00100 Helsinki"
                     readOnly
                   />
                 </div>
               )}
-              <TextButton text={"Valitse pizzeria"} />
+              {deliveryType !== "delivery" && (
+                <TextButton text={"Select pizzeria"} />
+              )}
               <div className="checkout-inputs-user-sign-in">
                 {!user && (
                   <TextButton
-                    text={"Kirjaudu tai luo tili"}
-                    onClick={openModal}
+                    text={"Sign in or create an account"}
+                    onClick={() => setModalWindow("SignIn")}
                   />
                 )}
               </div>
             </div>
             <div className="promocode-container">
-              <h2>Alennuskoodi</h2>
+              <h2>Coupon code</h2>
               <form onSubmit={handleApplyCoupon}>
                 <InputSubmit
                   placeholder={"Enter discount code"}
@@ -420,7 +433,7 @@ const Checkout = () => {
             <div className="checkout-pay-now-container">
               <Button
                 onClick={handlePlaceOrder}
-                text={"Maksa"}
+                text={"Place Order"}
                 id={"place-order-button"}
               />
             </div>
@@ -473,7 +486,7 @@ const Checkout = () => {
                   {coupon && couponPercentage > 0 && (
                     <div className="checkout-orders-footer-text-item">
                       <p>
-                        <span>Alennus ({couponPercentage}%)</span>
+                        <span>Discount ({couponPercentage}%)</span>
                         <span>
                           -
                           {((getCartTotal() * couponPercentage) / 100).toFixed(

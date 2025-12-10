@@ -153,33 +153,6 @@
   color: var(--color-green);
 }
 
-.cart-item-controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.quantity-btn {
-  background-color: var(--color-green);
-  color: white;
-  border: none;
-  width: 25px;
-  height: 25px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.quantity-btn:hover {
-  background-color: #2d5a2a;
-}
-
-.quantity {
-  font-weight: bold;
-  min-width: 20px;
-  text-align: center;
-}
-
 .remove-btn {
   background: none;
   color: white;
