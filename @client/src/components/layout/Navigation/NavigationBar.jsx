@@ -11,6 +11,7 @@ import { Modal } from "../../Modal/Modal/Modal.jsx";
 const NavigationBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
+  const [modalWindow, setModalWindow] = useState(null);
   const location = useLocation();
   const { user } = useAuth();
   const { getCartItemCount } = useCart();
@@ -44,7 +45,9 @@ const NavigationBar = () => {
               <Link to="/menu">Menu</Link>
             </li>
             <li>
-              <Link to="/omapizza">Luo oma pizza</Link>
+              <a onClick={() => setModalWindow("MakeYourOwnPizza")}>
+                Luo oma pizza
+              </a>
             </li>
             <li>
               <Link to="/about">About us</Link>
@@ -63,7 +66,7 @@ const NavigationBar = () => {
             />
           ) : (
             <Button
-              onClick={() => openModal()}
+              onClick={() => setModalWindow("SignIn")}
               text={"Sign in"}
               imageUrl={"./user-icon.svg"}
             />
