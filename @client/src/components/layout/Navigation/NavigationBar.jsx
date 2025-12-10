@@ -6,7 +6,7 @@ import { useCart } from "../../../context/CartContext.jsx";
 import "./NavigationBar.css";
 import Button from "../../ui/Button/Button.jsx";
 import CartSidebar from "../CartSidebar/CartSidebar.jsx";
-import {Modal} from "../../Modal/Modal/Modal.jsx";
+import { Modal } from "../../Modal/Modal/Modal.jsx";
 
 const NavigationBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -16,11 +16,11 @@ const NavigationBar = () => {
   const { getCartItemCount } = useCart();
 
   const cartItemCount = getCartItemCount();
-    const signInRef = React.useRef(null);
-    const openModal = () => {
-        document.body.style.overflow = "hidden";
-        signInRef.current.showModal ()
-    }
+  const signInRef = React.useRef(null);
+  const openModal = () => {
+    document.body.style.overflow = "hidden";
+    signInRef.current.showModal();
+  };
 
   useEffect(() => {
     setMenuOpen(false);
@@ -28,7 +28,7 @@ const NavigationBar = () => {
 
   return (
     <header className="navbar">
-        <Modal ref={signInRef} window="SignIn"/>
+      <Modal ref={signInRef} window="SignIn" />
       <div className="navbar-container">
         {/* Logo */}
         <div className="navbar-row-start">
