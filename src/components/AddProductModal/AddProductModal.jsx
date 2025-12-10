@@ -120,7 +120,7 @@ const AddProductModal = ({ isOpen, onClose, form, setForm, save }) => {
               required
             />
           </div>
-          <div className="form-field">
+          <div className="form-field form-field-textarea">
             <label htmlFor="description">
               Kuvaus <span className="required-indicator">*</span>
             </label>

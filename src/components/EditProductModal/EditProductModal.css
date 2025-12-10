@@ -1,11 +1,17 @@
-.product-modal-wrapper {
+.product-modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40px;
+}
+
+/* .product-modal-wrapper {
   display: flex;
   gap: 20px;
   width: 800px;
   justify-content: center;
 }
 
-/* image input column */
+
 .product-modal-img-input-col {
   width: 50%;
 }
@@ -19,7 +25,7 @@
 .product-modal-image-preview-container {
   border: 1px solid #ccc;
   border-bottom: none;
-  min-height: 300px;
+  height: 100%;
   width: 100%;
   display: flex;
   align-items: center;
@@ -33,7 +39,7 @@
   object-fit: contain;
 }
 
-/* form fields collumn */
+
 .product-modal-text-inputs-col {
   display: flex;
   flex-direction: column;
@@ -56,7 +62,6 @@
 .form-field textarea,
 .form-field select {
   padding: 10px;
-  border-radius: 5px;
   border: 1px solid #ccc;
   font-size: 14px;
 }
@@ -97,4 +102,4 @@
 .required-indicator {
   color: #dc3545;
   font-weight: bold;
-}
+} */

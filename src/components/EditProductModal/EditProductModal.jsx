@@ -140,7 +140,7 @@ const EditProductModal = ({
               required
             />
           </div>
-          <div className="form-field">
+          <div className="form-field form-field-textarea">
             <label htmlFor="description">
               Kuvaus <span className="required-indicator">*</span>
             </label>
@@ -158,9 +158,10 @@ const EditProductModal = ({
         </div>
       </div>
       <div className="product-modal-buttons">
-        <button onClick={handleRemove} className="product-modal-delete-button">
+        {/* <button  className="product-modal-delete-button">
           Poista
-        </button>
+        </button> */}
+        <Button onClick={handleRemove} text={"Poista"} type={"delete"} />
         <Button onClick={save} text={"Tallenna"} type={"add"} />
       </div>
     </Modal>
