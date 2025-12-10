@@ -2,21 +2,16 @@
     display: flex;
     gap: 12px;
     justify-content: center;
-    margin: 20px 0;
 }
 
 .otp-box {
-    width: 70px;
-    height: 70px;
+    width: 90px;
+    height: 112px;
     background: var(--input-background);
     border: none;
     box-shadow: 0 0 10px rgba(28,61,25,0.1) inset;
-    font-size: 40px;
+    font-size: 80px;
     text-align: center;
     color: #1C3D19;
-    font-weight: 600;
-}
-
-.otp-box:focus {
-    outline: 3px solid #A88F67;
+    font-weight: 400;
 }

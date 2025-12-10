@@ -37,9 +37,19 @@ dialog::backdrop {
     height: 543px;
 }
 
+.TwoFactor{
+    width: 723px;
+    height: 735px;
+}
+
 .TwoFactor>div{
-    width: 685px;
-    height: 683px;
+    width:685px;
+    height:683px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 61px;
 }
 
 
@@ -90,6 +100,9 @@ dialog form{
     gap: 20px;
 }
 
+dialog input:focus{
+    outline: 2px solid #A88F67;
+}
 
 
 

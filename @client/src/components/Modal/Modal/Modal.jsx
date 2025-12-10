@@ -20,7 +20,7 @@ const Modal = React.forwardRef((props, ref) => {
             {modalContent === "SignIn" && (<SignIn setModalContent={setModalContent} onClose={onClose}/>)}
             {modalContent === "Register" && (<Register setModalContent={setModalContent} onClose={onClose}/>)}
             {modalContent === "RegistrationSuccess" && (<RegistrationSuccess onClose={onClose}/>)}
-            {modalContent === "TwoFactor" && (<TwoFactor onClose={onClose}/>)}
+            {modalContent === "TwoFactor" && (<TwoFactor onClose={onClose} setModalContent={setModalContent}/>)}
         </dialog>
     );
 });
