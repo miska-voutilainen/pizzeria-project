@@ -17,6 +17,11 @@ dialog {
     height:735px;
 }
 
+.Success {
+    width: 721px;
+    height: 735px;
+}
+
 dialog>div{
     border: 3px solid #A88F67;
     display: flex;
@@ -35,6 +40,16 @@ dialog::backdrop {
 .SignIn>div, .Register>div {
     width: 806px;
     height: 543px;
+}
+
+.Success>div {
+    width: 683px;
+    height: 683px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 33px;
 }
 
 .TwoFactor{
@@ -103,6 +118,8 @@ dialog form{
 dialog input:focus{
     outline: 2px solid #A88F67;
 }
+
+
 
 
 

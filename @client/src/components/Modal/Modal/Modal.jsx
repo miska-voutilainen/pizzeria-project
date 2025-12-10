@@ -4,6 +4,7 @@ import {SignIn} from "../authModal/SignIn/SignIn.jsx";
 import Register from "../authModal/Register/Register.jsx";
 import RegistrationSuccess from "../authModal/RegistrationSucsess/RegistrationSucsess.jsx";
 import TwoFactor from "../authModal/TwoFactor/TwoFactor.jsx";
+import Success from "../authModal/Success/Success.jsx";
 
 const Modal = React.forwardRef((props, ref) => {
     const [modalContent, setModalContent] = React.useState(props.window);
@@ -40,6 +41,9 @@ const Modal = React.forwardRef((props, ref) => {
             )}
             {modalContent === "TwoFactor" && (
                 <TwoFactor key={`twoFactor-${modalKey}`} setModalContent={setModalContent} onClose={onClose}/>
+            )}
+            {modalContent === "Success" && (
+                <Success key={`success-${modalKey}`} onClose={onClose}/>
             )}
         </dialog>
     );
