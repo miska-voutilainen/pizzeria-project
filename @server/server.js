@@ -1,52 +1,57 @@
 import express from "express";
-import cors from "cors";
 import cookieParser from "cookie-parser";
-import dotenv from "dotenv";
+import cors from "cors";
+import { connectDB } from "./config/db.js";
+import createSessionService from "./services/session.service.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 
-import { connectDB, closeDB } from "./config/db.js";
-import createAuthRoutes from "./routes/authRoutes.js";
-import productRoutes from "./routes/productRoutes.js";
-import orderRoutes from "./routes/orderRoutes.js";
-import newsletterRoutes from "./routes/newsletterRoutes.js";
-import couponRoutes from "./routes/couponRoutes.js";
-import { createSessionService } from "./services/sessionService.js";
+import createAuthRouter from "./routes/auth.routes.js";
+import createAdminRouter from "./routes/admin.routes.js";
+import createOrderRouter from "./routes/order.routes.js";
+import createProductRouter from "./routes/product.routes.js";
+import createCouponRouter from "./routes/coupon.routes.js";
+import createNewsletterRouter from "./routes/newsletter.routes.js";
 
-dotenv.config({ path: ".env.development" });
+const app = express();
 
-(async () => {
-  const pool = await connectDB();
+const corsOptions = {
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      "http://localhost:3000",
+      "http://localhost:5173",
+      "http://127.0.0.1:5173",
+    ];
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
 
-  const app = express();
+app.use(cors(corsOptions));
 
-  // CRITICAL: Allow credentials
-  app.use(
-    cors({
-      origin: ["http://localhost:3000", "http://localhost:5173"], // public + admin ports
-      credentials: true, // allows cookies/sessions
-      methods: ["GET", "POST", "PUT", "DELETE"],
-    })
-  );
+app.use(express.json());
+app.use(cookieParser());
 
-  app.use(express.json());
-  app.use(cookieParser());
+const pool = await connectDB();
+const sessionService = createSessionService(pool);
 
-  const sessionService = createSessionService(pool);
-  app.use(sessionService.sessionMiddleware);
+app.use(sessionService.sessionMiddleware);
 
-  app.use("/api/auth", createAuthRoutes({ pool, ...sessionService }));
-  app.use("/api/products", productRoutes(pool));
-  app.use("/api/orders", orderRoutes(pool));
-  app.use("/api/newsletter", newsletterRoutes(pool));
-  app.use("/api/coupons", couponRoutes(pool));
+app.use("/api/auth", createAuthRouter(pool, sessionService));
+app.use("/api/admin", createAdminRouter(pool));
+app.use("/api/orders", createOrderRouter(pool));
+app.use("/api/products", createProductRouter(pool));
+app.use("/api/coupons", createCouponRouter(pool));
+app.use("/api/newsletter", createNewsletterRouter(pool));
 
-  const PORT = process.env.PORT || 3001;
-  app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
+app.use(errorHandler);
 
-  process.on("SIGINT", async () => {
-    await closeDB();
-    console.log("Server shut down");
-    process.exit(0);
-  });
-})();
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
