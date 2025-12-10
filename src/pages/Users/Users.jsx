@@ -13,11 +13,8 @@ import {
   ViewUserOrdersModal,
   UserContextMenu,
 } from "../../components";
-
 import Search from "../../components/Search/Search";
-
 import "./Users.css";
-
 import threeDotsIcon from "../../assets/images/three-dots-icon.svg";
 import emailYesIcon from "../../assets/images/email-yes-icon.svg";
 import emailNoIcon from "../../assets/images/email-no-icon.svg";
@@ -38,7 +35,7 @@ export default function Users() {
   const [viewOrdersUser, setViewOrdersUser] = useState(null);
 
   const loadUsers = () => {
-    api.get("/auth/users").then((r) => {
+    api.get("/admin/users").then((r) => {
       setUsers(r.data);
       setFilteredUsers(r.data);
     });
@@ -69,7 +66,7 @@ export default function Users() {
   };
 
   const saveUser = async (userId) => {
-    await api.put(`/auth/users/${userId}`, form);
+    await api.put(`/admin/users/${userId}`, form);
     setEditingId(null);
     loadUsers();
   };
@@ -80,34 +77,17 @@ export default function Users() {
 
   const openContextMenu = (user, event) => {
     const rect = event.currentTarget.getBoundingClientRect();
-    const menuWidth = 180; // Approximate width of the context menu
+    const menuWidth = 180;
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
 
-    // Position to the left of the button by default
     let x = rect.left - menuWidth - 8;
     let y = rect.top;
 
-    // If menu would go off the left edge, position to the right instead
-    if (x < 8) {
-      x = rect.right + 8;
-    }
-
-    // If menu would go off the right edge, align with right edge of viewport
-    if (x + menuWidth > viewportWidth - 8) {
-      x = viewportWidth - menuWidth - 8;
-    }
-
-    // If menu would go off the bottom edge, position above the button
-    if (y + 120 > viewportHeight - 8) {
-      // 120px is approximate menu height
-      y = rect.bottom - 120;
-    }
-
-    // Ensure menu doesn't go above viewport
-    if (y < 8) {
-      y = 8;
-    }
+    if (x < 8) x = rect.right + 8;
+    if (x + menuWidth > viewportWidth - 8) x = viewportWidth - menuWidth - 8;
+    if (y + 120 > viewportHeight - 8) y = rect.bottom - 120;
+    if (y < 8) y = 8;
 
     setContextMenuPosition({ x, y });
     setContextMenuUser(user);
@@ -132,27 +112,33 @@ export default function Users() {
   };
 
   const handleEditFromDetails = (user) => {
-    setViewDetailsUser(null); // Close details modal
-    setProfileModalUser(user); // Open edit modal
+    setViewDetailsUser(null);
+    setProfileModalUser(user);
   };
 
   const closeViewOrdersModal = () => {
     setViewOrdersUser(null);
   };
 
+  const handleViewDetails = () => {
+    setViewDetailsUser(contextMenuUser);
+    closeContextMenu();
+  };
+
+  const handleViewOrders = () => {
+    setViewOrdersUser(contextMenuUser);
+    closeContextMenu();
+  };
+
   const saveProfile = async (updatedData) => {
     if (profileModalUser) {
       try {
-        console.log("Saving user profile:", updatedData);
-
-        // Handle address field - convert empty string to null for JSON column
         let addressValue = updatedData.address;
         if (!addressValue || addressValue.trim() === "") {
-          addressValue = null; // Send null instead of empty string for JSON column
+          addressValue = null;
         }
-
         const response = await api.put(
-          `/auth/users/${profileModalUser.userId}`,
+          `/admin/users/${profileModalUser.userId}`,
           {
             firstName: updatedData.firstName,
             lastName: updatedData.lastName,
@@ -163,7 +149,6 @@ export default function Users() {
             address: addressValue,
           }
         );
-        console.log("Save response:", response.data);
         setProfileModalUser(null);
         loadUsers();
         return true;
@@ -178,22 +163,11 @@ export default function Users() {
     return false;
   };
 
-  const handleViewDetails = () => {
-    setViewDetailsUser(contextMenuUser);
-    closeContextMenu();
-  };
-
-  const handleViewOrders = () => {
-    setViewOrdersUser(contextMenuUser);
-    closeContextMenu();
-  };
-
   return (
     <section id="users-page-container">
       <div>
         <h1 className="title">Käyttäjät ({filteredUsers.length})</h1>
       </div>
-
       <div className="users-page-search-container">
         <Search
           inputPlaceholder="hae käyttäjää (nimi, email tai ID)"
@@ -201,7 +175,6 @@ export default function Users() {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
-
       <div className="users-page-table-container">
         <table>
           <thead>
@@ -267,12 +240,12 @@ export default function Users() {
                           height: "12px",
                           transition: "transform 0.2s ease",
                         }}
-                        onMouseEnter={(e) => {
-                          e.target.style.transform = "scale(1.2)";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.transform = "scale(1)";
-                        }}
+                        onMouseEnter={(e) =>
+                          (e.target.style.transform = "scale(1.2)")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.target.style.transform = "scale(1)")
+                        }
                       />
                       <div
                         data-tooltip
@@ -349,21 +322,18 @@ export default function Users() {
         onViewOrders={handleViewOrders}
         position={contextMenuPosition}
       />
-
       <UserProfileModal
         isOpen={!!profileModalUser}
         onClose={closeProfileModal}
         user={profileModalUser}
         onSave={saveProfile}
       />
-
       <ViewUserDetailsModal
         isOpen={!!viewDetailsUser}
         onClose={closeViewDetailsModal}
         user={viewDetailsUser}
         onEdit={handleEditFromDetails}
       />
-
       <ViewUserOrdersModal
         isOpen={!!viewOrdersUser}
         onClose={closeViewOrdersModal}

@@ -30,7 +30,7 @@ const AdminNavBar = () => {
           const currentUsername = res.data.user.username;
           // Then get full user data including firstName
           api
-            .get("/auth/users")
+            .get("/admin/users")
             .then((usersRes) => {
               const fullUserData = usersRes.data.find(
                 (user) => user.username === currentUsername
@@ -90,7 +90,7 @@ const AdminNavBar = () => {
           addressValue = null; // Send null instead of empty string for JSON column
         }
 
-        const response = await api.put(`/auth/users/${currentUser.userId}`, {
+        const response = await api.put(`/admin/users/${currentUser.userId}`, {
           firstName: updatedData.firstName,
           lastName: updatedData.lastName,
           username: updatedData.username,

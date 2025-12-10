@@ -13,27 +13,24 @@ export default function Orders() {
 
   const loadOrders = async () => {
     try {
-      const r = await api.get("/orders");
-
-      // Fetch all users to get their names
-      const usersRes = await api.get("/auth/users");
+      const r = await api.get("/admin/orders"); // ← FIXED
+      const usersRes = await api.get("/admin/users"); // ← FIXED
       const userMap = {};
       usersRes.data.forEach((user) => {
-        userMap[user.userId] = `${user.firstName} ${user.lastName}`;
+        userMap[user.userId] =
+          `${user.firstName || ""} ${user.lastName || ""}`.trim() ||
+          user.username;
       });
-
-      // Enrich orders with customer names
       const ordersWithUserData = r.data.map((order) => ({
         ...order,
-        customerName: userMap[order.userId] || order.userId,
+        customerName: userMap[order.userId] || "Guest",
       }));
-
       setOrders(ordersWithUserData);
       setFilteredOrders(ordersWithUserData);
     } catch (error) {
       console.error("Failed to load orders:", error);
-      // Fallback: just load orders without names
-      api.get("/orders").then((r) => {
+      // Fallback
+      api.get("/admin/orders").then((r) => {
         setOrders(r.data);
         setFilteredOrders(r.data);
       });
@@ -50,11 +47,15 @@ export default function Orders() {
         String(order.orderId)
           .toLowerCase()
           .includes(searchTerm.toLowerCase()) ||
-        String(order.userId).toLowerCase().includes(searchTerm.toLowerCase()) ||
-        String(order.customerName)
+        String(order.userId || "")
           .toLowerCase()
           .includes(searchTerm.toLowerCase()) ||
-        String(order.status).toLowerCase().includes(searchTerm.toLowerCase())
+        String(order.customerName || "")
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        String(order.status || "")
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
     );
     setFilteredOrders(filtered);
   }, [searchTerm, orders]);
@@ -66,18 +67,15 @@ export default function Orders() {
 
   const startEditAddress = (orderId, currentAddress) => {
     setEditingAddress(orderId);
-    // Parse current address to string format
     let addressString = "";
     try {
-      if (typeof currentAddress === "string") {
-        const parsed = JSON.parse(currentAddress);
-        addressString = `${parsed.street}, ${parsed.city}`;
-      } else if (typeof currentAddress === "object" && currentAddress) {
-        addressString = `${currentAddress.street}, ${currentAddress.city}`;
-      } else {
-        addressString = currentAddress || "";
-      }
-    } catch (error) {
+      const addr =
+        typeof currentAddress === "string"
+          ? JSON.parse(currentAddress)
+          : currentAddress;
+      if (addr)
+        addressString = `${addr.street || ""}, ${addr.city || ""}`.trim();
+    } catch {
       addressString = currentAddress || "";
     }
     setTempAddress(addressString);
@@ -85,43 +83,19 @@ export default function Orders() {
 
   const saveAddress = async (orderId) => {
     try {
-      console.log("Attempting to update address for order:", orderId);
-      console.log("New address string:", tempAddress);
-
-      // Parse the address string back to JSON format expected by database
-      // Expected format: "Street, PostalCode City" or "Street, City"
-      const addressParts = tempAddress.split(", ");
-      let addressObj = {
-        street: addressParts[0] || "",
-        city: "",
-        postalCode: "",
+      const parts = tempAddress.split(",").map((s) => s.trim());
+      const addressObj = {
+        street: parts[0] || "",
+        postalCode: parts[1] || "",
+        city: parts[2] || parts[1] || "",
       };
 
-      if (addressParts.length >= 2) {
-        const cityPart = addressParts[1];
-        // Try to extract postal code if it exists (numbers at start)
-        const postalCodeMatch = cityPart.match(/^(\d+)\s+(.+)$/);
-        if (postalCodeMatch) {
-          addressObj.postalCode = postalCodeMatch[1];
-          addressObj.city = postalCodeMatch[2];
-        } else {
-          addressObj.city = cityPart;
-        }
-      }
-
-      console.log("Formatted address object:", addressObj);
-
-      const response = await api.put(`/orders/${orderId}`, {
-        shippingAddress: JSON.stringify(addressObj),
-      });
-
-      console.log("Update response:", response.data);
+      await api.put(`/orders/${orderId}`, { shippingAddress: addressObj });
       setEditingAddress(null);
       setTempAddress("");
       loadOrders();
     } catch (error) {
       console.error("Failed to update address:", error);
-      console.error("Error response:", error.response?.data);
       alert(
         `Failed to update address: ${
           error.response?.data?.error || error.message
@@ -135,27 +109,22 @@ export default function Orders() {
     setTempAddress("");
   };
 
-  // Helper function to parse items JSON
   const parseItems = (itemsData) => {
     try {
-      if (typeof itemsData === "string") {
-        return JSON.parse(itemsData);
-      } else if (Array.isArray(itemsData)) {
-        return itemsData;
-      }
-      return [];
-    } catch (error) {
-      console.error("Error parsing items:", error);
+      return typeof itemsData === "string"
+        ? JSON.parse(itemsData)
+        : itemsData || [];
+    } catch {
       return [];
     }
   };
 
-  // Helper function to format date
   const formatDate = (dateString) => {
+    const d = new Date(dateString);
     return (
-      new Date(dateString).toLocaleDateString("fi-FI") +
+      d.toLocaleDateString("fi-FI") +
       ", " +
-      new Date(dateString).toLocaleTimeString("fi-FI", {
+      d.toLocaleTimeString("fi-FI", {
         hour: "2-digit",
         minute: "2-digit",
       })
@@ -165,7 +134,6 @@ export default function Orders() {
   return (
     <section id="users-page-container">
       <h1 className="title">Tilaukset ({filteredOrders.length})</h1>
-
       <div className="users-page-search-container">
         <Search
           inputPlaceholder="hae tilauksia (tilaus ID tai käyttäjä ID)"
@@ -173,7 +141,6 @@ export default function Orders() {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
-
       <div className="users-page-table-container">
         <table>
           <thead>
@@ -222,23 +189,15 @@ export default function Orders() {
                         {order.shippingAddress
                           ? (() => {
                               try {
-                                if (typeof order.shippingAddress === "string") {
-                                  const parsed = JSON.parse(
-                                    order.shippingAddress
-                                  );
-                                  return `${parsed.street}, ${parsed.city}`;
-                                } else if (
-                                  typeof order.shippingAddress === "object"
-                                ) {
-                                  return `${order.shippingAddress.street}, ${order.shippingAddress.city}`;
-                                }
-                                return (
-                                  order.shippingAddress.substring(0, 20) + "..."
-                                );
-                              } catch (error) {
-                                return (
-                                  order.shippingAddress.substring(0, 20) + "..."
-                                );
+                                const addr =
+                                  typeof order.shippingAddress === "string"
+                                    ? JSON.parse(order.shippingAddress)
+                                    : order.shippingAddress;
+                                return `${addr.street || ""}, ${
+                                  addr.city || ""
+                                }`;
+                              } catch {
+                                return order.shippingAddress;
                               }
                             })()
                           : "Ei osoitetta"}
@@ -268,7 +227,6 @@ export default function Orders() {
                     </div>
                   ))}
                 </td>
-
                 <td>
                   <div>{order.paymentMethod || "Ei määritelty"}</div>
                 </td>

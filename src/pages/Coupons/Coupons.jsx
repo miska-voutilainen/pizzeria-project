@@ -20,7 +20,7 @@ export default function Coupons() {
 
   const loadCoupons = async () => {
     try {
-      const response = await api.get("/coupons");
+      const response = await api.get("/coupons"); // ← unchanged, correct
       setCoupons(response.data);
       setFilteredCoupons(response.data);
     } catch (error) {
@@ -51,7 +51,6 @@ export default function Coupons() {
           : null,
         expires_at: form.expiryDate || null,
       };
-
       if (editing) {
         await api.put(`/coupons/${editing}`, couponData);
         alert("Kuponki päivitetty onnistuneesti!");
@@ -59,14 +58,9 @@ export default function Coupons() {
         await api.post("/coupons", couponData);
         alert("Kuponki lisätty onnistuneesti!");
       }
-
       setIsModalOpen(false);
       setEditing(null);
-      setForm({
-        code: "",
-        discountPercentage: "",
-        expiryDate: "",
-      });
+      setForm({ code: "", discountPercentage: "", expiryDate: "" });
       loadCoupons();
     } catch (error) {
       console.error("Failed to save coupon:", error);
@@ -104,20 +98,14 @@ export default function Coupons() {
 
   const handleAddNew = () => {
     setEditing(null);
-    setForm({
-      code: "",
-      discountPercentage: "",
-      expiryDate: "",
-    });
+    setForm({ code: "", discountPercentage: "", expiryDate: "" });
     setIsModalOpen(true);
   };
 
   return (
     <section id="coupons-page-container">
       <h1 className="title">Kupongit ({filteredCoupons.length})</h1>
-
       <div className="coupons-search-row">
-        {/* <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} /> */}
         <div className="users-page-search-container">
           <Search
             inputPlaceholder="hae kuponkeja"
@@ -127,7 +115,6 @@ export default function Coupons() {
         </div>
         <SquareButton type="add" onClick={handleAddNew} />
       </div>
-
       <div className="users-page-table-container coupons-page-table-container">
         <table>
           <thead>
@@ -155,7 +142,6 @@ export default function Coupons() {
           </tbody>
         </table>
       </div>
-
       <AddCouponModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

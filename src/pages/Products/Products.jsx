@@ -26,6 +26,7 @@ export default function Products() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const load = () => api.get("/products").then((r) => setProducts(r.data));
+
   useEffect(() => {
     load();
   }, []);
@@ -43,7 +44,6 @@ export default function Products() {
   const handleSave = async () => {
     if (editing) {
       try {
-        // Prepare data for API - exclude id and convert price to number
         const productData = {
           name: form.name,
           slug: form.slug,
@@ -53,7 +53,6 @@ export default function Products() {
           category: form.category,
           sort_order: form.sort_order,
         };
-
         await api.put(`/products/${editing.slug}`, productData);
         setIsEditModalOpen(false);
         setEditing(null);
@@ -81,7 +80,6 @@ export default function Products() {
 
   const handleAddSave = async () => {
     try {
-      // Prepare data for API - exclude id and convert price to number
       const productData = {
         name: form.name,
         slug: form.slug,
@@ -91,7 +89,6 @@ export default function Products() {
         category: form.category,
         sort_order: form.sort_order,
       };
-
       const response = await api.post("/products", productData);
       alert(`Product added successfully! ID: ${response.data.id}`);
       setForm({
@@ -159,7 +156,6 @@ export default function Products() {
   return (
     <section id="products-page-container">
       <h1 className="title">Tuotteet ({filteredProducts.length})</h1>
-
       <div className="products-search-row">
         <Search
           inputPlaceholder="hae tuotteita (nimi, kategoria tai ID)"
@@ -173,7 +169,6 @@ export default function Products() {
           <AdminProductCard key={p.slug} props={p} onEdit={startEdit} />
         ))}
       </div>
-
       <AddProductModal
         isOpen={isModalOpen}
         onClose={handleCloseAddModal}
@@ -181,7 +176,6 @@ export default function Products() {
         setForm={setForm}
         save={handleAddSave}
       />
-
       <EditProductModal
         isOpen={isEditModalOpen}
         onClose={handleCloseEditModal}
