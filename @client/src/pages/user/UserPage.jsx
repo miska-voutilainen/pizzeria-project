@@ -150,11 +150,19 @@ const UserPage = () => {
     <section id="user-page">
       <div className="user-page-wrapper">
         <div className="user-page-user-card">
-          <h2>Welcome back, {user.username}!</h2>
+          <div className="user-page-user-card-header">
+            <h2>Welcome back, {user.username}!</h2>
+            <div className="user-info">
+              <p>
+                <strong>Member since:</strong> {new Date().toLocaleDateString()}
+              </p>
+            </div>
+          </div>
 
           <div className="user-card-personal-container">
-            <h1>Personal information</h1>
             <div className="checkout-inputs">
+              <h2>Personal information</h2>
+
               <div className="checkout-input-row">
                 <label htmlFor="firstName">Etunimi</label>
                 <InputField
@@ -210,6 +218,9 @@ const UserPage = () => {
                   // onChange={handleFormChange("city")}
                 />
               </div>
+              <p>
+                <strong>Email:</strong> {user.email || "Not provided"}
+              </p>
               {/* email verified  */}
               {!user.emailVerified && (
                 <div
@@ -272,8 +283,9 @@ const UserPage = () => {
           </div>
 
           <div className="user-card-delivery-address-container">
-            <h2>Delivery address</h2>
             <div className="checkout-inputs">
+              <h2>Delivery address</h2>
+
               <div className="checkout-input-row">
                 <label htmlFor="address">Katuosoite</label>
                 <InputField
@@ -308,35 +320,6 @@ const UserPage = () => {
                 />
               </div>
             </div>
-          </div>
-
-          <div className="user-card-take-away-address">
-            <h2>Take-away address</h2>
-            <div className="checkout-inputs">
-              <div className="checkout-input-row">
-                <label htmlFor="favPizzeria">Lempi pizzeria</label>
-                <InputField
-                  type="text"
-                  name={"favPizzeria"}
-                  id={"favPizzeria"}
-                  placeholder="Pizzakatu 6"
-                  // value={formData.name}
-                  // onChange={handleFormChange("name")}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="user-info">
-            <p>
-              <strong>Email:</strong> {user.email || "Not provided"}
-            </p>
-            <p>
-              <strong>Role:</strong> {user.role || "Customer"}
-            </p>
-            <p>
-              <strong>Member since:</strong> {new Date().toLocaleDateString()}
-            </p>
           </div>
 
           {showCodeInput && (
@@ -415,6 +398,7 @@ const UserPage = () => {
             </button>
           </div>
         </div>
+        <hr className="user-page-divider" />
         <div className="user-page-orders-card">
           <h1>Orders</h1>
 
