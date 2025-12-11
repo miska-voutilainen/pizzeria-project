@@ -7,12 +7,12 @@
     padding: 21px 29px 21px 29px;
 }
 
-#pizza-image{
+#pizza-image {
     max-width: 485px;
     height: 524px;
 }
 
-#make-your-own-pizza-right-side{
+#make-your-own-pizza-right-side {
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -20,7 +20,7 @@
     gap: 25px;
 }
 
-#make-your-own-pizza-button{
+#make-your-own-pizza-button {
     width: 100%;
     height: 47px;
     display: flex;
@@ -28,7 +28,7 @@
     align-items: center;
 }
 
-#make-your-own-pizza-description{
+#make-your-own-pizza-description {
     height: 80px;
     color: #547351;
     font-size: 0.9375rem;
@@ -37,13 +37,13 @@
     line-height: normal;
 }
 
-#make-your-own-pizza-text{
+#make-your-own-pizza-text {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-#make-your-own-pizza-container h2{
+#make-your-own-pizza-container h2 {
     color: #1C3D19;
     height: 34px;
     flex-shrink: 0;
@@ -55,7 +55,7 @@
     letter-spacing: 0.26px;
 }
 
-#add-ingredients{
+#add-ingredients {
     display: flex;
     height: 438px;
     flex-direction: column;
@@ -66,7 +66,7 @@
     align-self: stretch;
 }
 
-#ingredients-list{
+#ingredients-list {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -78,7 +78,7 @@
     overflow-y: auto;
 }
 
-#length-and-dough{
+#length-and-dough {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -87,19 +87,19 @@
     align-self: stretch;
 }
 
-#length{
+#length {
     display: flex;
     flex-direction: row;
     gap: 26px;
 }
 
-#dough{
+#dough {
     display: flex;
     flex-direction: row;
     gap: 26px;
 }
 
-#length>button, #dough>button{
+#length > button, #dough > button {
     width: 100px;
     height: 35px;
     display: flex;
@@ -110,9 +110,29 @@
     border: 2px solid rgba(168, 143, 103, 0.70);
 }
 
-#dough>button{
+#dough > button {
     width: 226px;
+}
 
+@media (max-width: 1160px) {
+    .image-line {
+        display: none;
+    }
+    #make-your-own-pizza-container{
+        flex-direction: column;
+    }
+
+    #make-your-own-pizza-description{
+        height: 40px;
+    }
+
+    #ingredients-list{
+        height: 175px;
+    }
+
+    #add-ingredients{
+        height: 288px;
+    }
 }
 
 
