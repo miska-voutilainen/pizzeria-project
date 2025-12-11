@@ -157,16 +157,21 @@ const UserPage = () => {
       <div className="user-page-wrapper">
         <div className="user-page-user-card">
           <div className="user-page-user-card-header">
-            <h2>Welcome back, {user.username}!</h2>
-            <div className="user-info">
-              <p>
-                <strong>Member since:</strong> {new Date().toLocaleDateString()}
-              </p>
+            <div className="user-card-username">
+              <h2>Welcome back, {user.username}!</h2>
+              <div className="user-info">
+                <p>
+                  <strong>Member since:</strong>{" "}
+                  {new Date().toLocaleDateString()}
+                </p>
+              </div>
             </div>
-            <div className="action-grid">
-              <button className="action-btn logout">
-                <span>Logout</span>
-              </button>
+            <div className="user-cad-header-logout">
+              <div className="action-grid">
+                <button className="action-btn logout">
+                  <span>Logout</span>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -333,6 +338,9 @@ const UserPage = () => {
                   readOnly
                   placeholder="Kaupunki puuttuu"
                 />
+              </div>
+              <div className="user-page-save-address-changes-container">
+                <TextButton text="Save address" />
               </div>
             </div>
           </div>
