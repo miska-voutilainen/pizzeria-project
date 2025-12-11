@@ -266,7 +266,7 @@
 
 /* Full Pizza Container (holding the image) */
 .full-pizza-container {
-  width: 100%;
+  width: 100vw;
   height: 150vh;
   display: flex;
   justify-content: center;

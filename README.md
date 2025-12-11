@@ -8,18 +8,18 @@ Pizzaweb tekee laadukkaiden pizzojen tilauksesta helppoa.
 
 ## asennusohjeet
 
-1. Avaa @server ja tee npm i
-2. Lisää .env.local tiedosto
+1. Avaa @server ja tee `npm i`
+2. Lisää `.env.local` tiedosto
 3. node server
 4. cd @media
-5. npm i
-6. npm run dev
+5. `npm i`
+6. `npm run dev`
 
 Admin:
 
 1. @server, node server
-2. git checkout admin-page
-3. npm run dev
+2. `git checkout admin-page`
+3. `npm run dev`
 
 # Toiminnallisuudet ja käyttö
 

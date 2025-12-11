@@ -66,6 +66,10 @@
   gap: 30px;
 }
 
+.navbar-row-end button {
+  font-family: inherit;
+}
+
 .navbar-row-end a {
   display: flex;
   align-items: center;
@@ -194,6 +198,7 @@
 .mobile-menu-column-end button {
   width: 100%;
   padding: 8px 0;
+  font-family: inherit;
 }
 
 .mobile-menu-column-end a {

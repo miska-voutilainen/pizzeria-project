@@ -44,6 +44,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+button {
+  font-family: inherit;
+}
+
 /* ------------------------------------------------------- */
 /* CSS Reset — Removes browser inconsistencies             */
 /* ------------------------------------------------------- */
