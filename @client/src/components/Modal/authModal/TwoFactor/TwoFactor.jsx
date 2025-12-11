@@ -2,7 +2,7 @@ import OtpInput from "./OtpInput.jsx";
 import React, { useState } from "react";
 import "./TwoFactor.css";
 import Button from "../../../ui/Button/Button.jsx";
-import CloseButton from "../../../ui/СloseButton/CloseButton.jsx";
+import CloseButton from "../../../ui/CloseButton/CloseButton.jsx";
 
 const TwoFactor = ({
   onClose,

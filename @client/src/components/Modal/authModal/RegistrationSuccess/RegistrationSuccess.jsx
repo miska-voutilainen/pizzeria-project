@@ -1,4 +1,4 @@
-import CloseButton from "../../../ui/СloseButton/CloseButton.jsx";
+import CloseButton from "../../../ui/CloseButton/CloseButton.jsx";
 import "./RegistrationSuccess.css";
 
 const RegistrationSuccess = ({ onClose }) => {

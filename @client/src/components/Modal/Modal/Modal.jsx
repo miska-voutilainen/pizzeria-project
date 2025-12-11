@@ -7,6 +7,7 @@ import TwoFactor from "../authModal/TwoFactor/TwoFactor.jsx";
 import Success from "../authModal/Success/Success.jsx";
 import ResetPassword from "../authModal/ResetPassword/ResetPassword.jsx";
 import EmailPasswordSuccess from "../authModal/EmailPasswordSuccess/EmailPasswordSuccess.jsx";
+import MapModal from "../mapModal/MapModal.jsx";
 
 const Modal = React.forwardRef((props, ref) => {
   const [modalContent, setModalContent] = React.useState(props.window);
@@ -64,6 +65,13 @@ const Modal = React.forwardRef((props, ref) => {
           key={`emailPasswordSuccess-${modalKey}`}
           onClose={onClose}
           modalContent={modalContent}
+        />
+      )}
+      {modalContent === "MapModal" && (
+        <MapModal
+          key={`map-${modalKey}`}
+          onClose={onClose}
+          setModalContent={setModalContent}
         />
       )}
     </dialog>

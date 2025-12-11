@@ -1,4 +1,4 @@
-import CloseButton from "../../../ui/СloseButton/CloseButton.jsx";
+import CloseButton from "../../../ui/CloseButton/CloseButton.jsx";
 import InputField from "../../../ui/InputField/InputField.jsx";
 import Button from "../../../ui/Button/Button.jsx";
 import { useState } from "react";

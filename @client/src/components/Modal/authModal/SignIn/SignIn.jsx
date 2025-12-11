@@ -2,7 +2,7 @@ import "./SignIn.css";
 import Button from "../../../ui/Button/Button.jsx";
 import CheckBox from "../../../ui/CheckBox/CheckBox.jsx";
 import React from "react";
-import CloseButton from "../../../ui/СloseButton/CloseButton.jsx";
+import CloseButton from "../../../ui/CloseButton/CloseButton.jsx";
 import InputField from "../../../ui/InputField/InputField.jsx";
 import TextButton from "../../../ui/TextButton/TextButton.jsx";
 import TwoFactor from "../TwoFactor/TwoFactor.jsx";
