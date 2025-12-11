@@ -5,8 +5,11 @@ import { useState, useEffect } from "react";
 import IngredientCard from "../../ui/IngredientCard/IngredientCard.jsx";
 import RadioButton from "../../ui/RadioButton/RadioButton.jsx";
 import CloseButton from "../../ui/CloseButton/CloseButton.jsx";
+import { useCart } from "../../../context/CartContext.jsx"; // ← ADD THIS
 
 const MakeYourOwnPizza = ({ onClose }) => {
+  const { addToCart } = useCart(); // ← GET addToCart
+
   const lengths = {
     "20 cm": 10,
     "25 cm": 15,
@@ -18,22 +21,14 @@ const MakeYourOwnPizza = ({ onClose }) => {
   const [length, setLength] = useState("20 cm");
   const [dough, setDough] = useState("Traditional");
   const [ingredients, setIngredients] = useState([]);
-  const [loading, setLoading] = useState(true);
 
-  // Fetch ingredients from your new API route
   useEffect(() => {
     fetch("http://localhost:3001/api/ingredients", {
       credentials: "include",
     })
       .then((res) => res.json())
-      .then((data) => {
-        setIngredients(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to load ingredients:", err);
-        setLoading(false);
-      });
+      .then((data) => setIngredients(data))
+      .catch((err) => console.error(err));
   }, []);
 
   const changePrice = (newLength) => {
@@ -41,10 +36,32 @@ const MakeYourOwnPizza = ({ onClose }) => {
     setLength(newLength);
   };
 
+  const handleAddToCart = () => {
+    // Get selected ingredients from your IngredientCard (it adds .selected = true when clicked)
+    const selected =
+      ingredients
+        .filter((ing) => ing.selected)
+        .map((ing) => ing.name)
+        .join(", ") || "Plain";
+
+    const customPizza = {
+      id: `custom-${Date.now()}`,
+      slug: `custom-${Date.now()}`,
+      name: `Custom Pizza (${length})`,
+      price: price,
+      image: makeYourOwnPizzaImage,
+      ingredients: selected,
+      isCustom: true,
+      quantity: 1,
+    };
+
+    addToCart(customPizza); // ← Adds to real cart
+    onClose(); // ← Closes modal
+  };
+
   return (
     <div id="make-your-own-pizza-container">
       <CloseButton onClick={onClose} />
-
       <img
         id="pizza-image"
         src={makeYourOwnPizzaImage}
@@ -57,9 +74,7 @@ const MakeYourOwnPizza = ({ onClose }) => {
           <h1>Make Your Own Pizza</h1>
           <p id="make-your-own-pizza-description">
             Choose your favorite dough, pick the sauce that fits your taste, add
-            cheese, and finish it with any toppings you love. Whether you prefer
-            classic flavors or bold combinations — the choice is entirely yours.
-            Craft it, bake it, enjoy it!
+            cheese, and finish it with any toppings you love.
           </p>
 
           <div id="length-and-dough">
@@ -73,14 +88,13 @@ const MakeYourOwnPizza = ({ onClose }) => {
                 />
               ))}
             </div>
-
             <div id="dough">
-              {["Traditional", "Active"].map((doughType) => (
+              {["Traditional", "Active"].map((d) => (
                 <RadioButton
-                  key={doughType}
-                  text={doughType}
-                  active={dough === doughType}
-                  onClick={() => setDough(doughType)}
+                  key={d}
+                  text={d}
+                  active={dough === d}
+                  onClick={() => setDough(d)}
                 />
               ))}
             </div>
@@ -89,36 +103,54 @@ const MakeYourOwnPizza = ({ onClose }) => {
 
         <div id="add-ingredients">
           <h2>Add Ingredients</h2>
-
-          {loading ? (
-            <p>Loading ingredients...</p>
-          ) : ingredients.length === 0 ? (
-            <p>No ingredients found.</p>
-          ) : (
-            <div id="ingredients-list">
-              {ingredients.map((ing) => (
-                <IngredientCard
-                  key={ing.id}
-                  name={ing.name}
-                  img={ing.imgUrl}
-                  ingredientPrice={parseFloat(ing.price)}
-                  price={price}
-                  setPrice={setPrice}
-                />
-              ))}
-            </div>
-          )}
+          <div id="ingredients-list">
+            {ingredients.map((ing) => (
+              <IngredientCard
+                key={ing.id}
+                name={ing.name}
+                img={ing.imgUrl}
+                ingredientPrice={parseFloat(ing.price)}
+                price={price}
+                setPrice={setPrice}
+              />
+            ))}
+          </div>
 
           <Button
             text={`Add to Cart ${price.toFixed(2)}€`}
             id="make-your-own-pizza-button"
             onClick={() => {
-              alert(
-                `Pizza added! Size: ${length}, Dough: ${dough}, Price: ${price.toFixed(
-                  2
-                )}€`
-              );
-              // Add your real cart logic here later
+              // Get only topping names (no quantities)
+              const selectedToppings = Array.from(
+                document.querySelectorAll(".ingredient-card")
+              )
+                .map((card) => {
+                  const name = card.dataset.ingredientName;
+                  const qty = Number(card.dataset.quantity || 0);
+                  return qty > 0 ? name : null;
+                })
+                .filter(Boolean);
+
+              const toppingsText =
+                selectedToppings.length > 0
+                  ? selectedToppings.join(", ")
+                  : "N/A";
+
+              const customPizza = {
+                id: `custom-${Date.now()}`,
+                slug: `custom-pizza-${Date.now()}`,
+                name: "Custom pizza",
+                price: Number(price.toFixed(2)),
+                image: makeYourOwnPizzaImage,
+                size: length, // e.g. "30 cm"
+                base: dough, // e.g. "Traditional" or "Active"
+                ingredients: toppingsText,
+                isCustom: true,
+                quantity: 1,
+              };
+
+              addToCart(customPizza);
+              onClose();
             }}
           />
         </div>

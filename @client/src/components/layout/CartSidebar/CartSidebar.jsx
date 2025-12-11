@@ -90,7 +90,13 @@ const CartSidebar = ({ isOpen, onClose }) => {
                   {cartItems.map((item) => (
                     <article key={item.slug} className="cart-item">
                       <div className="cart-item-image-container">
-                        {item.imgUrl ? (
+                        {item.image ? (
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="cart-item-image"
+                          />
+                        ) : item.imgUrl ? (
                           <img
                             src={item.imgUrl}
                             alt={item.name}
@@ -98,9 +104,24 @@ const CartSidebar = ({ isOpen, onClose }) => {
                           />
                         ) : null}
                       </div>
+
                       <div className="cart-item-info">
                         <div className="cart-item-info-top-row">
-                          <h4>{item.name}</h4>
+                          <div className="cart-item-name-wrapper">
+                            <h4>{item.name}</h4>
+
+                            {item.isCustom && (
+                              <div className="custom-details">
+                                <p className="custom-base-and-size">
+                                  {item.base}, {item.size}
+                                </p>
+                                <p className="cart-ingredients">
+                                  + {item.ingredients}
+                                </p>
+                              </div>
+                            )}
+                          </div>
+
                           <button
                             onClick={() => removeFromCart(item.slug)}
                             className="remove-btn"
@@ -109,27 +130,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
                           </button>
                         </div>
                         <div className="cart-item-info-bottom-row">
-                          <p>{item.price}€</p>
-                          {/* old quantity buttons */}
-                          {/* <div className="cart-item-controls">
-                            <button
-                              onClick={() =>
-                                updateQuantity(item.slug, item.quantity - 1)
-                              }
-                              className="quantity-btn"
-                            >
-                              -
-                            </button>
-                            <span className="quantity">{item.quantity}</span>
-                            <button
-                              onClick={() =>
-                                updateQuantity(item.slug, item.quantity + 1)
-                              }
-                              className="quantity-btn"
-                            >
-                              +
-                            </button>
-                          </div> */}
+                          <p>{item.price.toFixed(2)}€</p>
                           <QuantityInput
                             quantity={item.quantity}
                             onIncrease={() =>
