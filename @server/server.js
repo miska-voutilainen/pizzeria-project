@@ -11,6 +11,7 @@ import createOrderRouter from "./routes/order.routes.js";
 import createProductRouter from "./routes/product.routes.js";
 import createCouponRouter from "./routes/coupon.routes.js";
 import createNewsletterRouter from "./routes/newsletter.routes.js";
+import createIngredientsRouter from "./routes/ingredients.routes.js";
 
 const app = express();
 
@@ -48,6 +49,7 @@ app.use("/api/orders", createOrderRouter(pool));
 app.use("/api/products", createProductRouter(pool));
 app.use("/api/coupons", createCouponRouter(pool));
 app.use("/api/newsletter", createNewsletterRouter(pool));
+app.use("/api/ingredients", createIngredientsRouter(pool));
 
 app.use(errorHandler);
 
