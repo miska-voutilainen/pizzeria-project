@@ -11,6 +11,13 @@
     background: #FDF8E2;
 }
 
+.image-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .ingredient-image{
     height: 40px;
 }
@@ -19,7 +26,7 @@
     color: #224724;
     height: 19px;
     align-self: stretch;
-    font-size: 1rem;
+    font-size: 0.8rem;
     font-style: normal;
     font-weight: 500;
     line-height: normal;
@@ -27,7 +34,7 @@
 }
 
 .ingredient-price{
-    font-size: 0.9rem;
+    font-size: 0.7rem;
     color: #224724;
     font-weight: 500;
 }
