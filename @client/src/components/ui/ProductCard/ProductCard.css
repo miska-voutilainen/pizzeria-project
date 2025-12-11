@@ -46,7 +46,7 @@
 .product-description {
   color: #6b7280;
   font-size: 0.875rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1.3rem;
   line-height: 1.5;
   flex-grow: 1;
 }
@@ -62,10 +62,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.product-card-price-row button {
-  margin: 0px 7px 7px 0px;
 }
 
 .products-view-all-btn-container {

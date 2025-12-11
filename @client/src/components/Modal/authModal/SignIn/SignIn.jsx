@@ -2,9 +2,10 @@ import "./SignIn.css";
 import Button from "../../../ui/Button/Button.jsx";
 import CheckBox from "../../../ui/CheckBox/CheckBox.jsx";
 import React from "react";
-import CloseButton from "../../../ui/СloseButton/CloseButton.jsx";
+import CloseButton from "../../../ui/CloseButton/CloseButton.jsx";
 import InputField from "../../../ui/InputField/InputField.jsx";
 import TextButton from "../../../ui/TextButton/TextButton.jsx";
+import TwoFactor from "../TwoFactor/TwoFactor.jsx";
 import { useAuth } from "../../../../context/AuthContext.jsx";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -45,12 +46,7 @@ const SignIn = ({ setModalContent, onClose, redirectPath }) => {
     return newErrors;
   };
 
-  const handleVerify2FA = async () => {
-    if (twoFACode.length !== 4) {
-      setServerError("Please enter a 4-digit code");
-      return;
-    }
-
+  const handleVerify2FA = async (code) => {
     setLoading(true);
     try {
       const response = await fetch(
@@ -59,7 +55,7 @@ const SignIn = ({ setModalContent, onClose, redirectPath }) => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
-          body: JSON.stringify({ code: twoFACode, userId }),
+          body: JSON.stringify({ code, userId }),
         }
       );
 
@@ -123,51 +119,14 @@ const SignIn = ({ setModalContent, onClose, redirectPath }) => {
 
   if (show2FA) {
     return (
-      <div>
-        <CloseButton onClick={onClose} />
-        <div id="signInContent">
-          <div id="signInTitle">
-            <h1>Enter 2FA Code</h1>
-          </div>
-          {serverError && <p className="error">{serverError}</p>}
-          <p>We've sent a 4-digit code to your email. Please enter it below:</p>
-          <div id="inputFields">
-            <input
-              type="text"
-              value={twoFACode}
-              onChange={(e) =>
-                setTwoFACode(e.target.value.replace(/\D/g, "").slice(0, 4))
-              }
-              placeholder="0000"
-              maxLength="4"
-              autoComplete="off"
-              style={{
-                textAlign: "center",
-                fontSize: "18px",
-                letterSpacing: "4px",
-                padding: "10px",
-                width: "120px",
-              }}
-            />
-          </div>
-          <div>
-            <Button
-              text={loading ? "Verifying..." : "Verify"}
-              onClick={handleVerify2FA}
-              disabled={loading || twoFACode.length !== 4}
-            />
-          </div>
-          <TextButton
-            text="Cancel"
-            onClick={() => {
-              setShow2FA(false);
-              setTwoFACode("");
-              setUserId("");
-              setServerError("");
-            }}
-          />
-        </div>
-      </div>
+      <TwoFactor
+        onClose={onClose}
+        setModalContent={() => {}}
+        userId={userId}
+        onCodeSubmit={handleVerify2FA}
+        isLoading={loading}
+        error={serverError}
+      />
     );
   }
 

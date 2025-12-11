@@ -2,6 +2,11 @@
 import { useAuth } from "../../context/AuthContext.jsx";
 import { Navigate } from "react-router-dom";
 import { useState } from "react";
+import "./UserPage.css";
+import InputField from "../../components/ui/InputField/InputField.jsx";
+import TextButton from "../../components/ui/TextButton/TextButton.jsx";
+import deliveryIcon from "../../assets/images/delivery-icon.svg";
+import takeawayIcon from "../../assets/images/store-icon.svg";
 
 const UserPage = () => {
   const { user, loading, checkAuth } = useAuth();
@@ -142,58 +147,187 @@ const UserPage = () => {
     }
   };
   return (
-    <div className="user-page">
-      <div className="user-container">
-        <h1 className="page-title">Your Account</h1>
+    <section id="user-page">
+      <div className="user-page-wrapper">
+        <div className="user-page-user-card">
+          <h2>Welcome back, {user.username}!</h2>
 
-        {!user.emailVerified && (
-          <div
-            className="email-verification-banner"
-            style={{
-              backgroundColor: "#fff3cd",
-              border: "1px solid #ffeaa7",
-              borderRadius: "8px",
-              padding: "15px",
-              marginBottom: "20px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <div>
-              <strong>⚠️ Email Verification Required</strong>
-              <p style={{ margin: "5px 0 0 0", color: "#856404" }}>
-                Please verify your email address to enable security features
-                like 2FA.
-              </p>
+          <div className="user-card-personal-container">
+            <h1>Personal information</h1>
+            <div className="checkout-inputs">
+              <div className="checkout-input-row">
+                <label htmlFor="firstName">Etunimi</label>
+                <InputField
+                  type="text"
+                  name={"firstName"}
+                  id={"firstName"}
+                  placeholder="John Doe"
+                  // value={formData.name}
+                  // onChange={handleFormChange("name")}
+                />
+              </div>
+              <div className="checkout-input-row">
+                <label htmlFor="surname">Sukunimi</label>
+                <InputField
+                  type="tel"
+                  name={"surname"}
+                  id={"surname"}
+                  placeholder="Virtanen"
+                  // value={formData.phone}
+                  // onChange={handleFormChange("phone")}
+                />
+              </div>
+              <div className="checkout-input-row">
+                <label htmlFor="phoneNumber">Puhelinnumero</label>
+                <InputField
+                  type="tel"
+                  name={"phoneNumber"}
+                  id={"phoneNumber"}
+                  placeholder="040123456"
+                  // value={formData.address}
+                  // onChange={handleFormChange("address")}
+                />
+              </div>
+              <div className="checkout-input-row">
+                <label htmlFor="password">Salasana</label>
+                <InputField
+                  type="password"
+                  name={"password"}
+                  id={"password"}
+                  placeholder="salasana"
+                  // value={formData.postcode}
+                  // onChange={handleFormChange("postcode")}
+                />
+              </div>
+              <div className="checkout-input-row">
+                <label htmlFor="email">Email</label>
+                <InputField
+                  type="text"
+                  name={"email"}
+                  id={"email"}
+                  placeholder="pekka.virtanen@gmail.com"
+                  // value={formData.city}
+                  // onChange={handleFormChange("city")}
+                />
+              </div>
+              {/* email verified  */}
+              {!user.emailVerified && (
+                <div
+                  className="email-verification-banner"
+                  style={{
+                    backgroundColor: "#fff3cd",
+                    border: "1px solid #ffeaa7",
+                    borderRadius: "8px",
+                    padding: "15px",
+                    marginBottom: "20px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <div>
+                    <strong>⚠️ Email Verification Required</strong>
+                    <p style={{ margin: "5px 0 0 0", color: "#856404" }}>
+                      Please verify your email address to enable security
+                      features like 2FA.
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleSendEmailVerification}
+                    disabled={loading2FA}
+                    style={{
+                      backgroundColor: "#ffc107",
+                      color: "#212529",
+                      border: "none",
+                      padding: "8px 16px",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {loading2FA ? "Sending..." : "Verify Now"}
+                  </button>
+                </div>
+              )}
+              <div className="action-grid">
+                {!user.twoFactorEnabled ? (
+                  <button
+                    className="action-btn"
+                    onClick={handleSend2FACode}
+                    disabled={loading2FA}
+                  >
+                    <span>{loading2FA ? "Sending..." : "Enable 2FA"}</span>
+                  </button>
+                ) : (
+                  <button
+                    className="action-btn logout"
+                    onClick={handleDisable2FA}
+                    disabled={loading2FA}
+                  >
+                    <span>{loading2FA ? "Disabling..." : "Disable 2FA"}</span>
+                  </button>
+                )}
+              </div>
             </div>
-            <button
-              onClick={handleSendEmailVerification}
-              disabled={loading2FA}
-              style={{
-                backgroundColor: "#ffc107",
-                color: "#212529",
-                border: "none",
-                padding: "8px 16px",
-                borderRadius: "4px",
-                cursor: "pointer",
-                fontWeight: "bold",
-              }}
-            >
-              {loading2FA ? "Sending..." : "Verify Now"}
-            </button>
           </div>
-        )}
 
-        <div className="user-card">
-          <div className="user-avatar">
-            <div className="avatar-placeholder">
-              {user.username.charAt(0).toUpperCase()}
+          <div className="user-card-delivery-address-container">
+            <h2>Delivery address</h2>
+            <div className="checkout-inputs">
+              <div className="checkout-input-row">
+                <label htmlFor="address">Katuosoite</label>
+                <InputField
+                  type="address"
+                  name={"address"}
+                  id={"address"}
+                  placeholder="Pizzatie 5"
+                  // value={formData.name}
+                  // onChange={handleFormChange("name")}
+                />
+              </div>
+              <div className="checkout-input-row">
+                <label htmlFor="postcode">Postinumero</label>
+                <InputField
+                  type="text"
+                  name={"postcode"}
+                  id={"postcode"}
+                  placeholder="012345"
+                  // value={formData.phone}
+                  // onChange={handleFormChange("phone")}
+                />
+              </div>
+              <div className="checkout-input-row">
+                <label htmlFor="region">Kunta</label>
+                <InputField
+                  type="text"
+                  name={"region"}
+                  id={"region"}
+                  placeholder="Uusimaa"
+                  // value={formData.address}
+                  // onChange={handleFormChange("address")}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="user-card-take-away-address">
+            <h2>Take-away address</h2>
+            <div className="checkout-inputs">
+              <div className="checkout-input-row">
+                <label htmlFor="favPizzeria">Lempi pizzeria</label>
+                <InputField
+                  type="text"
+                  name={"favPizzeria"}
+                  id={"favPizzeria"}
+                  placeholder="Pizzakatu 6"
+                  // value={formData.name}
+                  // onChange={handleFormChange("name")}
+                />
+              </div>
             </div>
           </div>
 
           <div className="user-info">
-            <h2>Welcome back, {user.username}!</h2>
             <p>
               <strong>Email:</strong> {user.email || "Not provided"}
             </p>
@@ -203,29 +337,6 @@ const UserPage = () => {
             <p>
               <strong>Member since:</strong> {new Date().toLocaleDateString()}
             </p>
-          </div>
-        </div>
-
-        <div className="user-actions">
-          <h3>Security</h3>
-          <div className="action-grid">
-            {!user.twoFactorEnabled ? (
-              <button
-                className="action-btn"
-                onClick={handleSend2FACode}
-                disabled={loading2FA}
-              >
-                <span>{loading2FA ? "Sending..." : "Enable 2FA"}</span>
-              </button>
-            ) : (
-              <button
-                className="action-btn logout"
-                onClick={handleDisable2FA}
-                disabled={loading2FA}
-              >
-                <span>{loading2FA ? "Disabling..." : "Disable 2FA"}</span>
-              </button>
-            )}
           </div>
 
           {showCodeInput && (
@@ -304,8 +415,88 @@ const UserPage = () => {
             </button>
           </div>
         </div>
+        <div className="user-page-orders-card">
+          <h1>Orders</h1>
+
+          {Array.isArray(user.orders) && user.orders.length > 0 ? (
+            <div className="simple-orders-list">
+              {user.orders.map((order) => {
+                const id = order.orderId || "-";
+                const date = order.createdAt;
+                const items = Array.isArray(order.items) ? order.items : [];
+                const total = order.totalAmount || 0;
+                const deliveryType = order.deliveryType || "N/A";
+
+                const itemNames = items
+                  .map((item) => {
+                    let name = item.name;
+                    if (item.size && item.size !== "normaali")
+                      name += ` (${item.size})`;
+                    return item.quantity > 1
+                      ? `${item.quantity}× ${name}`
+                      : name;
+                  })
+                  .join(", ");
+
+                return (
+                  <div key={id} className="order-list">
+                    <div className="order-header">
+                      <div
+                        className="delivery-type"
+                        style={{ width: "30px", height: "30px" }}
+                      >
+                        {order.deliveryType === "delivery" ? (
+                          <img
+                            src={deliveryIcon}
+                            alt="Delivery"
+                            className="dt-icon"
+                          />
+                        ) : order.deliveryType === "takeaway" ? (
+                          <img
+                            src={takeawayIcon}
+                            alt="Takeaway"
+                            className="dt-icon"
+                          />
+                        ) : null}
+                      </div>
+                      <strong>#{id}</strong>
+                      <span className="order-total">
+                        {Number(total).toFixed(2)} €
+                      </span>
+                    </div>
+
+                    <div className="order-date">
+                      {date
+                        ? new Date(date).toLocaleDateString("fi-FI", {
+                            day: "numeric",
+                            month: "numeric",
+                            year: "numeric",
+                          }) +
+                          ", " +
+                          new Date(date).toLocaleTimeString("fi-FI", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
+                        : ""}
+                    </div>
+
+                    <div className="order-items">{itemNames || "No items"}</div>
+
+                    <TextButton className="reorder-btn">
+                      Make order again
+                    </TextButton>
+
+                    <hr className="order-divider" />
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p>No orders found.</p>
+          )}
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 

@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import {
   sendVerificationEmail,
   send2FAEmail,
+  sendPasswordResetEmail,
 } from "../services/email.service.js";
 import {
   createToken,
@@ -191,6 +192,25 @@ export default function createAuthRouter(
           [userId, username, email, passwordHash]
         );
 
+        // Send verification email in the background (non-blocking)
+        (async () => {
+          try {
+            const token = await createToken(
+              pool,
+              userId,
+              "verify-email",
+              24,
+              req
+            );
+            const link = `${
+              process.env.SERVER_URI || "http://localhost:3001"
+            }/api/auth/verify-email/${token}`;
+            await sendVerificationEmail(email, username, link);
+          } catch (err) {
+            console.error("Failed to send verification email:", err);
+          }
+        })();
+
         res.status(201).json({
           message: "Registration successful! You can now log in.",
         });
@@ -258,6 +278,44 @@ export default function createAuthRouter(
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  router.post("/send-reset-link", async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    try {
+      const [rows] = await pool.execute(
+        "SELECT userId, username, email FROM user_data WHERE email = ?",
+        [email]
+      );
+      const user = rows[0];
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      if (!user.email) {
+        console.error("User email is null/undefined:", user);
+        return res
+          .status(400)
+          .json({ message: "User email not found in database" });
+      }
+
+      const token = await createToken(pool, user.userId, "reset", 1, req);
+      const resetLink = `${
+        process.env.SERVER_URI || "http://localhost:3001"
+      }/api/auth/reset-password/${token}`;
+
+      await sendPasswordResetEmail(user.email, user.username, resetLink);
+      res.json({ message: "Password reset link sent to your email!" });
+    } catch (error) {
+      console.error("Send reset link error:", error);
+      res.status(500).json({ message: "Failed to send email" });
     }
   });
 
@@ -398,20 +456,74 @@ export default function createAuthRouter(
     res.json({ message: "Logged out successfully" });
   });
 
-  router.get("/check", (req, res) => {
-    if (req.user) {
+  router.get("/check", async (req, res) => {
+    if (!req.user) {
+      return res.json({ authenticated: false });
+    }
+
+    try {
+      const [orderRows] = await pool.execute(
+        `
+      SELECT 
+        orderId,
+        JSON_UNQUOTE(JSON_EXTRACT(items, '$')) AS items,
+        JSON_UNQUOTE(JSON_EXTRACT(shippingAddress, '$')) AS shippingAddress,
+        totalAmount,
+        status,
+        paymentMethod,
+        deliveryType,
+        customerName,
+        customerPhone,
+        created_at AS createdAt
+      FROM order_data 
+      WHERE userId = ?
+      ORDER BY created_at DESC
+    `,
+        [req.user.userId]
+      );
+
+      const orders = orderRows.map((row) => ({
+        orderId: row.orderId,
+        totalAmount: row.totalAmount,
+        status: row.status,
+        paymentMethod: row.paymentMethod,
+        deliveryType: row.deliveryType,
+        customerName: row.customerName,
+        customerPhone: row.customerPhone,
+        createdAt: row.createdAt,
+        items: row.items ? JSON.parse(row.items) : [],
+        shippingAddress: row.shippingAddress
+          ? JSON.parse(row.shippingAddress)
+          : null,
+      }));
+
       return res.json({
         authenticated: true,
         user: {
-          id: req.user.userId,
+          userId: req.user.userId,
           username: req.user.username,
-          role: req.user.role,
-          twoFactorEnabled: !!req.user.is2faEnabled,
+          email: req.user.email,
+          role: req.user.role || "user",
           emailVerified: !!req.user.emailVerified,
+          twoFactorEnabled: !!req.user.is2faEnabled,
+          orders,
+        },
+      });
+    } catch (error) {
+      console.error("Error in /auth/check:", error);
+      return res.json({
+        authenticated: true,
+        user: {
+          userId: req.user.userId,
+          username: req.user.username,
+          email: req.user.email || "",
+          role: req.user.role || "user",
+          emailVerified: !!req.user.emailVerified,
+          twoFactorEnabled: !!req.user.is2faEnabled,
+          orders: [], // never crash again
         },
       });
     }
-    res.json({ authenticated: false });
   });
 
   return router;

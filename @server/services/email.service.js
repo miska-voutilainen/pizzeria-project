@@ -28,10 +28,13 @@ const getTransporter = async () => {
 };
 
 export const sendVerificationEmail = async (email, username, verifyLink) => {
+  if (!email || !email.trim()) {
+    throw new Error("Email recipient is required");
+  }
   const t = await getTransporter();
   await t.sendMail({
     from: `"Pizzeria" <${process.env.EMAIL_ADDRESS}>`,
-    to: email,
+    to: email.trim(),
     subject: "Verify Your Email",
     html: `<p>Hi ${username},</p><p>Click <a href="${verifyLink}">here</a> to verify your email. Expires in 15 min.</p>`,
   });
@@ -43,6 +46,9 @@ export const send2FAEmail = async (
   code,
   customHtml = null
 ) => {
+  if (!email || !email.trim()) {
+    throw new Error("Email recipient is required");
+  }
   const t = await getTransporter();
   const html =
     customHtml ||
@@ -52,7 +58,7 @@ export const send2FAEmail = async (
   `;
   await t.sendMail({
     from: `"Pizzeria" <${process.env.EMAIL_ADDRESS}>`,
-    to: email,
+    to: email.trim(),
     subject: customHtml ? "Your Coupon" : "2FA Code",
     html,
   });
@@ -64,12 +70,28 @@ export const sendUnlockEmail = async (
   unlockLink,
   resetLink
 ) => {
+  if (!email || !email.trim()) {
+    throw new Error("Email recipient is required");
+  }
   const t = await getTransporter();
   await t.sendMail({
     from: `"Pizzeria" <${process.env.EMAIL_ADDRESS}>`,
-    to: email,
+    to: email.trim(),
     subject: "Account Locked",
     html: `<p>Hi ${username}, your account is locked.</p>
            <p><a href="${unlockLink}">Unlock</a> | <a href="${resetLink}">Reset Password</a></p>`,
+  });
+};
+
+export const sendPasswordResetEmail = async (email, username, resetLink) => {
+  if (!email || !email.trim()) {
+    throw new Error("Email recipient is required");
+  }
+  const t = await getTransporter();
+  await t.sendMail({
+    from: `"Pizzeria" <${process.env.EMAIL_ADDRESS}>`,
+    to: email.trim(),
+    subject: "Reset Your Password",
+    html: `<p>Hi ${username},</p><p>Click <a href="${resetLink}">here</a> to reset your password. This link expires in 1 hour.</p>`,
   });
 };

@@ -16,6 +16,7 @@
   cursor: pointer;
   border: none;
   box-shadow: 6px 6px 0 #8faa90;
+  margin: 0px 7px 7px 0px;
 }
 
 #square-button-container button:hover {
