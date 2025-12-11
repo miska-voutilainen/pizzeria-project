@@ -53,7 +53,7 @@ const Footer = () => {
 
         <div className="footer-copyright">
           <small>
-            Copyright ©2025 All rights reserved | Project Group Six{" "}
+            Copyright ©2025 All rights reserved | Project Group Sex{" "}
           </small>
         </div>
       </footer>

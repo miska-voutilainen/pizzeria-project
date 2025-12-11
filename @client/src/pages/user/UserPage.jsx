@@ -2,6 +2,7 @@
 import { useAuth } from "../../context/AuthContext.jsx";
 import { Navigate } from "react-router-dom";
 import { useState } from "react";
+import SquareButton from "../../components/ui/SquareButton/SquareButton.jsx";
 import "./UserPage.css";
 import InputField from "../../components/ui/InputField/InputField.jsx";
 import TextButton from "../../components/ui/TextButton/TextButton.jsx";
@@ -167,42 +168,40 @@ const UserPage = () => {
                 <label htmlFor="firstName">Etunimi</label>
                 <InputField
                   type="text"
-                  name={"firstName"}
-                  id={"firstName"}
-                  placeholder="John Doe"
-                  // value={formData.name}
-                  // onChange={handleFormChange("name")}
+                  value={user.firstName || ""}
+                  readOnly
+                  placeholder="Etunimi puuttuu"
                 />
               </div>
               <div className="checkout-input-row">
                 <label htmlFor="surname">Sukunimi</label>
                 <InputField
-                  type="tel"
-                  name={"surname"}
-                  id={"surname"}
-                  placeholder="Virtanen"
-                  // value={formData.phone}
-                  // onChange={handleFormChange("phone")}
+                  type="text"
+                  value={user.lastName || ""}
+                  readOnly
+                  placeholder="Sukunimi puuttuu"
                 />
               </div>
               <div className="checkout-input-row">
-                <label htmlFor="phoneNumber">Puhelinnumero</label>
+                <label htmlFor="email">Email</label>
                 <InputField
-                  type="tel"
-                  name={"phoneNumber"}
-                  id={"phoneNumber"}
-                  placeholder="040123456"
-                  // value={formData.address}
-                  // onChange={handleFormChange("address")}
+                  type="text"
+                  value={user.email || ""}
+                  readOnly
+                  name={"email"}
+                  id={"email"}
+                  // value={formData.city}
+                  // onChange={handleFormChange("city")}
                 />
               </div>
               <div className="checkout-input-row">
                 <label htmlFor="password">Salasana</label>
                 <InputField
                   type="password"
+                  value={"**********"}
+                  readOnly
                   name={"password"}
                   id={"password"}
-                  placeholder="salasana"
                   // value={formData.postcode}
                   // onChange={handleFormChange("postcode")}
                 />
@@ -289,119 +288,45 @@ const UserPage = () => {
               <div className="checkout-input-row">
                 <label htmlFor="address">Katuosoite</label>
                 <InputField
-                  type="address"
-                  name={"address"}
-                  id={"address"}
-                  placeholder="Pizzatie 5"
-                  // value={formData.name}
-                  // onChange={handleFormChange("name")}
+                  type="text"
+                  value={user.address?.street || ""}
+                  readOnly
+                  placeholder="Katuosoite puuttuu"
                 />
               </div>
               <div className="checkout-input-row">
                 <label htmlFor="postcode">Postinumero</label>
                 <InputField
                   type="text"
-                  name={"postcode"}
-                  id={"postcode"}
-                  placeholder="012345"
-                  // value={formData.phone}
-                  // onChange={handleFormChange("phone")}
+                  value={user.address?.postalCode || ""}
+                  readOnly
+                  placeholder="Postinumero puuttuu"
                 />
               </div>
               <div className="checkout-input-row">
-                <label htmlFor="region">Kunta</label>
+                <label htmlFor="region">Kaupunki</label>
                 <InputField
                   type="text"
-                  name={"region"}
-                  id={"region"}
-                  placeholder="Uusimaa"
-                  // value={formData.address}
-                  // onChange={handleFormChange("address")}
+                  value={user.address?.city || ""}
+                  readOnly
+                  placeholder="Kaupunki puuttuu"
                 />
               </div>
             </div>
           </div>
 
-          {showCodeInput && (
-            <div className="code-verification">
-              <p>Enter the 4-digit code sent to your email:</p>
-              <input
-                type="text"
-                value={verificationCode}
-                onChange={(e) =>
-                  setVerificationCode(
-                    e.target.value.replace(/\D/g, "").slice(0, 4)
-                  )
-                }
-                placeholder="0000"
-                maxLength="4"
-                style={{
-                  textAlign: "center",
-                  fontSize: "18px",
-                  letterSpacing: "4px",
-                  padding: "10px",
-                  margin: "10px 0",
-                  border: "2px solid #ccc",
-                  borderRadius: "4px",
-                  width: "120px",
-                }}
-              />
-              <div style={{ marginTop: "10px" }}>
-                <button
-                  onClick={handleVerifyCode}
-                  disabled={loading2FA || verificationCode.length !== 4}
-                  className="action-btn"
-                  style={{ marginRight: "10px" }}
-                >
-                  {loading2FA ? "Verifying..." : "Verify"}
-                </button>
-                <button
-                  onClick={() => {
-                    setShowCodeInput(false);
-                    setVerificationCode("");
-                    setMessage("");
-                  }}
-                  className="action-btn"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          )}
-
-          {message && (
-            <div
-              style={{
-                padding: "10px",
-                margin: "10px 0",
-                borderRadius: "4px",
-                backgroundColor: message.includes("success")
-                  ? "#d4edda"
-                  : "#f8d7da",
-                color: message.includes("success") ? "#155724" : "#721c24",
-                border: `1px solid ${
-                  message.includes("success") ? "#c3e6cb" : "#f5c6cb"
-                }`,
-              }}
-            >
-              {message}
-            </div>
-          )}
-
+          <br />
+          <br />
           <h3>Your Options</h3>
           <div className="action-grid">
-            <button className="action-btn">
-              <span>Change Password</span>
-            </button>
             <button className="action-btn logout">
               <span>Logout</span>
             </button>
           </div>
         </div>
-        <hr className="user-page-divider" />
+
         <div className="user-page-orders-card">
           <h1>Orders</h1>
-
           {Array.isArray(user.orders) && user.orders.length > 0 ? (
             <div className="simple-orders-list">
               {user.orders.map((order) => {

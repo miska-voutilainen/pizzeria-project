@@ -97,11 +97,27 @@ const Checkout = () => {
 
     try {
       // Only send essential item data
-      const orderItems = cartItems.map((item) => ({
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity,
-      }));
+      const orderItems = cartItems.map((item) => {
+        // For custom pizzas — send full details
+        if (item.isCustom) {
+          return {
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+            size: item.size || null,
+            base: item.base || null,
+            ingredients: item.ingredients || null,
+            isCustom: true,
+          };
+        }
+
+        // For regular menu items — keep it simple
+        return {
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+        };
+      });
 
       const orderData = {
         items: orderItems,
@@ -185,11 +201,11 @@ const Checkout = () => {
             <div className="checkout-category-tabs-container">
               <div className="category-tabs">
                 {/* <button
-                  className={deliveryType === "delivery" ? "active" : ""}
-                  onClick={() => setDeliveryType("delivery")}
-                >
-                  Delivery
-                </button> */}
+                    className={deliveryType === "delivery" ? "active" : ""}
+                    onClick={() => setDeliveryType("delivery")}
+                  >
+                    Delivery
+                  </button> */}
                 <RadioButton
                   text={"Delivery"}
                   onClick={() => setDeliveryType("delivery")}
@@ -201,11 +217,11 @@ const Checkout = () => {
                   active={deliveryType === "takeaway"}
                 />
                 {/* <button
-                  className={deliveryType === "takeaway" ? "active" : ""}
-                  onClick={() => setDeliveryType("takeaway")}
-                >
-                  Take-away
-                </button> */}
+                    className={deliveryType === "takeaway" ? "active" : ""}
+                    onClick={() => setDeliveryType("takeaway")}
+                  >
+                    Take-away
+                  </button> */}
               </div>
             </div>
             <div className="checkout-inputs">
