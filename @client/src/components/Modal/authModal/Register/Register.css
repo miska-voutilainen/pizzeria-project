@@ -36,10 +36,25 @@
 
 
 #sign-in-button{
-    width: 536px;
+    width: 100%;
     height: 43px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
+
+#inputFields {
+    width: 100%;
+}
+
+@media (max-width: 800px){
+    #registerContent{
+        display: flex;
+        width: 90%;
+        height: 400px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 25px;
+    }}
+
 
