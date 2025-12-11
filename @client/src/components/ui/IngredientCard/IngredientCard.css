@@ -1,6 +1,6 @@
 .ingredient-card {
     width: 98px;
-    height: 153px;
+    height: 148px;
     padding: 14px 13px 13px 13px;
     display: flex;
     flex-direction: column;
@@ -30,4 +30,31 @@
     font-size: 0.9rem;
     color: #224724;
     font-weight: 500;
+}
+
+.quantity-input-container>div{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.ingredient-card button {
+    background-color: var(--color-green);
+    color: white;
+    border: none;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.ingredient-card .quantity-input button:hover {
+    background-color: #2d5a2a;
+}
+
+.ingredient-card.quantity-text {
+    font-weight: bold;
+    min-width: 20px;
+    text-align: center;
 }

@@ -18,6 +18,7 @@ const Modal = React.forwardRef((props, ref) => {
     useEffect(() => {
         if (props.window && ref.current) {
             setModalContent(props.window);
+            document.body.style.overflow = "hidden";
             ref.current.showModal();
         }
     }, [props.window]);
@@ -75,6 +76,9 @@ const Modal = React.forwardRef((props, ref) => {
           onClose={onClose}
           modalContent={modalContent}
         />
+      )}
+      {modalContent === "MakeYourOwnPizza" && (
+            <MakeYourOwnPizza key={`makeYouOwnPizza-${modalKey}`} onClose={onClose}/>
       )}
     </dialog>
   );
