@@ -13,8 +13,8 @@ export default function Orders() {
 
   const loadOrders = async () => {
     try {
-      const r = await api.get("/admin/orders"); // ← FIXED
-      const usersRes = await api.get("/admin/users"); // ← FIXED
+      const r = await api.get("/admin/orders");
+      const usersRes = await api.get("/admin/users");
       const userMap = {};
       usersRes.data.forEach((user) => {
         userMap[user.userId] =
