@@ -3,7 +3,7 @@ import "./WhyUs.css";
 const WhyUs = () => {
   return (
     <section className="info-section">
-      <h2 className="info-title">Why Choose Us?</h2>
+      <h1 className="info-title">Why Choose Us?</h1>
       <div className="separator-line"></div>
 
       <div className="info-grid">
