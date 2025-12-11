@@ -41,7 +41,7 @@ export default function Login() {
   if (step === "2fa") {
     return (
       <div style={{ padding: 100, maxWidth: 400, margin: "0 auto" }}>
-        <h1>Enter 2FA Code</h1>
+        <h1 style={{ textAlign: "center", fontFamily: "var(--font-base)", color: "#0C260D"}}>Enter 2FA Code</h1>
         <form onSubmit={handle2FA}>
           <input
             placeholder="4-digit code"
@@ -63,8 +63,7 @@ export default function Login() {
               width: "100%",
               padding: 15,
               marginTop: 20,
-              background: "#28a745",
-              color: "white",
+              background: "#0C260D",
             }}
           >
             Verify
@@ -77,7 +76,7 @@ export default function Login() {
 
   return (
     <div style={{ padding: 100, maxWidth: 400, margin: "0 auto" }}>
-      <h1>Admin Login</h1>
+      <h1 style={{ textAlign: "center", color: "#0C260D" }}>Admin Login</h1>
       <form onSubmit={handleLogin}>
         <input
           placeholder="username"
@@ -109,7 +108,7 @@ export default function Login() {
           style={{
             width: "100%",
             padding: 15,
-            background: "#007bff",
+            background: "#0C260D",
             color: "white",
           }}
         >
