@@ -9,7 +9,8 @@ import ResetPassword from "../authModal/ResetPassword/ResetPassword.jsx";
 import EmailPasswordSuccess from "../authModal/EmailPasswordSuccess/EmailPasswordSuccess.jsx";
 import MakeYourOwnPizza from "../MakeYourOwnPizza/MakeYourOwnPizza.jsx";
 
-import MapModal from "../mapModal/MapModal.jsx";
+import CloseButton from "../../ui/CloseButton/CloseButton.jsx";
+import Button from "../../ui/Button/Button.jsx";
 
 const Modal = React.forwardRef((props, ref) => {
   const [modalContent, setModalContent] = React.useState(props.window);
@@ -97,18 +98,41 @@ const Modal = React.forwardRef((props, ref) => {
           modalContent={modalContent}
         />
       )}
-      {modalContent === "MapModal" && (
-        <MapModal
-          key={`map-${modalKey}`}
-          onClose={onClose}
-          setModalContent={setModalContent}
-        />
-      )}
       {modalContent === "MakeYourOwnPizza" && (
         <MakeYourOwnPizza
           key={`makeYouOwnPizza-${modalKey}`}
           onClose={onClose}
         />
+      )}
+      {modalContent === "ChangeEmail" && (
+        <div>
+          <CloseButton onClick={onClose} />
+          <h1>Change Email Address</h1>
+          <p>A confirmation link will be sent to your current email.</p>
+          <Button
+            text="Send Link"
+            onClick={async () => {
+              try {
+                const res = await fetch(
+                  "http://localhost:3001/api/auth/send-change-email-link",
+                  {
+                    method: "POST",
+                    credentials: "include",
+                  }
+                );
+                const data = await res.json();
+                if (res.ok) {
+                  alert("Change email link sent to your current email!");
+                  onClose();
+                } else {
+                  alert(data.message || "Failed to send link");
+                }
+              } catch (err) {
+                alert("Failed to send link");
+              }
+            }}
+          />
+        </div>
       )}
     </dialog>
   );
