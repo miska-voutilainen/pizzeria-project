@@ -1,6 +1,6 @@
 import "./Modal.css";
-import React, {useEffect} from "react";
-import {SignIn} from "../authModal/SignIn/SignIn.jsx";
+import React, { useEffect } from "react";
+import { SignIn } from "../authModal/SignIn/SignIn.jsx";
 import Register from "../authModal/Register/Register.jsx";
 import RegistrationSuccess from "../authModal/RegistrationSuccess/RegistrationSuccess.jsx";
 import TwoFactor from "../authModal/TwoFactor/TwoFactor.jsx";
@@ -12,26 +12,25 @@ import MakeYourOwnPizza from "../MakeYourOwnPizza/MakeYourOwnPizza.jsx";
 import MapModal from "../mapModal/MapModal.jsx";
 
 const Modal = React.forwardRef((props, ref) => {
-    const [modalContent, setModalContent] = React.useState(props.window);
-    const [modalKey, setModalKey] = React.useState(0);
-    const {redirectPath} = props;
+  const [modalContent, setModalContent] = React.useState(props.window);
+  const [modalKey, setModalKey] = React.useState(0);
+  const { redirectPath } = props;
 
-    useEffect(() => {
-        if (props.window && ref.current) {
-            setModalContent(props.window);
-            document.body.style.overflow = "hidden";
-            ref.current.showModal();
-        }
-    }, [props.window]);
+  useEffect(() => {
+    if (props.window && ref.current) {
+      setModalContent(props.window);
+      document.body.style.overflow = "hidden";
+      ref.current.showModal();
+    }
+  }, [props.window]);
 
-    const onClose = () => {
-        ref.current.close();
-        document.body.style.overflow = "";
-        props.setModalWindow(null);
-        setModalContent(null);
-        // Force remount of child components by changing the key
-        setModalKey((prev) => prev + 1);
-    };
+  const onClose = () => {
+    ref.current.close();
+    document.body.style.overflow = "";
+    props.setModalWindow(null);
+    setModalContent(null);
+    setModalKey((prev) => prev + 1);
+  };
 
   return (
     <dialog ref={ref} className={modalContent}>
@@ -60,6 +59,26 @@ const Modal = React.forwardRef((props, ref) => {
           onClose={onClose}
         />
       )}
+      {modalContent === "TwoFactorSetup" && (
+        <TwoFactor
+          key={`twoFactorSetup-${modalKey}`}
+          setModalContent={setModalContent}
+          onClose={onClose}
+          isLoading={props.isLoading2FA}
+          error={props.twoFactorError}
+          onCodeSubmit={props.on2FASetupSubmit || (() => {})}
+        />
+      )}
+      {modalContent === "TwoFactorDisable" && (
+        <TwoFactor
+          key={`twoFactorDisable-${modalKey}`}
+          setModalContent={setModalContent}
+          onClose={onClose}
+          isLoading={props.isLoading2FA}
+          error={props.twoFactorError}
+          onCodeSubmit={props.on2FADisableSubmit || (() => {})}
+        />
+      )}
       {modalContent === "Success" && (
         <Success key={`success-${modalKey}`} onClose={onClose} />
       )}
@@ -86,10 +105,13 @@ const Modal = React.forwardRef((props, ref) => {
         />
       )}
       {modalContent === "MakeYourOwnPizza" && (
-            <MakeYourOwnPizza key={`makeYouOwnPizza-${modalKey}`} onClose={onClose}/>
+        <MakeYourOwnPizza
+          key={`makeYouOwnPizza-${modalKey}`}
+          onClose={onClose}
+        />
       )}
     </dialog>
   );
 });
 
-export {Modal};
+export { Modal };

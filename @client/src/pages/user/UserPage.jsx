@@ -1,26 +1,40 @@
 // src/pages/user/UserPage.jsx
+import React, { useRef } from "react";
 import { useAuth } from "../../context/AuthContext.jsx";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import SquareButton from "../../components/ui/SquareButton/SquareButton.jsx";
 import "./UserPage.css";
+import { Modal } from "../../components/Modal/Modal/Modal.jsx";
 import InputField from "../../components/ui/InputField/InputField.jsx";
 import TextButton from "../../components/ui/TextButton/TextButton.jsx";
 import deliveryIcon from "../../assets/images/delivery-icon.svg";
 import takeawayIcon from "../../assets/images/store-icon.svg";
 
 const UserPage = () => {
+  const [modalWindow, setModalWindow] = useState(null);
   const { user, loading, checkAuth } = useAuth();
   const [showCodeInput, setShowCodeInput] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
   const [loading2FA, setLoading2FA] = useState(false);
+  const [twoFactorError, setTwoFactorError] = useState("");
   const [message, setMessage] = useState("");
+  const modalRef = React.useRef(null);
+  const navigate = useNavigate();
 
   if (loading) return null;
   if (!user) return <Navigate to="/login" replace />;
 
   const handleSend2FACode = async () => {
+    if (!user.emailVerified) {
+      window.alert(
+        "Please verify your email address first before enabling 2FA."
+      );
+      return;
+    }
+
     setLoading2FA(true);
+    setTwoFactorError("");
     setMessage("");
 
     try {
@@ -34,20 +48,80 @@ const UserPage = () => {
 
       if (response.ok) {
         setMessage("4-digit code sent to your email!");
-        setShowCodeInput(true);
+        setModalWindow("TwoFactorSetup");
       } else {
         const error = await response.json();
-        if (error.requiresEmailVerification) {
-          setMessage(
-            "Please verify your email address first before enabling 2FA."
-          );
-          // Automatically send verification email
-          handleSendEmailVerification();
-        } else {
-          setMessage(error.message || "Failed to send code");
-        }
+        setMessage(error.message || "Failed to send code");
       }
-    } catch (error) {
+    } catch (err) {
+      setMessage("Failed to send code");
+    } finally {
+      setLoading2FA(false);
+    }
+  };
+
+  const handle2FASetupSubmit = async (code) => {
+    setLoading2FA(true);
+    setTwoFactorError("");
+
+    try {
+      const response = await fetch(
+        "http://localhost:3001/api/auth/verify-2fa-code",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ code }),
+        }
+      );
+
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseErr) {
+        data = { message: "Invalid response from server" };
+      }
+
+      if (response.ok) {
+        setMessage("2FA enabled successfully!");
+        modalRef.current.close(); // ← Close using ref
+        await checkAuth();
+        window.location.reload();
+      } else {
+        setTwoFactorError(data.message || "Invalid code");
+      }
+    } catch (err) {
+      console.error("Network error:", err);
+      setTwoFactorError("Network error - please try again");
+    } finally {
+      setLoading2FA(false);
+    }
+  };
+
+  const handleDisable2FA = async () => {
+    if (!confirm("Are you sure you want to disable 2FA?")) return;
+
+    setLoading2FA(true);
+    setTwoFactorError("");
+    setMessage("");
+
+    try {
+      const response = await fetch(
+        "http://localhost:3001/api/auth/send-2fa-code",
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
+
+      if (response.ok) {
+        setMessage("4-digit code sent to your email to confirm disabling 2FA.");
+        setModalWindow("TwoFactorDisable"); // Opens the modal
+      } else {
+        const error = await response.json();
+        setMessage(error.message || "Failed to send code");
+      }
+    } catch (err) {
       setMessage("Failed to send code");
     } finally {
       setLoading2FA(false);
@@ -90,31 +164,39 @@ const UserPage = () => {
     }
   };
 
-  const handleDisable2FA = async () => {
-    if (!confirm("Are you sure you want to disable 2FA?")) return;
-
+  const handle2FADisableSubmit = async (code) => {
     setLoading2FA(true);
-    setMessage("");
+    setTwoFactorError("");
 
     try {
       const response = await fetch(
-        "http://localhost:3001/api/auth/disable-2fa",
+        "http://localhost:3001/api/auth/disable-2fa-with-code",
         {
           method: "POST",
+          headers: { "Content-Type": "application/json" },
           credentials: "include",
+          body: JSON.stringify({ code }),
         }
       );
 
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseErr) {
+        data = { message: "Invalid response from server" };
+      }
+
       if (response.ok) {
         setMessage("2FA disabled successfully!");
-        // Refresh user data
+        modalRef.current.close(); // ← Close using ref
         await checkAuth();
+        window.location.reload();
       } else {
-        const error = await response.json();
-        setMessage(error.message || "Failed to disable 2FA");
+        setTwoFactorError(data.message || "Invalid or expired code");
       }
-    } catch (error) {
-      setMessage("Failed to disable 2FA");
+    } catch (err) {
+      console.error("Network error:", err);
+      setTwoFactorError("Network error - please try again");
     } finally {
       setLoading2FA(false);
     }
@@ -147,8 +229,18 @@ const UserPage = () => {
       setLoading2FA(false);
     }
   };
+
   return (
     <section id="user-page">
+      <Modal
+        ref={modalRef}
+        window={modalWindow}
+        setModalWindow={setModalWindow}
+        isLoading2FA={loading2FA}
+        twoFactorError={twoFactorError}
+        on2FASetupSubmit={handle2FASetupSubmit}
+        on2FADisableSubmit={handle2FADisableSubmit}
+      />
       <div className="user-page-wrapper">
         <div className="user-page-user-card">
           <div className="user-page-user-card-header">
@@ -191,13 +283,35 @@ const UserPage = () => {
                   name={"email"}
                   id={"email"}
                   placeholder="pekka.virtanen@gmail.com"
-                  // value={formData.city}
-                  // onChange={handleFormChange("city")}
                 />
+                <TextButton
+                  text="Change"
+                  onClick={async () => {
+                    setMessage(""); // Clear previous message
 
-                {/* <div className="user-card-personal-container-change-btn"> */}
-                <TextButton text="Change" />
-                {/* </div> */}
+                    try {
+                      const response = await fetch(
+                        "http://localhost:3001/api/auth/send-change-email-link",
+                        {
+                          method: "POST",
+                          credentials: "include",
+                        }
+                      );
+
+                      const data = await response.json();
+
+                      if (response.ok) {
+                        setMessage(
+                          "Change email link sent to your current email!"
+                        );
+                      } else {
+                        setMessage(data.message || "Failed to send link");
+                      }
+                    } catch (err) {
+                      setMessage("Failed to send link");
+                    }
+                  }}
+                />
               </div>
               <div className="checkout-input-row">
                 <label htmlFor="password">Salasana</label>
@@ -207,10 +321,11 @@ const UserPage = () => {
                   readOnly
                   name={"password"}
                   id={"password"}
-                  // value={formData.postcode}
-                  // onChange={handleFormChange("postcode")}
                 />
-                <TextButton text="Change" />
+                <TextButton
+                  text="Change"
+                  onClick={() => setModalWindow("ResetPassword")} // ← Directly opens ResetPassword modal
+                />
               </div>
               <p></p>
               {/* email verified  */}
@@ -309,7 +424,24 @@ const UserPage = () => {
           </div>
 
           <div className="action-grid">
-            <button className="action-btn logout">
+            <button
+              className="action-btn logout"
+              onClick={async () => {
+                if (!confirm("Are you sure you want to log out?")) return;
+
+                try {
+                  await fetch("http://localhost:3001/api/auth/logout", {
+                    method: "POST",
+                    credentials: "include",
+                  });
+                } catch (err) {
+                  console.error("Logout error:", err);
+                }
+
+                // Force a full page reload to home — this always works
+                navigate("/");
+              }}
+            >
               <span>Logout</span>
             </button>
           </div>

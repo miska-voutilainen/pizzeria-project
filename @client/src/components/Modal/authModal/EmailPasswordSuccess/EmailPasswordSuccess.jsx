@@ -7,10 +7,10 @@ const EmailPasswordSuccess = ({ modalContent, onClose }) => {
       <CloseButton onClick={onClose} />
       <img src="./confirm.svg" alt="Confirmed"></img>
       {modalContent === "ResetPasswordSuccess" && (
-        <h1> The reset password link has been sent to your email.</h1>
+        <h1> The reset link has been sent to your email.</h1>
       )}
       {modalContent === "EmailConfirmationSuccess" && (
-        <h1>The password change link has been sent to your email.</h1>
+        <h1>The email confirmation link has been sent to your email.</h1>
       )}
     </div>
   );

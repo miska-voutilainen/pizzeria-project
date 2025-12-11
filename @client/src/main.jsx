@@ -16,6 +16,7 @@ import AboutUsPage from "./pages/AboutUs/AboutUsPage.jsx";
 import Checkout from "./pages/Checkout/Checkout.jsx";
 import TermsAndConditions from "./pages/TermsAndConditions/TermsAndConditions.jsx";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage.jsx";
+import ResetEmailPage from "./pages/auth/ResetEmailPage.jsx";
 import OrderConfirmation from "./pages/OrderConfirmation/OrderConfirmation.jsx";
 import EmailConfirmation from "./pages/EmailConfirmation/EmailConfirmation.jsx";
 import CheckoutProtectedRoute from "./components/CheckoutProtectedRoute/CheckoutProtectedRoute.jsx";
@@ -57,6 +58,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 path="reset-password/:token"
                 element={<ResetPasswordPage />}
               />
+              <Route path="change-email/:token" element={<ResetEmailPage />} />
 
               <Route
                 path="user"

@@ -5,6 +5,7 @@ import {
   sendVerificationEmail,
   send2FAEmail,
   sendPasswordResetEmail,
+  sendEmailChangeLink,
 } from "../services/email.service.js";
 import {
   createToken,
@@ -252,6 +253,58 @@ export default function createAuthRouter(
     }
   });
 
+  // Verify token (GET)
+  router.get("/verify-email-token/:token", async (req, res) => {
+    const { token } = req.params;
+    try {
+      const tokenDoc = await validateToken(pool, token, "change-email");
+      if (!tokenDoc) {
+        return res.status(400).json({ message: "Invalid or expired token" });
+      }
+      res.json({ message: "Token valid" });
+    } catch (err) {
+      res.status(400).json({ message: "Invalid token" });
+    }
+  });
+
+  // Change email (POST)
+  router.post("/change-email/:token", async (req, res) => {
+    const { token } = req.params;
+    const { email } = req.body;
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ message: "Valid email required" });
+    }
+
+    try {
+      const tokenDoc = await validateToken(pool, token, "change-email");
+      if (!tokenDoc) {
+        return res.status(400).json({ message: "Invalid or expired token" });
+      }
+
+      // Check if email already exists
+      const [existing] = await pool.execute(
+        "SELECT userId FROM user_data WHERE email = ? AND userId != ?",
+        [email, tokenDoc.userId]
+      );
+      if (existing.length > 0) {
+        return res.status(409).json({ message: "Email already in use" });
+      }
+
+      await pool.execute(
+        "UPDATE user_data SET email = ?, emailVerified = 0 WHERE userId = ?",
+        [email, tokenDoc.userId]
+      );
+
+      await markTokenUsed(pool, token);
+
+      res.json({ message: "Email changed successfully" });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
   router.get("/verify-email/:token", async (req, res) => {
     const { token } = req.params;
     try {
@@ -283,33 +336,30 @@ export default function createAuthRouter(
 
   router.post("/send-reset-link", async (req, res) => {
     const { email } = req.body;
-
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
     }
-
     try {
       const [rows] = await pool.execute(
         "SELECT userId, username, email FROM user_data WHERE email = ?",
         [email]
       );
       const user = rows[0];
-
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-
       if (!user.email) {
         console.error("User email is null/undefined:", user);
         return res
           .status(400)
           .json({ message: "User email not found in database" });
       }
-
       const token = await createToken(pool, user.userId, "reset", 1, req);
+
+      // ← FIXED: Use CLIENT_URI, not SERVER_URI
       const resetLink = `${
-        process.env.SERVER_URI || "http://localhost:3001"
-      }/api/auth/reset-password/${token}`;
+        process.env.CLIENT_URI || "http://localhost:3000"
+      }/reset-password/${token}`;
 
       await sendPasswordResetEmail(user.email, user.username, resetLink);
       res.json({ message: "Password reset link sent to your email!" });
@@ -361,6 +411,44 @@ export default function createAuthRouter(
     } catch (error) {
       console.error("Reset password error:", error);
       res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  router.post("/send-change-email-link", async (req, res) => {
+    if (!req.user) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    if (!req.user.email || req.user.email.trim() === "") {
+      console.error("User has no email:", req.user);
+      return res
+        .status(400)
+        .json({ message: "No email address associated with your account" });
+    }
+
+    try {
+      const token = await createToken(
+        pool,
+        req.user.userId,
+        "change-email",
+        1,
+        req
+      ); // 1 hour
+
+      const changeLink = `${
+        process.env.CLIENT_URI || "http://localhost:3000"
+      }/change-email/${token}`;
+
+      await sendEmailChangeLink(
+        req.user.email.trim(),
+        req.user.username || "User",
+        changeLink
+      );
+
+      res.json({ message: "Change email link sent to your current email!" });
+    } catch (error) {
+      console.error("Send email change link error:", error);
+      res.status(500).json({ message: "Failed to send link" });
     }
   });
 
@@ -442,18 +530,69 @@ export default function createAuthRouter(
     res.json({ message: "2FA enabled successfully!" });
   });
 
-  router.post("/disable-2fa", async (req, res) => {
-    if (!req.user)
+  router.post("/disable-2fa-with-code", async (req, res) => {
+    console.log("HIT /disable-2fa-with-code"); // ← ADD THIS LOG
+
+    if (!req.user) {
       return res.status(401).json({ message: "Not authenticated" });
-    await pool.execute(
-      `UPDATE user_data SET is2faEnabled = 0 WHERE userId = ?`,
-      [req.user.userId]
-    );
-    res.json({ message: "2FA disabled" });
+    }
+
+    const { code } = req.body;
+    console.log("Received code:", code); // ← ADD THIS LOG
+
+    if (!code) {
+      return res.status(400).json({ message: "Code required" });
+    }
+
+    try {
+      const [tokens] = await pool.execute(
+        `SELECT token FROM user_tokens
+       WHERE token = ? AND userId = ? AND type IN ('2fa-setup', '2fa-login')
+       AND used = FALSE AND expiresAt > NOW()`,
+        [code, req.user.userId]
+      );
+
+      if (tokens.length === 0) {
+        return res.status(400).json({ message: "Invalid or expired code" });
+      }
+
+      await pool.execute(`UPDATE user_tokens SET used = TRUE WHERE token = ?`, [
+        code,
+      ]);
+
+      await pool.execute(
+        `UPDATE user_data SET is2faEnabled = 0 WHERE userId = ?`,
+        [req.user.userId]
+      );
+
+      console.log("2FA disabled for user:", req.user.userId); // ← LOG SUCCESS
+      return res.json({ message: "2FA disabled successfully!" });
+    } catch (error) {
+      console.error("Disable 2FA error:", error);
+      return res.status(500).json({ message: "Server error" });
+    }
   });
 
-  router.post("/logout", destroySession, (req, res) => {
-    res.json({ message: "Logged out successfully" });
+  router.post("/logout", destroySession, async (req, res) => {
+    try {
+      // destroySession middleware already cleared the session
+      // Optional: Destroy ALL user sessions for extra security (recommended for logout)
+      if (req.user) {
+        await destroyAllSessions(req.user.userId); // Clears all sessions for this user
+      }
+
+      // Clear the session cookie explicitly (good practice)
+      res.clearCookie("connect.sid", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production", // Use secure in production
+        sameSite: "lax",
+      });
+
+      return res.status(200).json({ message: "Logged out successfully" });
+    } catch (error) {
+      console.error("Logout error:", error);
+      return res.status(500).json({ message: "Logout failed" });
+    }
   });
 
   router.get("/check", async (req, res) => {

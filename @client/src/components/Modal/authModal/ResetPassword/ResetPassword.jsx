@@ -11,20 +11,16 @@ const ResetPassword = ({ setModalContent, onClose }) => {
 
   const handleSendResetEmail = async (e) => {
     e.preventDefault();
-
     if (!email.trim()) {
       setError("Email is required");
       return;
     }
-
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError("Please enter a valid email");
       return;
     }
-
     setIsLoading(true);
     setError("");
-
     try {
       const res = await fetch(
         "http://localhost:3001/api/auth/send-reset-link",
@@ -34,14 +30,11 @@ const ResetPassword = ({ setModalContent, onClose }) => {
           body: JSON.stringify({ email: email.trim().toLowerCase() }),
         }
       );
-
       const data = await res.json();
-      if (!res.ok)
-        throw new Error(data.message || "Failed to send reset email");
-
+      if (!res.ok) throw new Error(data.message || "Failed to send reset link");
       setModalContent("ResetPasswordSuccess");
     } catch (err) {
-      setError(err.message || "Failed to send email. Please try again.");
+      setError(err.message || "Failed to send link. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -51,7 +44,10 @@ const ResetPassword = ({ setModalContent, onClose }) => {
     <div>
       <form id="reset-password-form">
         <CloseButton onClick={onClose} />
-        <h1>Enter your email</h1>
+        <h1>Forgot Password?</h1>
+        <p>
+          Enter your email and we'll send you a link to reset your password.
+        </p>
         {error && <p className="error">{error}</p>}
         <InputField
           type="email"
@@ -65,7 +61,7 @@ const ResetPassword = ({ setModalContent, onClose }) => {
           type="submit"
           id="reset-password-button"
           onClick={handleSendResetEmail}
-          text={isLoading ? "Sending..." : "Send an email"}
+          text={isLoading ? "Sending..." : "Send Reset Link"}
           disabled={isLoading}
         />
       </form>
