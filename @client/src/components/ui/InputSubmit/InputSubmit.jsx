@@ -10,6 +10,7 @@ const InputSubmit = ({
   name,
   submitText,
   appearance = "dark",
+  submitStyle,
 }) => {
   return (
     <div className={`input-submit-container ${appearance}`}>
@@ -22,7 +23,13 @@ const InputSubmit = ({
         onChange={(e) => setValue(e.target.value)}
         disabled={loading}
       />
-      <button type="submit" disabled={loading}>
+      <button
+        className={`input-submit-button ${
+          submitStyle ? `input-submit-button-${submitStyle}` : ""
+        }`}
+        type="submit"
+        disabled={loading}
+      >
         {loading ? "Sending..." : submitText}
       </button>
     </div>
