@@ -1,26 +1,25 @@
 // src/pages/user/UserPage.jsx
-import React, { useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext.jsx";
-import { Navigate, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import SquareButton from "../../components/ui/SquareButton/SquareButton.jsx";
-import "./UserPage.css";
-import { Modal } from "../../components/Modal/Modal/Modal.jsx";
+import { Navigate } from "react-router-dom";
 import InputField from "../../components/ui/InputField/InputField.jsx";
 import TextButton from "../../components/ui/TextButton/TextButton.jsx";
 import deliveryIcon from "../../assets/images/delivery-icon.svg";
 import takeawayIcon from "../../assets/images/store-icon.svg";
+import "./UserPage.css";
 
 const UserPage = () => {
-  const [modalWindow, setModalWindow] = useState(null);
   const { user, loading, checkAuth } = useAuth();
+
   const [showCodeInput, setShowCodeInput] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
   const [loading2FA, setLoading2FA] = useState(false);
-  const [twoFactorError, setTwoFactorError] = useState("");
   const [message, setMessage] = useState("");
-  const modalRef = React.useRef(null);
-  const navigate = useNavigate();
+  const [active, setActive] = useState(!!user?.twoFactorEnabled);
+
+  useEffect(() => {
+    setActive(!!user?.twoFactorEnabled);
+  }, [user?.twoFactorEnabled]);
 
   if (loading) return null;
   if (!user) return <Navigate to="/login" replace />;
@@ -34,7 +33,6 @@ const UserPage = () => {
     }
 
     setLoading2FA(true);
-    setTwoFactorError("");
     setMessage("");
 
     try {
@@ -48,80 +46,12 @@ const UserPage = () => {
 
       if (response.ok) {
         setMessage("4-digit code sent to your email!");
-        setModalWindow("TwoFactorSetup");
+        setShowCodeInput(true);
       } else {
         const error = await response.json();
         setMessage(error.message || "Failed to send code");
       }
-    } catch (err) {
-      setMessage("Failed to send code");
-    } finally {
-      setLoading2FA(false);
-    }
-  };
-
-  const handle2FASetupSubmit = async (code) => {
-    setLoading2FA(true);
-    setTwoFactorError("");
-
-    try {
-      const response = await fetch(
-        "http://localhost:3001/api/auth/verify-2fa-code",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ code }),
-        }
-      );
-
-      let data;
-      try {
-        data = await response.json();
-      } catch (parseErr) {
-        data = { message: "Invalid response from server" };
-      }
-
-      if (response.ok) {
-        setMessage("2FA enabled successfully!");
-        modalRef.current.close(); // ← Close using ref
-        await checkAuth();
-        window.location.reload();
-      } else {
-        setTwoFactorError(data.message || "Invalid code");
-      }
-    } catch (err) {
-      console.error("Network error:", err);
-      setTwoFactorError("Network error - please try again");
-    } finally {
-      setLoading2FA(false);
-    }
-  };
-
-  const handleDisable2FA = async () => {
-    if (!confirm("Are you sure you want to disable 2FA?")) return;
-
-    setLoading2FA(true);
-    setTwoFactorError("");
-    setMessage("");
-
-    try {
-      const response = await fetch(
-        "http://localhost:3001/api/auth/send-2fa-code",
-        {
-          method: "POST",
-          credentials: "include",
-        }
-      );
-
-      if (response.ok) {
-        setMessage("4-digit code sent to your email to confirm disabling 2FA.");
-        setModalWindow("TwoFactorDisable"); // Opens the modal
-      } else {
-        const error = await response.json();
-        setMessage(error.message || "Failed to send code");
-      }
-    } catch (err) {
+    } catch (error) {
       setMessage("Failed to send code");
     } finally {
       setLoading2FA(false);
@@ -135,7 +65,6 @@ const UserPage = () => {
     }
 
     setLoading2FA(true);
-
     try {
       const response = await fetch(
         "http://localhost:3001/api/auth/verify-2fa-code",
@@ -151,7 +80,6 @@ const UserPage = () => {
         setMessage("2FA enabled successfully!");
         setShowCodeInput(false);
         setVerificationCode("");
-        // Refresh user data
         await checkAuth();
       } else {
         const error = await response.json();
@@ -164,39 +92,30 @@ const UserPage = () => {
     }
   };
 
-  const handle2FADisableSubmit = async (code) => {
+  const handleDisable2FA = async () => {
+    if (!confirm("Are you sure you want to disable 2FA?")) return;
+
     setLoading2FA(true);
-    setTwoFactorError("");
+    setMessage("");
 
     try {
       const response = await fetch(
-        "http://localhost:3001/api/auth/disable-2fa-with-code",
+        "http://localhost:3001/api/auth/disable-2fa",
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
           credentials: "include",
-          body: JSON.stringify({ code }),
         }
       );
 
-      let data;
-      try {
-        data = await response.json();
-      } catch (parseErr) {
-        data = { message: "Invalid response from server" };
-      }
-
       if (response.ok) {
         setMessage("2FA disabled successfully!");
-        modalRef.current.close(); // ← Close using ref
         await checkAuth();
-        window.location.reload();
       } else {
-        setTwoFactorError(data.message || "Invalid or expired code");
+        const error = await response.json();
+        setMessage(error.message || "Failed to disable 2FA");
       }
-    } catch (err) {
-      console.error("Network error:", err);
-      setTwoFactorError("Network error - please try again");
+    } catch (error) {
+      setMessage("Failed to disable 2FA");
     } finally {
       setLoading2FA(false);
     }
@@ -214,11 +133,8 @@ const UserPage = () => {
           body: JSON.stringify({ username: user.username }),
         }
       );
-
       if (response.ok) {
-        setMessage(
-          "Verification email sent! Please check your inbox and verify your email before enabling 2FA."
-        );
+        setMessage("Verification email sent! Please check your inbox.");
       } else {
         const error = await response.json();
         setMessage(error.message || "Failed to send verification email");
@@ -230,25 +146,65 @@ const UserPage = () => {
     }
   };
 
+  const handleChangeEmail = async () => {
+    setMessage("");
+
+    try {
+      const response = await fetch(
+        "http://localhost:3001/api/auth/send-change-email-link",
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage("Change email link sent to your current email!");
+      } else {
+        setMessage(data.message || "Failed to send link");
+      }
+    } catch (err) {
+      setMessage("Failed to send link");
+    }
+  };
+
   return (
     <section id="user-page">
-      <Modal
-        ref={modalRef}
-        window={modalWindow}
-        setModalWindow={setModalWindow}
-        isLoading2FA={loading2FA}
-        twoFactorError={twoFactorError}
-        on2FASetupSubmit={handle2FASetupSubmit}
-        on2FADisableSubmit={handle2FADisableSubmit}
-      />
       <div className="user-page-wrapper">
         <div className="user-page-user-card">
           <div className="user-page-user-card-header">
-            <h2>Welcome back, {user.username}!</h2>
-            <div className="user-info">
-              <p>
-                <strong>Member since:</strong> {new Date().toLocaleDateString()}
-              </p>
+            <div className="user-card-username">
+              <h1>Welcome back, {user.username}!</h1>
+              <div className="user-info">
+                <p>
+                  <strong>Member since:</strong>{" "}
+                  {new Date(user.createdAt || Date.now()).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+            <div className="user-cad-header-logout">
+              <div className="action-grid">
+                <button
+                  className="action-btn logout"
+                  onClick={async () => {
+                    if (!confirm("Are you sure you want to log out?")) return;
+                    try {
+                      await fetch("http://localhost:3001/api/auth/logout", {
+                        method: "POST",
+                        credentials: "include",
+                      });
+                    } catch (err) {
+                      console.error("Logout error:", err);
+                    }
+                    await checkAuth();
+                    window.location.href = "/";
+                  }}
+                >
+                  <span>Logout</span>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -265,6 +221,7 @@ const UserPage = () => {
                   placeholder="Etunimi puuttuu"
                 />
               </div>
+
               <div className="checkout-input-row">
                 <label htmlFor="surname">Sukunimi</label>
                 <InputField
@@ -274,61 +231,43 @@ const UserPage = () => {
                   placeholder="Sukunimi puuttuu"
                 />
               </div>
+
               <div className="checkout-input-row">
                 <label htmlFor="email">Email</label>
                 <InputField
                   type="text"
                   value={user.email || ""}
                   readOnly
-                  name={"email"}
-                  id={"email"}
                   placeholder="pekka.virtanen@gmail.com"
                 />
-                <TextButton
-                  text="Change"
-                  onClick={async () => {
-                    setMessage(""); // Clear previous message
-
-                    try {
-                      const response = await fetch(
-                        "http://localhost:3001/api/auth/send-change-email-link",
-                        {
-                          method: "POST",
-                          credentials: "include",
-                        }
-                      );
-
-                      const data = await response.json();
-
-                      if (response.ok) {
-                        setMessage(
-                          "Change email link sent to your current email!"
-                        );
-                      } else {
-                        setMessage(data.message || "Failed to send link");
-                      }
-                    } catch (err) {
-                      setMessage("Failed to send link");
-                    }
-                  }}
-                />
+                <TextButton text="Change" onClick={handleChangeEmail} />
               </div>
+
               <div className="checkout-input-row">
                 <label htmlFor="password">Salasana</label>
-                <InputField
-                  type="password"
-                  value={"**********"}
-                  readOnly
-                  name={"password"}
-                  id={"password"}
-                />
+                <InputField type="password" value={"**********"} readOnly />
                 <TextButton
                   text="Change"
-                  onClick={() => setModalWindow("ResetPassword")} // ← Directly opens ResetPassword modal
+                  onClick={() => setModalWindow("ResetPassword")}
                 />
               </div>
-              <p></p>
-              {/* email verified  */}
+
+              {/* Message Display */}
+              {message && (
+                <p
+                  style={{
+                    margin: "15px 0",
+                    color:
+                      message.includes("success") || message.includes("sent")
+                        ? "green"
+                        : "red",
+                  }}
+                >
+                  {message}
+                </p>
+              )}
+
+              {/* Email Verification Banner */}
               {!user.emailVerified && (
                 <div
                   className="email-verification-banner"
@@ -367,32 +306,57 @@ const UserPage = () => {
                   </button>
                 </div>
               )}
-              <div className="action-grid">
-                {!user.twoFactorEnabled ? (
-                  <button
-                    className="action-btn"
-                    onClick={handleSend2FACode}
-                    disabled={loading2FA}
-                  >
-                    <span>{loading2FA ? "Sending..." : "Enable 2FA"}</span>
+
+              {/* 2FA Toggle */}
+              <div className="email-2FA-container">
+                <p>Enable Two-Factor Authentication</p>
+                <div
+                  className={`switch ${active ? "active" : ""}`}
+                  onClick={() =>
+                    active ? handleDisable2FA() : handleSend2FACode()
+                  }
+                  role="switch"
+                  aria-checked={active}
+                >
+                  <button className="toggle-btn" aria-label="Toggle">
+                    {active ? "ON" : "OFF"}
                   </button>
-                ) : (
-                  <button
-                    className="action-btn logout"
-                    onClick={handleDisable2FA}
-                    disabled={loading2FA}
-                  >
-                    <span>{loading2FA ? "Disabling..." : "Disable 2FA"}</span>
-                  </button>
-                )}
+                  <span className="slider"></span>
+                </div>
               </div>
+
+              {/* Inline 2FA Code Input */}
+              {showCodeInput && (
+                <div
+                  style={{
+                    marginTop: "20px",
+                    padding: "15px",
+                    background: "#f9f9f9",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <p>Enter the 4-digit code sent to your email:</p>
+                  <InputField
+                    type="text"
+                    value={verificationCode}
+                    onChange={setVerificationCode}
+                    placeholder="1234"
+                    maxLength="4"
+                  />
+                  <Button
+                    text={loading2FA ? "Verifying..." : "Verify"}
+                    onClick={handleVerifyCode}
+                    disabled={loading2FA || verificationCode.length !== 4}
+                  />
+                </div>
+              )}
             </div>
           </div>
 
+          {/* Delivery Address */}
           <div className="user-card-delivery-address-container">
             <div className="checkout-inputs">
               <h2>Delivery address</h2>
-
               <div className="checkout-input-row">
                 <label htmlFor="address">Katuosoite</label>
                 <InputField
@@ -420,37 +384,18 @@ const UserPage = () => {
                   placeholder="Kaupunki puuttuu"
                 />
               </div>
+              <div className="user-page-save-address-changes-container">
+                <TextButton text="Save address" />
+              </div>
             </div>
-          </div>
-
-          <div className="action-grid">
-            <button
-              className="action-btn logout"
-              onClick={async () => {
-                if (!confirm("Are you sure you want to log out?")) return;
-
-                try {
-                  await fetch("http://localhost:3001/api/auth/logout", {
-                    method: "POST",
-                    credentials: "include",
-                  });
-                } catch (err) {
-                  console.error("Logout error:", err);
-                }
-
-                // Force a full page reload to home — this always works
-                navigate("/");
-              }}
-            >
-              <span>Logout</span>
-            </button>
           </div>
         </div>
 
         <hr className="user-page-divider" />
 
+        {/* Orders */}
         <div className="user-page-orders-card">
-          <h1>Orders</h1>
+          <h2>Orders</h2>
           {Array.isArray(user.orders) && user.orders.length > 0 ? (
             <div className="simple-orders-list">
               {user.orders.map((order) => {
@@ -458,8 +403,6 @@ const UserPage = () => {
                 const date = order.createdAt;
                 const items = Array.isArray(order.items) ? order.items : [];
                 const total = order.totalAmount || 0;
-                const deliveryType = order.deliveryType || "N/A";
-
                 const itemNames = items
                   .map((item) => {
                     let name = item.name;
@@ -497,7 +440,6 @@ const UserPage = () => {
                         {Number(total).toFixed(2)} €
                       </span>
                     </div>
-
                     <div className="order-date">
                       {date
                         ? new Date(date).toLocaleDateString("fi-FI", {
@@ -512,13 +454,10 @@ const UserPage = () => {
                           })
                         : ""}
                     </div>
-
                     <div className="order-items">{itemNames || "No items"}</div>
-
                     <TextButton className="reorder-btn">
                       Make order again
                     </TextButton>
-
                     <hr className="order-divider" />
                   </div>
                 );

@@ -128,7 +128,9 @@ const NavigationBar = () => {
                   <Link to="/menu">Menu</Link>
                 </li>
                 <li>
-                  <Link to="/omapizza">Luo oma pizza</Link>
+                  <a onClick={() => setModalWindow("MakeYourOwnPizza")}>
+                    Luo oma pizza
+                  </a>
                 </li>
                 <li>
                   <Link to="/about">About us</Link>
@@ -147,7 +149,7 @@ const NavigationBar = () => {
                 <Button
                   text={"Sign in"}
                   imageUrl={"./user-icon.svg"}
-                  onClick={() => openModal()}
+                  onClick={() => setModalWindow("SignIn")}
                 />
               )}
             </div>
