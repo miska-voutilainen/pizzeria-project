@@ -462,65 +462,127 @@ export default function createAuthRouter(
     }
 
     try {
-      const [orderRows] = await pool.execute(
-        `
-      SELECT 
-        orderId,
-        JSON_UNQUOTE(JSON_EXTRACT(items, '$')) AS items,
-        JSON_UNQUOTE(JSON_EXTRACT(shippingAddress, '$')) AS shippingAddress,
-        totalAmount,
-        status,
-        paymentMethod,
-        deliveryType,
-        customerName,
-        customerPhone,
-        created_at AS createdAt
-      FROM order_data 
-      WHERE userId = ?
-      ORDER BY created_at DESC
-    `,
+      // 1. Fetch user data
+      const [userRows] = await pool.execute(
+        `SELECT 
+         userId,
+         username,
+         email,
+         emailVerified,
+         is2faEnabled AS twoFactorEnabled,
+         role,
+         firstName,
+         lastName,
+         address,
+         createdAt,
+         DATE_FORMAT(createdAt, '%Y-%m-%dT%H:%i:%s') AS createdAt
+       FROM user_data 
+       WHERE userId = ?`,
         [req.user.userId]
       );
 
-      const orders = orderRows.map((row) => ({
-        orderId: row.orderId,
-        totalAmount: row.totalAmount,
-        status: row.status,
-        paymentMethod: row.paymentMethod,
-        deliveryType: row.deliveryType,
-        customerName: row.customerName,
-        customerPhone: row.customerPhone,
-        createdAt: row.createdAt,
-        items: row.items ? JSON.parse(row.items) : [],
-        shippingAddress: row.shippingAddress
-          ? JSON.parse(row.shippingAddress)
-          : null,
-      }));
+      if (userRows.length === 0) {
+        return res.json({ authenticated: false });
+      }
 
-      return res.json({
+      const dbUser = userRows[0];
+
+      // Parse address
+      let addressObj = null;
+      if (dbUser.address) {
+        try {
+          addressObj =
+            typeof dbUser.address === "string"
+              ? JSON.parse(dbUser.address)
+              : dbUser.address;
+        } catch (e) {
+          addressObj = null;
+        }
+      }
+
+      // 2. Fetch orders — THIS FIXES EVERYTHING
+      const [orderRows] = await pool.execute(
+        `SELECT 
+         orderId,
+         items,
+         shippingAddress,
+         totalAmount,
+         status,
+         paymentMethod,
+         deliveryType,
+         customerName,
+         customerPhone,
+         created_at AS createdAt
+       FROM order_data 
+       WHERE userId = ?
+       ORDER BY created_at DESC`,
+        [req.user.userId]
+      );
+
+      const orders = orderRows.map((row) => {
+        let items = [];
+        let shippingAddress = null;
+
+        // Fix double-encoded JSON (your real problem)
+        const safeParse = (field) => {
+          if (!field) return null;
+          try {
+            let parsed = typeof field === "string" ? JSON.parse(field) : field;
+            // If it's still a string → it's double-encoded → parse again
+            if (typeof parsed === "string") {
+              parsed = JSON.parse(parsed);
+            }
+            return parsed;
+          } catch (e) {
+            console.warn("Could not parse JSON field:", field);
+            return null;
+          }
+        };
+
+        items = safeParse(row.items) || [];
+        shippingAddress = safeParse(row.shippingAddress);
+
+        return {
+          orderId: row.orderId,
+          totalAmount: row.totalAmount,
+          status: row.status,
+          paymentMethod: row.paymentMethod,
+          deliveryType: row.deliveryType,
+          customerName: row.customerName,
+          customerPhone: row.customerPhone,
+          createdAt: row.createdAt,
+          items,
+          shippingAddress,
+        };
+      });
+
+      res.json({
         authenticated: true,
         user: {
-          userId: req.user.userId,
-          username: req.user.username,
-          email: req.user.email,
-          role: req.user.role || "user",
-          emailVerified: !!req.user.emailVerified,
-          twoFactorEnabled: !!req.user.is2faEnabled,
+          userId: dbUser.userId,
+          username: dbUser.username,
+          email: dbUser.email || "",
+          emailVerified: !!dbUser.emailVerified,
+          twoFactorEnabled: !!dbUser.twoFactorEnabled,
+          role: dbUser.role || "user",
+          firstName: dbUser.firstName || "",
+          lastName: dbUser.lastName || "",
+          address: addressObj,
+          createdAt: dbUser.createdAtFormatted || dbUser.createdAt || null,
           orders,
         },
       });
     } catch (error) {
       console.error("Error in /auth/check:", error);
-      return res.json({
+      res.json({
         authenticated: true,
         user: {
           userId: req.user.userId,
-          username: req.user.username,
-          email: req.user.email || "",
-          role: req.user.role || "user",
-          emailVerified: !!req.user.emailVerified,
-          twoFactorEnabled: !!req.user.is2faEnabled,
-          orders: [], // never crash again
+          username: req.user.username || "User",
+          firstName: "",
+          lastName: "",
+          address: null,
+          orders: [],
         },
       });
     }
