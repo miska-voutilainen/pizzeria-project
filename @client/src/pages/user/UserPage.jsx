@@ -194,6 +194,10 @@ const UserPage = () => {
                   // value={formData.city}
                   // onChange={handleFormChange("city")}
                 />
+
+                {/* <div className="user-card-personal-container-change-btn"> */}
+                <TextButton text="Change" />
+                {/* </div> */}
               </div>
               <div className="checkout-input-row">
                 <label htmlFor="password">Salasana</label>
@@ -206,6 +210,7 @@ const UserPage = () => {
                   // value={formData.postcode}
                   // onChange={handleFormChange("postcode")}
                 />
+                <TextButton text="Change" />
               </div>
               <p></p>
               {/* email verified  */}
@@ -303,13 +308,14 @@ const UserPage = () => {
             </div>
           </div>
 
-          <h3>Your Options</h3>
           <div className="action-grid">
             <button className="action-btn logout">
               <span>Logout</span>
             </button>
           </div>
         </div>
+
+        <hr className="user-page-divider" />
 
         <div className="user-page-orders-card">
           <h1>Orders</h1>
