@@ -31,6 +31,21 @@
   gap: 5px;
 }
 
+.action-grid .action-btn.logout {
+  margin-top: 20px;
+  background-color: var(--red);
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.5s all;
+}
+
+.action-grid .action-btn.logout:hover {
+  opacity: 0.6;
+}
+
 .user-page-user-card .checkout-inputs {
   margin-top: 0;
 }
