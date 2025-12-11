@@ -56,10 +56,97 @@
 .user-page-orders-card {
   width: 50%;
 }
+
+.user-page-orders-card h2 {
+  margin-bottom: 20px;
+}
+
+/* email 2fa switch */
+
+.email-2FA-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.email-2FA-container p {
+  font-weight: bold;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 69px;
+  height: 34px;
+}
+
+.toggle-btn {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  z-index: 3;
+  font-size: 12px;
+  font-weight: bold;
+  color: #919185;
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  user-select: none;
+  margin-left: -7px;
+}
+
+/* Background slider */
+.slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #e6e5ce;
+  transition: 0.4s;
+}
+
+/* Circle knob */
+.slider::before {
+  content: "";
+  position: absolute;
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: #919185;
+  transition: 0.4s;
+}
+
+/* Active state */
+.switch.active .slider {
+  background-color: var(--color-green);
+}
+
+.switch.active .slider::before {
+  transform: translateX(35px);
+  background-color: white;
+}
+
+.switch.active .toggle-btn {
+  justify-content: left;
+  margin-left: 10px;
+  color: white;
+}
+
 .user-page-divider {
   border: 1px solid #e6e6e6;
 }
 
+/* order card */
+.simple-orders-list {
+  height: 700px;
+  overflow-y: scroll;
+}
 .order-list {
   margin-top: 20px;
   font-size: 15px;

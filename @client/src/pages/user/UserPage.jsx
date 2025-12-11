@@ -1,7 +1,7 @@
 // src/pages/user/UserPage.jsx
 import { useAuth } from "../../context/AuthContext.jsx";
 import { Navigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SquareButton from "../../components/ui/SquareButton/SquareButton.jsx";
 import "./UserPage.css";
 import InputField from "../../components/ui/InputField/InputField.jsx";
@@ -15,6 +15,11 @@ const UserPage = () => {
   const [verificationCode, setVerificationCode] = useState("");
   const [loading2FA, setLoading2FA] = useState(false);
   const [message, setMessage] = useState("");
+  const [active, setActive] = useState(() => !!user?.twoFactorEnabled);
+
+  useEffect(() => {
+    setActive(!!user?.twoFactorEnabled);
+  }, [user?.twoFactorEnabled]);
 
   if (loading) return null;
   if (!user) return <Navigate to="/login" replace />;
@@ -252,7 +257,7 @@ const UserPage = () => {
                   </button>
                 </div>
               )}
-              <div className="action-grid">
+              {/* <div className="action-grid">
                 {!user.twoFactorEnabled ? (
                   <button
                     className="action-btn"
@@ -270,6 +275,25 @@ const UserPage = () => {
                     <span>{loading2FA ? "Disabling..." : "Disable 2FA"}</span>
                   </button>
                 )}
+              </div> */}
+              <div className="email-2FA-container">
+                <p>Enable Two-Factor Authentication</p>
+                <div
+                  className={`switch ${active ? "active" : ""}`}
+                  onClick={() =>
+                    user?.twoFactorEnabled
+                      ? handleDisable2FA()
+                      : handleSend2FACode()
+                  }
+                  role="switch"
+                  aria-checked={active}
+                >
+                  <button className="toggle-btn" aria-label="Toggle">
+                    {active ? "ON" : "OFF"}
+                  </button>
+
+                  <span className="slider"></span>
+                </div>
               </div>
             </div>
           </div>
@@ -318,7 +342,7 @@ const UserPage = () => {
         <hr className="user-page-divider" />
 
         <div className="user-page-orders-card">
-          <h1>Orders</h1>
+          <h2>Orders</h2>
           {Array.isArray(user.orders) && user.orders.length > 0 ? (
             <div className="simple-orders-list">
               {user.orders.map((order) => {
