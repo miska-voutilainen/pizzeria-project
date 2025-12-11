@@ -1,7 +1,7 @@
-// src/pages/user/UserPage.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { Navigate } from "react-router-dom";
+import { Modal } from "../../components/Modal/Modal/Modal.jsx";
 import InputField from "../../components/ui/InputField/InputField.jsx";
 import TextButton from "../../components/ui/TextButton/TextButton.jsx";
 import deliveryIcon from "../../assets/images/delivery-icon.svg";
@@ -11,11 +11,27 @@ import "./UserPage.css";
 const UserPage = () => {
   const { user, loading, checkAuth } = useAuth();
 
-  const [showCodeInput, setShowCodeInput] = useState(false);
-  const [verificationCode, setVerificationCode] = useState("");
+  const [modalWindow, setModalWindow] = useState(null);
+  const modalRef = useRef(null);
   const [loading2FA, setLoading2FA] = useState(false);
+  const [twoFactorError, setTwoFactorError] = useState("");
   const [message, setMessage] = useState("");
   const [active, setActive] = useState(!!user?.twoFactorEnabled);
+
+  const [address, setAddress] = useState({
+    street: user.address?.street || "",
+    postalCode: user.address?.postalCode || "",
+    city: user.address?.city || "",
+  });
+  const [loadingAddress, setLoadingAddress] = useState(false);
+  const [addressMessage, setAddressMessage] = useState("");
+
+  const [name, setName] = useState({
+    firstName: user.firstName || "",
+    lastName: user.lastName || "",
+  });
+  const [loadingName, setLoadingName] = useState(false);
+  const [nameMessage, setNameMessage] = useState("");
 
   useEffect(() => {
     setActive(!!user?.twoFactorEnabled);
@@ -34,6 +50,7 @@ const UserPage = () => {
 
     setLoading2FA(true);
     setMessage("");
+    setTwoFactorError("");
 
     try {
       const response = await fetch(
@@ -46,7 +63,9 @@ const UserPage = () => {
 
       if (response.ok) {
         setMessage("4-digit code sent to your email!");
-        setShowCodeInput(true);
+        setModalWindow(
+          user.twoFactorEnabled ? "TwoFactorDisable" : "TwoFactorSetup"
+        );
       } else {
         const error = await response.json();
         setMessage(error.message || "Failed to send code");
@@ -58,13 +77,10 @@ const UserPage = () => {
     }
   };
 
-  const handleVerifyCode = async () => {
-    if (verificationCode.length !== 4) {
-      setMessage("Please enter a 4-digit code");
-      return;
-    }
-
+  const handle2FASetupSubmit = async (code) => {
     setLoading2FA(true);
+    setTwoFactorError("");
+
     try {
       const response = await fetch(
         "http://localhost:3001/api/auth/verify-2fa-code",
@@ -72,50 +88,50 @@ const UserPage = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
-          body: JSON.stringify({ code: verificationCode }),
+          body: JSON.stringify({ code }),
         }
       );
 
       if (response.ok) {
         setMessage("2FA enabled successfully!");
-        setShowCodeInput(false);
-        setVerificationCode("");
+        modalRef.current.close();
         await checkAuth();
       } else {
-        const error = await response.json();
-        setMessage(error.message || "Invalid code");
+        const err = await response.json();
+        setTwoFactorError(err.message || "Invalid code");
       }
-    } catch (error) {
-      setMessage("Verification failed");
+    } catch (err) {
+      setTwoFactorError("Verification failed");
     } finally {
       setLoading2FA(false);
     }
   };
 
-  const handleDisable2FA = async () => {
-    if (!confirm("Are you sure you want to disable 2FA?")) return;
-
+  const handle2FADisableSubmit = async (code) => {
     setLoading2FA(true);
-    setMessage("");
+    setTwoFactorError("");
 
     try {
       const response = await fetch(
-        "http://localhost:3001/api/auth/disable-2fa",
+        "http://localhost:3001/api/auth/disable-2fa-with-code",
         {
           method: "POST",
+          headers: { "Content-Type": "application/json" },
           credentials: "include",
+          body: JSON.stringify({ code }),
         }
       );
 
       if (response.ok) {
         setMessage("2FA disabled successfully!");
+        modalRef.current.close();
         await checkAuth();
       } else {
-        const error = await response.json();
-        setMessage(error.message || "Failed to disable 2FA");
+        const err = await response.json();
+        setTwoFactorError(err.message || "Invalid code");
       }
-    } catch (error) {
-      setMessage("Failed to disable 2FA");
+    } catch (err) {
+      setTwoFactorError("Verification failed");
     } finally {
       setLoading2FA(false);
     }
@@ -146,32 +162,82 @@ const UserPage = () => {
     }
   };
 
-  const handleChangeEmail = async () => {
-    setMessage("");
+  const handleSaveAddress = async () => {
+    setLoadingAddress(true);
+    setAddressMessage("");
 
     try {
       const response = await fetch(
-        "http://localhost:3001/api/auth/send-change-email-link",
+        "http://localhost:3001/api/auth/update-address",
         {
           method: "POST",
+          headers: { "Content-Type": "application/json" },
           credentials: "include",
+          body: JSON.stringify(address),
         }
       );
 
       const data = await response.json();
 
       if (response.ok) {
-        setMessage("Change email link sent to your current email!");
+        setAddressMessage("Address saved successfully!");
+        await checkAuth(); // Refresh user data
       } else {
-        setMessage(data.message || "Failed to send link");
+        setAddressMessage(data.message || "Failed to save address");
       }
     } catch (err) {
-      setMessage("Failed to send link");
+      setAddressMessage("Network error - please try again");
+    } finally {
+      setLoadingAddress(false);
+    }
+  };
+
+  const handleSaveName = async () => {
+    setLoadingName(true);
+    setNameMessage("");
+
+    try {
+      const response = await fetch(
+        "http://localhost:3001/api/auth/update-name",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            firstName: name.firstName.trim(),
+            lastName: name.lastName.trim(),
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setNameMessage("Name saved successfully!");
+        await checkAuth(); // Refresh user data
+      } else {
+        setNameMessage(data.message || "Failed to save name");
+      }
+    } catch (err) {
+      setNameMessage("Failed to save name");
+    } finally {
+      setLoadingName(false);
     }
   };
 
   return (
     <section id="user-page">
+      {/* Modal for all flows */}
+      <Modal
+        ref={modalRef}
+        window={modalWindow}
+        setModalWindow={setModalWindow}
+        isLoading2FA={loading2FA}
+        twoFactorError={twoFactorError}
+        on2FASetupSubmit={handle2FASetupSubmit}
+        on2FADisableSubmit={handle2FADisableSubmit}
+      />
+
       <div className="user-page-wrapper">
         <div className="user-page-user-card">
           <div className="user-page-user-card-header">
@@ -212,22 +278,28 @@ const UserPage = () => {
             <div className="checkout-inputs">
               <h2>Personal information</h2>
 
+              {/* First Name */}
               <div className="checkout-input-row">
                 <label htmlFor="firstName">Etunimi</label>
                 <InputField
                   type="text"
-                  value={user.firstName || ""}
-                  readOnly
+                  value={name.firstName}
+                  onChange={(value) =>
+                    setName((prev) => ({ ...prev, firstName: value }))
+                  }
                   placeholder="Etunimi puuttuu"
                 />
               </div>
 
+              {/* Last Name */}
               <div className="checkout-input-row">
                 <label htmlFor="surname">Sukunimi</label>
                 <InputField
                   type="text"
-                  value={user.lastName || ""}
-                  readOnly
+                  value={name.lastName}
+                  onChange={(value) =>
+                    setName((prev) => ({ ...prev, lastName: value }))
+                  }
                   placeholder="Sukunimi puuttuu"
                 />
               </div>
@@ -240,7 +312,10 @@ const UserPage = () => {
                   readOnly
                   placeholder="pekka.virtanen@gmail.com"
                 />
-                <TextButton text="Change" onClick={handleChangeEmail} />
+                <TextButton
+                  text="Change"
+                  onClick={() => setModalWindow("ChangeEmail")}
+                />
               </div>
 
               <div className="checkout-input-row">
@@ -250,6 +325,33 @@ const UserPage = () => {
                   text="Change"
                   onClick={() => setModalWindow("ResetPassword")}
                 />
+              </div>
+
+              <div className="user-page-save-address-changes-container">
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  {nameMessage && (
+                    <p
+                      style={{
+                        margin: "0 15px 0 0",
+                        color: nameMessage.includes("success")
+                          ? "green"
+                          : "red",
+                      }}
+                    >
+                      {nameMessage}
+                    </p>
+                  )}
+                  <TextButton
+                    text={loadingName ? "Saving..." : "Save name"}
+                    onClick={handleSaveName}
+                    disabled={loadingName}
+                  />
+                </div>
               </div>
 
               {/* Message Display */}
@@ -267,7 +369,6 @@ const UserPage = () => {
                 </p>
               )}
 
-              {/* Email Verification Banner */}
               {!user.emailVerified && (
                 <div
                   className="email-verification-banner"
@@ -283,7 +384,7 @@ const UserPage = () => {
                   }}
                 >
                   <div>
-                    <strong>⚠️ Email Verification Required</strong>
+                    <strong>Email Verification Required</strong>
                     <p style={{ margin: "5px 0 0 0", color: "#856404" }}>
                       Please verify your email address to enable security
                       features like 2FA.
@@ -312,9 +413,7 @@ const UserPage = () => {
                 <p>Enable Two-Factor Authentication</p>
                 <div
                   className={`switch ${active ? "active" : ""}`}
-                  onClick={() =>
-                    active ? handleDisable2FA() : handleSend2FACode()
-                  }
+                  onClick={handleSend2FACode}
                   role="switch"
                   aria-checked={active}
                 >
@@ -324,32 +423,6 @@ const UserPage = () => {
                   <span className="slider"></span>
                 </div>
               </div>
-
-              {/* Inline 2FA Code Input */}
-              {showCodeInput && (
-                <div
-                  style={{
-                    marginTop: "20px",
-                    padding: "15px",
-                    background: "#f9f9f9",
-                    borderRadius: "8px",
-                  }}
-                >
-                  <p>Enter the 4-digit code sent to your email:</p>
-                  <InputField
-                    type="text"
-                    value={verificationCode}
-                    onChange={setVerificationCode}
-                    placeholder="1234"
-                    maxLength="4"
-                  />
-                  <Button
-                    text={loading2FA ? "Verifying..." : "Verify"}
-                    onClick={handleVerifyCode}
-                    disabled={loading2FA || verificationCode.length !== 4}
-                  />
-                </div>
-              )}
             </div>
           </div>
 
@@ -357,35 +430,70 @@ const UserPage = () => {
           <div className="user-card-delivery-address-container">
             <div className="checkout-inputs">
               <h2>Delivery address</h2>
+
+              {/* Street */}
               <div className="checkout-input-row">
                 <label htmlFor="address">Katuosoite</label>
                 <InputField
                   type="text"
-                  value={user.address?.street || ""}
-                  readOnly
+                  value={address.street}
+                  onChange={(value) =>
+                    setAddress((prev) => ({ ...prev, street: value }))
+                  }
                   placeholder="Katuosoite puuttuu"
                 />
               </div>
+
+              {/* Postal Code */}
               <div className="checkout-input-row">
                 <label htmlFor="postcode">Postinumero</label>
                 <InputField
                   type="text"
-                  value={user.address?.postalCode || ""}
-                  readOnly
+                  value={address.postalCode}
+                  onChange={(value) =>
+                    setAddress((prev) => ({ ...prev, postalCode: value }))
+                  }
                   placeholder="Postinumero puuttuu"
                 />
               </div>
+
+              {/* City */}
               <div className="checkout-input-row">
                 <label htmlFor="region">Kaupunki</label>
                 <InputField
                   type="text"
-                  value={user.address?.city || ""}
-                  readOnly
+                  value={address.city}
+                  onChange={(value) =>
+                    setAddress((prev) => ({ ...prev, city: value }))
+                  }
                   placeholder="Kaupunki puuttuu"
                 />
               </div>
-              <div className="user-page-save-address-changes-container">
-                <TextButton text="Save address" />
+
+              {/* Save Address Button + Message */}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                }}
+              >
+                {addressMessage && (
+                  <p
+                    style={{
+                      margin: "0 15px 0 0",
+                      color: addressMessage.includes("success")
+                        ? "green"
+                        : "red",
+                    }}
+                  >
+                    {addressMessage}
+                  </p>
+                )}
+                <TextButton
+                  text={loadingAddress ? "Saving..." : "Save address"}
+                  onClick={handleSaveAddress}
+                  disabled={loadingAddress}
+                />
               </div>
             </div>
           </div>
