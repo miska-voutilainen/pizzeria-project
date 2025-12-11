@@ -4,8 +4,7 @@ import "./MakeYourOwnPizza.css"
 import {useState} from "react";
 import IngredientCard from "../../ui/IngredientCard/IngredientCard.jsx";
 import RadioButton from "../../ui/RadioButton/RadioButton.jsx";
-import CloseButton from "../../ui/СloseButton/CloseButton.jsx";
-
+import CloseButton from "../../ui/CloseButton/CloseButton.jsx";
 const MakeYourOwnPizza = ({onClose}) => {
 
     const lengths = {
@@ -28,7 +27,7 @@ const MakeYourOwnPizza = ({onClose}) => {
 
     return (
         <div id="make-your-own-pizza-container">
-            <closeButton onClick={onClose} />
+            <CloseButton onClick={onClose} />
             <img id="pizza-image" src={makeYourOwnPizzaImage} alt="Make Your Own Pizza"/>
             <img src="./make-your-own-pizza-line.svg" alt="Line"/>
             <div id="make-your-own-pizza-right-side">
