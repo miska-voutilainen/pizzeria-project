@@ -76,15 +76,21 @@ const Newsletter = () => {
         <div className="newsletter-inputs-container">
           <h1>Subscribe and get 10% off!*</h1>
           <ul>
-            <li>
-              <span>10% off your first order!</span>
-            </li>
-            <li>
-              <span>Weekly discounts!</span>
-            </li>
+            <li>10% off your first order!</li>
+            <li>Weekly discounts!</li>
           </ul>
           <form className="newsletter-inputs" onSubmit={handleSubmit}>
-            <label htmlFor="email">*T & Cs apply</label>
+            <label htmlFor="email">
+              <span>* </span>
+              <a
+                style={{ color: "white" }}
+                href="/terms-and-conditions"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                T & C's apply
+              </a>
+            </label>
             {/* commented out for new component below */}
             {/* <div className="newsletter-inputs-email">
               <input

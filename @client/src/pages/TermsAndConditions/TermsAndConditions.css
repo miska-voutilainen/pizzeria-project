@@ -1,0 +1,38 @@
+.terms-and-conditions-container {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 32px 24px;
+  background: #fff;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.terms-and-conditions-container h1 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 24px;
+  font-weight: 700;
+}
+
+.terms-and-conditions-container p {
+  text-align: center;
+  font-size: 1.1rem;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.terms-and-conditions-container ul {
+  text-align: left;
+  margin: 0 auto 24px auto;
+  padding-left: 24px;
+  font-size: 1rem;
+  color: #444;
+  max-width: 600px;
+}
+
+.terms-and-conditions-container li {
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
