@@ -151,19 +151,19 @@ const UserPage = () => {
     <section id="user-page">
       <div className="user-page-wrapper">
         <div className="user-page-user-card">
-          <h2>Welcome back, {user.username}!</h2>
-
-          <div className="user-card-personal-container">
-            <h1>Personal information</h1>
+          <div className="user-page-user-card-header">
+            <h2>Welcome back, {user.username}!</h2>
             <div className="user-info">
               <p>
-                <strong>Member since:</strong>{" "}
-                {user.createdAt
-                  ? new Date(user.createdAt).toLocaleDateString("fi-FI")
-                  : "Unknown"}
+                <strong>Member since:</strong> {new Date().toLocaleDateString()}
               </p>
             </div>
+          </div>
+
+          <div className="user-card-personal-container">
             <div className="checkout-inputs">
+              <h2>Personal information</h2>
+
               <div className="checkout-input-row">
                 <label htmlFor="firstName">Etunimi</label>
                 <InputField
@@ -206,6 +206,20 @@ const UserPage = () => {
                   // onChange={handleFormChange("postcode")}
                 />
               </div>
+              <div className="checkout-input-row">
+                <label htmlFor="email">Email</label>
+                <InputField
+                  type="text"
+                  name={"email"}
+                  id={"email"}
+                  placeholder="pekka.virtanen@gmail.com"
+                  // value={formData.city}
+                  // onChange={handleFormChange("city")}
+                />
+              </div>
+              <p>
+                <strong>Email:</strong> {user.email || "Not provided"}
+              </p>
               {/* email verified  */}
               {!user.emailVerified && (
                 <div
@@ -268,8 +282,9 @@ const UserPage = () => {
           </div>
 
           <div className="user-card-delivery-address-container">
-            <h2>Delivery address</h2>
             <div className="checkout-inputs">
+              <h2>Delivery address</h2>
+
               <div className="checkout-input-row">
                 <label htmlFor="address">Katuosoite</label>
                 <InputField
