@@ -20,34 +20,25 @@ const MakeYourOwnPizza = ({ onClose }) => {
   const [ingredients, setIngredients] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch ingredients on mount
+  // Fetch ingredients from your new API route
   useEffect(() => {
-    const fetchIngredients = async () => {
-      try {
-        const res = await fetch("http://localhost:3001/api/ingredients", {
-          credentials: "include", // if you use sessions
-        });
-
-        if (!res.ok) throw new Error("Failed to fetch");
-
-        const data = await res.json();
-        console.log("Ingredients loaded:", data); // ← REMOVE LATER
-
+    fetch("http://localhost:3001/api/ingredients", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
         setIngredients(data);
-      } catch (err) {
-        console.error("Failed to load ingredients:", err);
-        setIngredients([]); // prevent crash
-      } finally {
         setLoading(false);
-      }
-    };
-
-    fetchIngredients();
+      })
+      .catch((err) => {
+        console.error("Failed to load ingredients:", err);
+        setLoading(false);
+      });
   }, []);
 
-  const changePrice = (cLength) => {
-    setPrice(price - lengths[length] + lengths[cLength]);
-    setLength(cLength);
+  const changePrice = (newLength) => {
+    setPrice((prev) => prev - lengths[length] + lengths[newLength]);
+    setLength(newLength);
   };
 
   return (
@@ -102,15 +93,15 @@ const MakeYourOwnPizza = ({ onClose }) => {
           {loading ? (
             <p>Loading ingredients...</p>
           ) : ingredients.length === 0 ? (
-            <p>No ingredients available.</p>
+            <p>No ingredients found.</p>
           ) : (
             <div id="ingredients-list">
               {ingredients.map((ing) => (
                 <IngredientCard
                   key={ing.id}
                   name={ing.name}
-                  img={ing.imgUrl || "/fallback-ingredient.png"} // ← fallback if broken
-                  ingredientPrice={parseFloat(ing.price) || 0}
+                  img={ing.imgUrl}
+                  ingredientPrice={parseFloat(ing.price)}
                   price={price}
                   setPrice={setPrice}
                 />
@@ -122,8 +113,12 @@ const MakeYourOwnPizza = ({ onClose }) => {
             text={`Add to Cart ${price.toFixed(2)}€`}
             id="make-your-own-pizza-button"
             onClick={() => {
-              // your add-to-cart logic here later
-              console.log("Pizza added:", { length, dough, price });
+              alert(
+                `Pizza added! Size: ${length}, Dough: ${dough}, Price: ${price.toFixed(
+                  2
+                )}€`
+              );
+              // Add your real cart logic here later
             }}
           />
         </div>
