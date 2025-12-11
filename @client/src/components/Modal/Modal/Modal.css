@@ -1,3 +1,10 @@
+dialog:focus {
+    outline: none;
+}
+dialog {
+    outline: none;
+}
+
 dialog {
     background: var(--background);
     border: none;

@@ -1,9 +1,9 @@
+// src/components/layout/Navigation/NavigationBar.jsx
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext.jsx";
 import { useCart } from "../../../context/CartContext.jsx";
 import "./NavigationBar.css";
-
 import Button from "../../ui/Button/Button.jsx";
 import CartSidebar from "../CartSidebar/CartSidebar.jsx";
 import { Modal } from "../../Modal/Modal/Modal.jsx"; // This is your dialog-based modal
@@ -11,36 +11,25 @@ import { Modal } from "../../Modal/Modal/Modal.jsx"; // This is your dialog-base
 const NavigationBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
-
+  const [modalWindow, setModalWindow] = useState(null);
   const location = useLocation();
   const { user } = useAuth();
   const { getCartItemCount } = useCart();
 
   const cartItemCount = getCartItemCount();
+    const signInRef = React.useRef(null);
+    const openModal = () => {
+        document.body.style.overflow = "hidden";
+        signInRef.current.showModal ()
+    }
 
-  // Ref for the auth modal (always rendered)
-  const signInRef = React.useRef(null);
-
-  // Function to open the Sign In modal
-  const openSignInModal = () => {
-    document.body.style.overflow = "hidden";
-    signInRef.current?.showModal();
-  };
-
-  // Close mobile menu when route changes
   useEffect(() => {
     setMenuOpen(false);
   }, [location]);
 
   return (
     <header className="navbar">
-      {/* AUTH MODAL – ALWAYS RENDERED (hidden until opened) */}
-      <Modal
-        ref={signInRef}
-        window="SignIn" // Starts on Sign In tab
-        redirectPath={location.pathname} // So user returns here after login
-      />
-
+        <Modal ref={signInRef} window={modalWindow} setModalWindow={setModalWindow}/>
       <div className="navbar-container">
         {/* Logo */}
         <div className="navbar-row-start">
@@ -49,14 +38,14 @@ const NavigationBar = () => {
           </Link>
         </div>
 
-        {/* Desktop Navigation Links */}
+        {/* Desktop Navigation */}
         <nav className="navbar-links">
           <ul>
             <li>
               <Link to="/menu">Menu</Link>
             </li>
             <li>
-              <Link to="/create-pizza">Create your own pizza</Link>
+              <a className="make-your-own-pizza" onClick={() => setModalWindow("MakeYourOwnPizza")}>Luo oma pizza</a>
             </li>
             <li>
               <Link to="/about">About us</Link>
@@ -75,13 +64,12 @@ const NavigationBar = () => {
             />
           ) : (
             <Button
-              onClick={openSignInModal}
-              text="Sign in"
-              imageUrl="./user-icon.svg"
+              onClick={() => setModalWindow("SignIn")}
+              text={"Sign in"}
+              imageUrl={"./user-icon.svg"}
             />
           )}
 
-          {/* Cart Button */}
           <button
             className="nav-cart-button"
             onClick={() => setCartOpen(true)}
@@ -106,7 +94,6 @@ const NavigationBar = () => {
               <span className="cart-badge">{cartItemCount}</span>
             )}
           </button>
-
           <button
             className="menuButton"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -129,7 +116,7 @@ const NavigationBar = () => {
                   <Link to="/menu">Menu</Link>
                 </li>
                 <li>
-                  <Link to="/create-pizza">Create your own pizza</Link>
+                  <Link to="/omapizza">Luo oma pizza</Link>
                 </li>
                 <li>
                   <Link to="/about">About us</Link>
@@ -146,9 +133,9 @@ const NavigationBar = () => {
                 />
               ) : (
                 <Button
-                  text="Sign in"
-                  imageUrl="./user-icon.svg"
-                  onClick={openSignInModal} // Works perfectly on mobile too
+                  text={"Sign in"}
+                  imageUrl={"./user-icon.svg"}
+                  onClick={() => openModal()}
                 />
               )}
             </div>
