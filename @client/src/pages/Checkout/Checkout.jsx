@@ -8,8 +8,6 @@ import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "../../components/Modal/Modal/Modal";
-import pizzaWebLogo from "../../assets/images/Pizzaweb-logo.svg";
-import checkmarkIcon from "../../assets/images/checkmark-icon.svg";
 
 // Import payment method images
 import mobilepayImg from "../../assets/images/paymentMethods/MobilePay_logo.svg";
@@ -18,6 +16,7 @@ import googlepayImg from "../../assets/images/paymentMethods/google-pay-logo-ico
 import klarnaImg from "../../assets/images/paymentMethods/Klarna_Payment_Badge.svg";
 import cardImg from "../../assets/images/paymentMethods/visa-and-mastercard-logos.svg";
 import RadioButton from "../../components/ui/RadioButton/RadioButton";
+import CheckoutNavigationBar from "../../components/layout/Navigation/CheckoutNavigationBar/CheckoutNavigationBar";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -178,61 +177,7 @@ const Checkout = () => {
 
   return (
     <>
-      {/* Header with Logo and Status Tracker */}
-      <header className="checkout-header">
-        <div className="checkout-header-wrapper">
-          <div className="checkout-logo">
-            <img
-              src={pizzaWebLogo}
-              alt="Pizza Web Logo"
-              onClick={() => navigate("/")}
-            />
-          </div>
-          <nav className="checkout-nav">
-            <div className="checkout-status-tracker">
-              {/* Cart Status */}
-              <div className="checkout-status-step">
-                <div className="checkout-status-step-large">
-                  <div className="checkout-checkmark-frame">
-                    <img
-                      src={checkmarkIcon}
-                      alt="Checkmark"
-                      className="checkout-checkmark-svg"
-                    />
-                  </div>
-                  <div className="checkout-status-text cart">Cart</div>
-                </div>
-              </div>
-
-              {/* Connecting Line */}
-              <div className="checkout-connecting-line"></div>
-
-              {/* Checkout Status */}
-              <div className="checkout-status-step">
-                <div className="checkout-status-step-large">
-                  <div className="checkout-number-frame checkout">
-                    <div className="checkout-number">2</div>
-                  </div>
-                  <div className="checkout-status-text checkout">Checkout</div>
-                </div>
-              </div>
-
-              {/* Dashed Line */}
-              <div className="checkout-connecting-line dashed"></div>
-
-              {/* Done Status */}
-              <div className="checkout-status-step">
-                <div className="checkout-status-step-large">
-                  <div className="checkout-number-frame done">
-                    <div className="checkout-number">3</div>
-                  </div>
-                  <div className="checkout-status-text done">Done!</div>
-                </div>
-              </div>
-            </div>
-          </nav>
-        </div>
-      </header>
+      <CheckoutNavigationBar />
       <section id="checkout-section">
         <div className="checkout-section-wrapper">
           <div className="checkout-input-col">
