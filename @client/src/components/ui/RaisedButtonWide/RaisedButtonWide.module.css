@@ -1,0 +1,91 @@
+#raised-button-wide-container {
+  position: relative;
+  z-index: 1;
+}
+
+#raised-button-wide-container button {
+  top: 0;
+  left: 0;
+  position: relative;
+  width: auto;
+  padding: 0 15px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-green);
+  cursor: pointer;
+  border: none;
+  box-shadow: 5px 5px 0 #8faa90;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  gap: 13px;
+  margin: 0px 5px 5px 0px;
+}
+
+#raised-button-wide-container img {
+  width: 22px;
+}
+
+#raised-button-wide-container button:hover {
+  top: 2px;
+  left: 2px;
+  box-shadow: 3px 3px 0 #8faa90;
+}
+
+/* button edges */
+
+#raised-button-wide-container button:hover::after {
+  top: 1px;
+  right: -2.4px;
+  width: 4.1px;
+  height: 4px;
+}
+
+#raised-button-wide-container button:hover::before {
+  bottom: -1.8px;
+  left: 0.6px;
+  width: 4.7px;
+  height: 4px;
+}
+
+#raised-button-wide-container button::after {
+  content: "";
+  position: absolute;
+  top: 1.5px;
+  right: -4px;
+  width: 7px;
+  height: 6px;
+  background-color: #8faa90;
+  transform: rotate(45deg);
+  z-index: -1;
+}
+
+#raised-button-wide-container button::before {
+  content: "";
+  position: absolute;
+  bottom: -2.7px;
+  left: 0.3px;
+  width: 7px;
+  height: 3.9px;
+  background-color: #8faa90;
+  transform: rotate(45deg);
+  z-index: -1;
+}
+
+#raised-button-wide-container button:active {
+  top: 5px;
+  left: 5px;
+  box-shadow: none;
+}
+
+#raised-button-wide-container button:active::before {
+  bottom: 1px;
+  left: 1px;
+}
+
+#raised-button-wide-container button:active::after {
+  top: 1px;
+  right: 1px;
+}

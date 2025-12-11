@@ -360,6 +360,7 @@ const Checkout = () => {
                   appearance={"light"}
                   value={couponInput}
                   setValue={setCouponInput}
+                  submitStyle="wide"
                 />
               </form>
             </div>

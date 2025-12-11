@@ -5,7 +5,7 @@ import Button from "../../components/ui/Button/Button";
 import pizzaWebLogo from "../../assets/images/Pizzaweb-logo.svg";
 import checkmarkIcon from "../../assets/images/checkmark-icon.svg";
 import riderIcon from "../../assets/images/rider-icon.svg";
-import halfPizzaImg from "../../assets/images/half-a-pizza.png";
+import fullPizzaImg from "../../assets/images/full-image.png";
 
 const OrderConfirmation = () => {
   const [searchParams] = useSearchParams();
@@ -155,11 +155,11 @@ const OrderConfirmation = () => {
               </div>
             </div>
 
-            <div className="half-pizza-container">
+            <div className="full-pizza-container">
               <img
-                src={halfPizzaImg}
-                alt="Half Pizza"
-                className="half-pizza-img"
+                src={fullPizzaImg}
+                alt="Full Pizza"
+                className="full-pizza-img"
               />
             </div>
           </main>
