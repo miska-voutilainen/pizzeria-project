@@ -61,7 +61,7 @@ export default function createSessionService(pool) {
 
     res.cookie(COOKIE_NAME, token, {
       httpOnly: true,
-      secure: false,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
       maxAge: MAX_AGE,
@@ -78,7 +78,7 @@ export default function createSessionService(pool) {
     }
     res.clearCookie(COOKIE_NAME, {
       httpOnly: true,
-      secure: false,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
     });

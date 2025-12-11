@@ -146,14 +146,17 @@ const Checkout = () => {
 
       console.log("Sending order data:", orderData);
 
-      const response = await fetch("http://localhost:3001/api/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(orderData),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/orders`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(orderData),
+        }
+      );
 
       console.log("Response status:", response.status);
       const result = await response.json();

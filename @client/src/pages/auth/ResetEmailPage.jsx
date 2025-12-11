@@ -22,7 +22,7 @@ const ResetEmailPage = () => {
     const checkToken = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3001/api/auth/verify-email-token/${token}`
+          `${import.meta.env.VITE_API_URL}/api/auth/verify-email-token/${token}`
         );
         const data = await res.json();
         if (!res.ok)
@@ -72,7 +72,7 @@ const ResetEmailPage = () => {
 
     try {
       const res = await fetch(
-        `http://localhost:3001/api/auth/change-email/${token}`,
+        `${import.meta.env.VITE_API_URL}/api/auth/change-email/${token}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

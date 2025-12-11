@@ -49,7 +49,7 @@ const SignIn = ({ setModalContent, onClose, redirectPath }) => {
     setLoading(true);
     try {
       const response = await fetch(
-        "http://localhost:3001/api/auth/verify-login-2fa",
+        `${import.meta.env.VITE_API_URL}/api/auth/verify-login-2fa`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -81,12 +81,15 @@ const SignIn = ({ setModalContent, onClose, redirectPath }) => {
     }
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:3001/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ username, password }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ username, password }),
+        }
+      );
       if (!response.ok) {
         const err = await response.json();
         throw new Error(err.message);

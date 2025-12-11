@@ -23,7 +23,7 @@ const ResetPassword = ({ setModalContent, onClose }) => {
     setError("");
     try {
       const res = await fetch(
-        "http://localhost:3001/api/auth/send-reset-link",
+        `${import.meta.env.VITE_API_URL}/api/auth/send-reset-link`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

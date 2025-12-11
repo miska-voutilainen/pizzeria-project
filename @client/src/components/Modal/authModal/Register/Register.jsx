@@ -40,15 +40,18 @@ const Register = ({ setModalContent, onClose }) => {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:3001/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: formData.username.trim(),
-          email: formData.email.trim().toLowerCase(),
-          password: formData.password,
-        }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/register`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: formData.username.trim(),
+            email: formData.email.trim().toLowerCase(),
+            password: formData.password,
+          }),
+        }
+      );
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Registration failed");
@@ -112,12 +115,12 @@ const Register = ({ setModalContent, onClose }) => {
               placeholder="Confirm password"
             />
           </div>
-            <Button
-              text={isLoading ? "Creating Account..." : "Create an account"}
-              id="register-button"
-              onClick={handleRegister}
-              disabled={isLoading}
-            />
+          <Button
+            text={isLoading ? "Creating Account..." : "Create an account"}
+            id="register-button"
+            onClick={handleRegister}
+            disabled={isLoading}
+          />
         </form>
       </div>
     </div>

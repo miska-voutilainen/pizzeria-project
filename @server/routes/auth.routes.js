@@ -203,9 +203,7 @@ export default function createAuthRouter(
               24,
               req
             );
-            const link = `${
-              process.env.SERVER_URI || "http://localhost:3001"
-            }/api/auth/verify-email/${token}`;
+            const link = `${process.env.SERVER_URI}/api/auth/verify-email/${token}`;
             await sendVerificationEmail(email, username, link);
           } catch (err) {
             console.error("Failed to send verification email:", err);
@@ -241,9 +239,7 @@ export default function createAuthRouter(
         24,
         req
       );
-      const link = `${
-        process.env.SERVER_URI || "http://localhost:3001"
-      }/api/auth/verify-email/${token}`;
+      const link = `${process.env.SERVER_URI}/api/auth/verify-email/${token}`;
 
       await sendVerificationEmail(user.email, username, link);
       res.json({ message: "Verification email sent!" });
@@ -411,9 +407,7 @@ export default function createAuthRouter(
       const token = await createToken(pool, user.userId, "reset", 1, req);
 
       // ← FIXED: Use CLIENT_URI, not SERVER_URI
-      const resetLink = `${
-        process.env.CLIENT_URI || "http://localhost:3000"
-      }/reset-password/${token}`;
+      const resetLink = `${process.env.CLIENT_URI}/reset-password/${token}`;
 
       await sendPasswordResetEmail(user.email, user.username, resetLink);
       res.json({ message: "Password reset link sent to your email!" });
@@ -489,9 +483,7 @@ export default function createAuthRouter(
         req
       ); // 1 hour
 
-      const changeLink = `${
-        process.env.CLIENT_URI || "http://localhost:3000"
-      }/change-email/${token}`;
+      const changeLink = `${process.env.CLIENT_URI}/change-email/${token}`;
 
       await sendEmailChangeLink(
         req.user.email.trim(),

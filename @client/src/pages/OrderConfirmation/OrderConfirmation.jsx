@@ -31,7 +31,7 @@ const OrderConfirmation = () => {
         console.log("Validating orderId with server:", orderId);
         // Validate that the order exists in the database
         const response = await fetch(
-          `http://localhost:3001/api/orders/${orderId}`,
+          `${import.meta.env.VITE_API_URL}/api/orders/${orderId}`,
           {
             method: "GET",
             credentials: "include",

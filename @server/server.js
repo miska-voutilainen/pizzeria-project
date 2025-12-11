@@ -18,9 +18,8 @@ const app = express();
 const corsOptions = {
   origin: (origin, callback) => {
     const allowedOrigins = [
-      "http://localhost:3000",
-      "http://localhost:5173",
-      "http://127.0.0.1:5173",
+      "https://admin.pizzeria-web.com",
+      "https://pizzeria-web.com",
     ];
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);

@@ -54,7 +54,7 @@ const UserPage = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:3001/api/auth/send-2fa-code",
+        `${import.meta.env.VITE_API_URL}/api/auth/send-2fa-code",
         {
           method: "POST",
           credentials: "include",

@@ -25,7 +25,7 @@ const ResetPasswordPage = () => {
     const checkToken = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3001/api/auth/reset-password/${token}`
+          `${import.meta.env.VITE_API_URL}/api/auth/reset-password/${token}`
         );
         const data = await res.json();
         if (!res.ok)
@@ -82,7 +82,7 @@ const ResetPasswordPage = () => {
 
     try {
       const res = await fetch(
-        `http://localhost:3001/api/auth/reset-password/${token}`,
+        `${import.meta.env.VITE_API_URL}/api/auth/reset-password/${token}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

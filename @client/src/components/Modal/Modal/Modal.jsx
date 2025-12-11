@@ -114,7 +114,9 @@ const Modal = React.forwardRef((props, ref) => {
             onClick={async () => {
               try {
                 const res = await fetch(
-                  "http://localhost:3001/api/auth/send-change-email-link",
+                  `${
+                    import.meta.env.VITE_API_URL
+                  }/api/auth/send-change-email-link`,
                   {
                     method: "POST",
                     credentials: "include",

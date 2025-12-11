@@ -23,7 +23,7 @@ const MakeYourOwnPizza = ({ onClose }) => {
   const [ingredients, setIngredients] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/ingredients", {
+    fetch(`${import.meta.env.VITE_API_URL}/api/ingredients`, {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -67,7 +67,11 @@ const MakeYourOwnPizza = ({ onClose }) => {
         src={makeYourOwnPizzaImage}
         alt="Make Your Own Pizza"
       />
-      <img src="./make-your-own-pizza-line.svg" alt="Line" className="image-line"/>
+      <img
+        src="./make-your-own-pizza-line.svg"
+        alt="Line"
+        className="image-line"
+      />
 
       <div id="make-your-own-pizza-right-side">
         <div id="make-your-own-pizza-text">
