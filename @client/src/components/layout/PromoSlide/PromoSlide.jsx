@@ -5,7 +5,7 @@ import pizzaIcon from "../../../assets/images/ticker-slider-pizza.svg";
 import slicerIcon from "../../../assets/images/ticker-slider-slicer.svg";
 
 const PromoSlide = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const messages = [
     t("promo.alwaysFresh"),
     t("promo.fastDelivery"),
@@ -63,7 +63,7 @@ const PromoSlide = () => {
       clearTimeout(timer);
       window.removeEventListener("resize", updateContent);
     };
-  }, []);
+  }, [language]);
 
   return (
     <div className="ticker-wrapper" ref={containerRef}>
