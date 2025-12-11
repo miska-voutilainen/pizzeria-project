@@ -163,6 +163,11 @@ const UserPage = () => {
                 <strong>Member since:</strong> {new Date().toLocaleDateString()}
               </p>
             </div>
+            <div className="action-grid">
+              <button className="action-btn logout">
+                <span>Logout</span>
+              </button>
+            </div>
           </div>
 
           <div className="user-card-personal-container">
@@ -330,12 +335,6 @@ const UserPage = () => {
                 />
               </div>
             </div>
-          </div>
-
-          <div className="action-grid">
-            <button className="action-btn logout">
-              <span>Logout</span>
-            </button>
           </div>
         </div>
 
