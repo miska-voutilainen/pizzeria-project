@@ -21,8 +21,22 @@
   border: 1px solid #e6e6e6;
 }
 
+.user-page-user-card-header {
+  display: flex;
+  gap: 20px;
+}
+
+.user-cad-header-logout {
+  display: flex;
+  align-items: start;
+}
+
 .user-page-user-card-header h2 {
   margin-bottom: 10px;
+}
+
+.user-card-username {
+  width: 100%;
 }
 
 .user-page-user-card-header .user-info {
@@ -32,7 +46,6 @@
 }
 
 .action-grid .action-btn.logout {
-  margin-top: 20px;
   background-color: var(--red);
   color: white;
   padding: 10px 15px;
@@ -40,6 +53,7 @@
   cursor: pointer;
   font-weight: bold;
   transition: 0.5s all;
+  font-size: 1rem;
 }
 
 .action-grid .action-btn.logout:hover {
@@ -74,6 +88,12 @@
 
 .user-page-orders-card h2 {
   margin-bottom: 20px;
+}
+
+.user-page-save-address-changes-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -10px;
 }
 
 /* email 2fa switch */
