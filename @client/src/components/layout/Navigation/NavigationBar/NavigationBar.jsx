@@ -1,12 +1,15 @@
 // src/components/layout/Navigation/NavigationBar.jsx
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useAuth } from "../../../context/AuthContext.jsx";
-import { useCart } from "../../../context/CartContext.jsx";
+import { useAuth } from "../../../../context/AuthContext.jsx";
+import { useCart } from "../../../../context/CartContext.jsx";
 import "./NavigationBar.css";
-import Button from "../../ui/Button/Button.jsx";
-import CartSidebar from "../CartSidebar/CartSidebar.jsx";
-import { Modal } from "../../Modal/Modal/Modal.jsx"; // This is your dialog-based modal
+
+import pizzaWebLogo from "../../../../assets/images/Pizzaweb-logo.svg";
+
+import Button from "../../../ui/Button/Button.jsx";
+import CartSidebar from "../../CartSidebar/CartSidebar.jsx";
+import { Modal } from "../../../Modal/Modal/Modal.jsx"; // This is your dialog-based modal
 
 const NavigationBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -17,11 +20,11 @@ const NavigationBar = () => {
   const { getCartItemCount } = useCart();
 
   const cartItemCount = getCartItemCount();
-    const signInRef = React.useRef(null);
-    const openModal = () => {
-        document.body.style.overflow = "hidden";
-        signInRef.current.showModal ()
-    }
+  const signInRef = React.useRef(null);
+  const openModal = () => {
+    document.body.style.overflow = "hidden";
+    signInRef.current.showModal();
+  };
 
   useEffect(() => {
     setMenuOpen(false);
@@ -29,12 +32,16 @@ const NavigationBar = () => {
 
   return (
     <header className="navbar">
-        <Modal ref={signInRef} window={modalWindow} setModalWindow={setModalWindow}/>
+      <Modal
+        ref={signInRef}
+        window={modalWindow}
+        setModalWindow={setModalWindow}
+      />
       <div className="navbar-container">
         {/* Logo */}
         <div className="navbar-row-start">
           <Link to="/">
-            <img src="/Pizzaweb-logo.svg" alt="Pizzaweb logo" />
+            <img src={pizzaWebLogo} alt="Pizzaweb logo" />
           </Link>
         </div>
 
@@ -45,7 +52,12 @@ const NavigationBar = () => {
               <Link to="/menu">Menu</Link>
             </li>
             <li>
-              <a className="make-your-own-pizza" onClick={() => setModalWindow("MakeYourOwnPizza")}>Luo oma pizza</a>
+              <a
+                className="make-your-own-pizza"
+                onClick={() => setModalWindow("MakeYourOwnPizza")}
+              >
+                Luo oma pizza
+              </a>
             </li>
             <li>
               <Link to="/about">About us</Link>

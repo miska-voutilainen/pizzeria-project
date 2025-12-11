@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import NavigationBar from "./components/layout/Navigation/NavigationBar.jsx";
+import NavigationBar from "./components/layout/Navigation/NavigationBar/NavigationBar.jsx";
 import Footer from "./components/layout/Footer/Footer.jsx";
 
 const App = () => {

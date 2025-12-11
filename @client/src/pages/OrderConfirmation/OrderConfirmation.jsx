@@ -6,6 +6,7 @@ import pizzaWebLogo from "../../assets/images/Pizzaweb-logo.svg";
 import checkmarkIcon from "../../assets/images/checkmark-icon.svg";
 import riderIcon from "../../assets/images/rider-icon.svg";
 import fullPizzaImg from "../../assets/images/full-image.png";
+import CheckoutNavigationBar from "../../components/layout/Navigation/CheckoutNavigationBar/CheckoutNavigationBar";
 
 const OrderConfirmation = () => {
   const [searchParams] = useSearchParams();
@@ -73,7 +74,7 @@ const OrderConfirmation = () => {
       ) : isValidOrder ? (
         <div className="order-confirmation-container">
           {/* Header */}
-          <header className="order-confirmation-header">
+          {/* <header className="order-confirmation-header">
             <div className="order-confirmation-header-wrapper">
               <div className="order-confirmation-logo">
                 <img
@@ -84,7 +85,7 @@ const OrderConfirmation = () => {
               </div>
               <nav className="order-confirmation-nav">
                 <div className="order-status-tracker">
-                  {/* Cart Status */}
+
                   <div className="status-step">
                     <div className="status-step-large">
                       <div className="checkmark-frame">
@@ -98,10 +99,10 @@ const OrderConfirmation = () => {
                     </div>
                   </div>
 
-                  {/* Connecting Line */}
+
                   <div className="connecting-line"></div>
 
-                  {/* Checkout Status */}
+
                   <div className="status-step">
                     <div className="status-step-large">
                       <div className="checkmark-frame">
@@ -115,10 +116,10 @@ const OrderConfirmation = () => {
                     </div>
                   </div>
 
-                  {/* Dashed Line */}
+
                   <div className="connecting-line dashed"></div>
 
-                  {/* Done Status */}
+
                   <div className="status-step">
                     <div className="status-step-large">
                       <div className="number-frame done">
@@ -130,7 +131,8 @@ const OrderConfirmation = () => {
                 </div>
               </nav>
             </div>
-          </header>
+          </header> */}
+          <CheckoutNavigationBar />
 
           {/* Main Content */}
           <main className="order-confirmation-main">
