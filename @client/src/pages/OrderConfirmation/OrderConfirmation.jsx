@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import "./OrderConfirmation.css";
 import Button from "../../components/ui/Button/Button";
-import pizzaWebLogo from "../../assets/images/Pizzaweb-logo.svg";
-import checkmarkIcon from "../../assets/images/checkmark-icon.svg";
 import riderIcon from "../../assets/images/rider-icon.svg";
 import fullPizzaImg from "../../assets/images/full-image.png";
 import CheckoutNavigationBar from "../../components/layout/Navigation/CheckoutNavigationBar/CheckoutNavigationBar";
+import useLanguage from "../../context/useLanguage.jsx";
 
 const OrderConfirmation = () => {
+  const { t } = useLanguage();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const orderId = searchParams.get("orderId");
@@ -145,14 +145,19 @@ const OrderConfirmation = () => {
                 />
               </div>
 
-              <h1 className="order-done-text">Order #{orderId} placed!</h1>
+              <h1 className="order-done-text">
+                {t("orderConfirmation.placed").replace("{orderId}", orderId)}
+              </h1>
 
               <p className="estimated-delivery-text">
-                Estimated delivery time: {estimatedTime}
+                {t("orderConfirmation.estimatedDelivery").replace(
+                  "{time}",
+                  estimatedTime
+                )}
               </p>
               <div>
                 <div className="back-button-container">
-                  <Button url="/" text="Back" />
+                  <Button url="/" text={t("orderConfirmation.back")} />
                 </div>
               </div>
             </div>

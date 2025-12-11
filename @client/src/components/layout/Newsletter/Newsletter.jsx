@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import useLanguage from "../../../context/useLanguage.jsx";
 import "./Newsletter.css";
 
 import image from "../../../assets/images/newsletter-image.jpg";
@@ -10,6 +11,7 @@ const Newsletter = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const { t } = useLanguage();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,12 +20,12 @@ const Newsletter = () => {
 
     // Validation
     if (!email.trim()) {
-      setError("Please enter an email address");
+      setError(t("newsletter.errors.enterEmail"));
       return;
     }
 
     if (!agreeTerms) {
-      setError("Please accept the terms and conditions");
+      setError(t("newsletter.errors.acceptTerms"));
       return;
     }
 
@@ -42,15 +44,15 @@ const Newsletter = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.message || "Failed to subscribe");
+        setError(data.message || t("newsletter.errors.failed"));
         return;
       }
 
-      setMessage("Success! Check your email for your coupon code.");
+      setMessage(t("newsletter.successMessage"));
       setEmail("");
       setAgreeTerms(false);
     } catch (err) {
-      setError("An error occurred. Please try again later.");
+      setError(t("newsletter.errors.server"));
       console.error(err);
     } finally {
       setLoading(false);
@@ -74,17 +76,17 @@ const Newsletter = () => {
         </div>
 
         <div className="newsletter-inputs-container">
-          <h1>Subscribe and get 10% off!*</h1>
+          <h1>{t("newsletter.title")}</h1>
           <ul>
             <li>
-              <span>10% off your first order!</span>
+              <span>{t("newsletter.benefit1")}</span>
             </li>
             <li>
-              <span>Weekly discounts!</span>
+              <span>{t("newsletter.benefit2")}</span>
             </li>
           </ul>
           <form className="newsletter-inputs" onSubmit={handleSubmit}>
-            <label htmlFor="email">*T & Cs apply</label>
+            <label htmlFor="email">{t("newsletter.termsLabel")}</label>
             {/* commented out for new component below */}
             {/* <div className="newsletter-inputs-email">
               <input
@@ -104,11 +106,11 @@ const Newsletter = () => {
               value={email}
               setValue={setEmail}
               loading={loading}
-              placeholder={"john.smith@gmail.com"}
+              placeholder={t("newsletter.placeholder")}
               type={"email"}
               id={"email"}
               name={"email"}
-              submitText={"Submit"}
+              submitText={t("common.submit")}
               appearance={"dark"}
             />
             <div className="newsletter-inputs-accept-terms">
@@ -120,7 +122,9 @@ const Newsletter = () => {
                 onChange={(e) => setAgreeTerms(e.target.checked)}
                 disabled={loading}
               />
-              <label htmlFor="accept-terms">Accept terms</label>
+              <label htmlFor="accept-terms">
+                {t("newsletter.acceptTerms")}
+              </label>
             </div>
             {error && (
               <p style={{ color: "red", marginTop: "10px" }}>{error}</p>

@@ -2,6 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./Footer.css";
 import MapModal from "../../Modal/mapModal/MapModal.jsx";
+import LanguageSwitcher from "../../LanguageSwitcher/LanguageSwitcher.jsx";
+import useLanguage from "../../../context/useLanguage.jsx";
 
 const Footer = () => {
   const mapRef = React.useRef(null);
@@ -19,7 +21,7 @@ const Footer = () => {
       document.body.style.overflow = "";
     }
   };
-
+  const { t } = useLanguage();
   return (
     <>
       <footer>
@@ -32,13 +34,13 @@ const Footer = () => {
           <nav>
             <ul>
               <li>
-                <Link to="/menu">Menu</Link>
+                <Link to="/menu">{t("footer.menu")}</Link>
               </li>
               <li>
-                <Link to="/create-pizza">Create your own pizza</Link>
+                <Link to="/create-pizza">{t("footer.makeYourOwn")}</Link>
               </li>
               <li>
-                <Link to="/about">About us</Link>
+                <Link to="/about">{t("footer.aboutUs")}</Link>
               </li>
             </ul>
           </nav>
@@ -47,14 +49,13 @@ const Footer = () => {
         {/* Temporary button to open MapModal */}
         <div style={{ marginTop: "12px" }}>
           <button className="temporary-map-button" onClick={openMap}>
-            Open Map (temp)
+            {t("footer.openMap")}
           </button>
         </div>
 
         <div className="footer-copyright">
-          <small>
-            Copyright ©2025 All rights reserved | Project Group Sex{" "}
-          </small>
+          <small>{t("footer.copyright")}</small>
+          <LanguageSwitcher />
         </div>
       </footer>
 

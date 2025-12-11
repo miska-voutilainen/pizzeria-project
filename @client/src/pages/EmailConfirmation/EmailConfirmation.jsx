@@ -6,8 +6,10 @@ import pizzaWebLogo from "../../assets/images/Pizzaweb-logo.svg";
 import checkmarkIcon from "../../assets/images/checkmark-icon.svg";
 import bigCheckmarkIcon from "../../assets/images/big-checkmark-icon.svg";
 import halfPizzaImg from "../../assets/images/half-a-pizza.png";
+import useLanguage from "../../context/useLanguage.jsx";
 
 const EmailConfirmation = () => {
+  const { t } = useLanguage();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const email = searchParams.get("email");
@@ -65,14 +67,16 @@ const EmailConfirmation = () => {
                 />
               </div>
 
-              <h1 className="email-done-text">Thank you!</h1>
+              <h1 className="email-done-text">
+                {t("emailConfirmation.title")}
+              </h1>
 
               <p className="email-message-text">
-                Your email has been successfully confirmed.
+                {t("emailConfirmation.message")}
               </p>
               <div>
                 <div className="back-button-container">
-                  <Button url="/user" text="Back" />
+                  <Button url="/user" text={t("emailConfirmation.back")} />
                 </div>
               </div>
             </div>

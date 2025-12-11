@@ -3,8 +3,10 @@ import "./AboutUsPage.css";
 import aboutUsLeft from "../../assets/images/about-us-left.png";
 import aboutUsRight from "../../assets/images/about-us-right.png";
 import SquareButton from "../../components/ui/SquareButton/SquareButton";
+import useLanguage from "../../context/useLanguage.jsx";
 
 const AboutUsPage = () => {
+  const { t } = useLanguage();
   const mapRef = useRef(null);
 
   useEffect(() => {
@@ -38,7 +40,7 @@ const AboutUsPage = () => {
       new window.google.maps.Marker({
         position: location,
         map: map,
-        title: "Pizzeria - Lönnrotinkatu",
+        title: t("about.mapMarkerTitle"),
       });
     }
   };
@@ -51,19 +53,9 @@ const AboutUsPage = () => {
           alt="our-story-background"
         />
         <div className="our-story-wrapper">
-          <h1>Our story</h1>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse.
-            <br />
-            <br />
-            Cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-            cupidatat non proident, sunt in culpa qui officia deserunt mollit
-            anim id est laborum.
-          </p>
+          <h1>{t("about.ourStory")}</h1>
+          <p>{t("about.storyP1")}</p>
+          <p>{t("about.storyP2")}</p>
         </div>
         <img
           className="our-story-img-right"
@@ -73,39 +65,41 @@ const AboutUsPage = () => {
       </section>
       <section id="philosophy">
         <div className="philosophy-wrapper">
-          <h1>Our philosophy</h1>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </p>
+          <h1>{t("about.philosophyTitle")}</h1>
+          <p>{t("about.philosophyP")}</p>
           <ul>
-            <li>ipsum dolor sit amet</li>
-            <li>ad minim veniam, quis nostrud exe</li>
-            <li>ore et dolore magna</li>
+            <li>{t("about.philosophyLi1")}</li>
+            <li>{t("about.philosophyLi2")}</li>
+            <li>{t("about.philosophyLi3")}</li>
           </ul>
-          <p>
-            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-            nisi ut aliquip ex ea commodo consequat.
-          </p>
+          <p>{t("about.philosophyP2")}</p>
         </div>
       </section>
       <section id="contact-info">
         <div className="contact-info-wrapper">
           <div className="contact-info-content">
             <div>
-              <h1>Contact us</h1>
+              <h1>{t("about.contactUs")}</h1>
 
               <ul>
-                <li>Kalevankatu 2, 00100 Helsinki</li>
+                <li>{t("about.address")}</li>
                 <br />
                 <li>
-                  Open:<br></br> Mon - Fri 10:00 - 18:00<br></br>Sat - Sun 12:00
-                  - 16:00
+                  {t("about.openingLabel")}
+                  <br></br>
+                  {t("about.openingHours")
+                    .split("\n")
+                    .map((line, i) => (
+                      <span key={i}>
+                        {line}
+                        <br />
+                      </span>
+                    ))}
                 </li>
                 <br />
                 <li>
-                  <a href="mailto:support@pizzeria-web.com">
-                    support@pizzeria-web.com
+                  <a href={`mailto:${t("about.supportEmail")}`}>
+                    {t("about.supportEmail")}
                   </a>
                 </li>
               </ul>
