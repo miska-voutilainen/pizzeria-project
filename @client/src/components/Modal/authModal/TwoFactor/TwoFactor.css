@@ -1,6 +1,17 @@
+.two-factor-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 90%;
+}
+
+
 .two-factor-container {
+
     h1 {
-        width: 379px;
+        width: 65%;
         text-align: center;
     }
 
@@ -11,7 +22,7 @@
         font-weight: 400;
         line-height: normal;
         color: #1C3D19;
-        width: 410px;
+        width: 70%;
     }
 
     .error-text{
@@ -37,7 +48,13 @@
         align-items: center;
         justify-content: center;
         gap: 31px;
+        width: 100%;
     }
 
-
+    @media (max-width: 800px){
+        .otp-wrapper>.otp-box{
+            width: 70px;
+            height: 92px;
+        }
+    }
 }

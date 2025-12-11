@@ -112,14 +112,12 @@ const Register = ({ setModalContent, onClose }) => {
               placeholder="Confirm password"
             />
           </div>
-          <div>
             <Button
               text={isLoading ? "Creating Account..." : "Create an account"}
               id="register-button"
               onClick={handleRegister}
               disabled={isLoading}
             />
-          </div>
         </form>
       </div>
     </div>

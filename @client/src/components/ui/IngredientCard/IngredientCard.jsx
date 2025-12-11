@@ -23,7 +23,9 @@ const IngredientCard = ({ img, name, ingredientPrice, price, setPrice }) => {
       data-ingredient-name={name}
       data-quantity={quantity}
     >
+        <div className="image-container">
       <img src={img} alt={name} className="ingredient-image" />
+        </div>
       <div className="ingredient-info">
         <h1 className="ingredient-header">{name}</h1>
         <p className="ingredient-price">+{ingredientPrice.toFixed(2)}€</p>

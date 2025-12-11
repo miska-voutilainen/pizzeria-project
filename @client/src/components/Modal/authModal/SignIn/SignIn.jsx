@@ -179,7 +179,7 @@ const SignIn = ({ setModalContent, onClose, redirectPath }) => {
             label="Remember me"
             id="remember-me"
           />
-          <div>
+          <div className="sign-in-container">
             <Button
               text={loading ? "Signing in..." : "Sign in"}
               id="sign-in-button"
