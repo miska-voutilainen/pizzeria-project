@@ -11,7 +11,7 @@
 }
 
 .user-page-user-card {
-  width: 50%;
+  width: 60%;
   display: flex;
   flex-direction: column;
   gap: 30px;
@@ -28,7 +28,7 @@
 
 .user-cad-header-logout {
   display: flex;
-  align-items: start;
+  align-items: end;
 }
 
 .user-page-user-card-header h2 {
@@ -69,7 +69,7 @@
 }
 .user-card-personal-container .checkout-input-row .text-button {
   position: absolute;
-  right: 0px;
+  right: 5px;
   background: linear-gradient(
     90deg,
     rgba(230, 229, 206, 0) 0%,
@@ -83,7 +83,7 @@
 }
 
 .user-page-orders-card {
-  width: 50%;
+  width: 40%;
 }
 
 .user-page-orders-card h2 {
@@ -259,5 +259,20 @@
 
   .user-page-orders-card {
     width: 100%;
+  }
+
+  .user-page-user-card-header {
+    flex-direction: column;
+  }
+
+  .user-card-personal-container .checkout-input-row .text-button {
+    bottom: 6px;
+    right: 10px;
+    height: 40%;
+  }
+
+  .simple-orders-list {
+    overflow-y: visible;
+    height: 100%;
   }
 }
