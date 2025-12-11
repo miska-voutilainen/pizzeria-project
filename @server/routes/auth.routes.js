@@ -456,20 +456,74 @@ export default function createAuthRouter(
     res.json({ message: "Logged out successfully" });
   });
 
-  router.get("/check", (req, res) => {
-    if (req.user) {
+  router.get("/check", async (req, res) => {
+    if (!req.user) {
+      return res.json({ authenticated: false });
+    }
+
+    try {
+      const [orderRows] = await pool.execute(
+        `
+      SELECT 
+        orderId,
+        JSON_UNQUOTE(JSON_EXTRACT(items, '$')) AS items,
+        JSON_UNQUOTE(JSON_EXTRACT(shippingAddress, '$')) AS shippingAddress,
+        totalAmount,
+        status,
+        paymentMethod,
+        deliveryType,
+        customerName,
+        customerPhone,
+        created_at AS createdAt
+      FROM order_data 
+      WHERE userId = ?
+      ORDER BY created_at DESC
+    `,
+        [req.user.userId]
+      );
+
+      const orders = orderRows.map((row) => ({
+        orderId: row.orderId,
+        totalAmount: row.totalAmount,
+        status: row.status,
+        paymentMethod: row.paymentMethod,
+        deliveryType: row.deliveryType,
+        customerName: row.customerName,
+        customerPhone: row.customerPhone,
+        createdAt: row.createdAt,
+        items: row.items ? JSON.parse(row.items) : [],
+        shippingAddress: row.shippingAddress
+          ? JSON.parse(row.shippingAddress)
+          : null,
+      }));
+
       return res.json({
         authenticated: true,
         user: {
-          id: req.user.userId,
+          userId: req.user.userId,
           username: req.user.username,
-          role: req.user.role,
-          twoFactorEnabled: !!req.user.is2faEnabled,
+          email: req.user.email,
+          role: req.user.role || "user",
           emailVerified: !!req.user.emailVerified,
+          twoFactorEnabled: !!req.user.is2faEnabled,
+          orders,
+        },
+      });
+    } catch (error) {
+      console.error("Error in /auth/check:", error);
+      return res.json({
+        authenticated: true,
+        user: {
+          userId: req.user.userId,
+          username: req.user.username,
+          email: req.user.email || "",
+          role: req.user.role || "user",
+          emailVerified: !!req.user.emailVerified,
+          twoFactorEnabled: !!req.user.is2faEnabled,
+          orders: [], // never crash again
         },
       });
     }
-    res.json({ authenticated: false });
   });
 
   return router;

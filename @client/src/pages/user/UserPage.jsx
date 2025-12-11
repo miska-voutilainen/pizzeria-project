@@ -4,6 +4,9 @@ import { Navigate } from "react-router-dom";
 import { useState } from "react";
 import "./UserPage.css";
 import InputField from "../../components/ui/InputField/InputField.jsx";
+import TextButton from "../../components/ui/TextButton/TextButton.jsx";
+import deliveryIcon from "../../assets/images/delivery-icon.svg";
+import takeawayIcon from "../../assets/images/store-icon.svg";
 
 const UserPage = () => {
   const { user, loading, checkAuth } = useAuth();
@@ -416,38 +419,78 @@ const UserPage = () => {
           <h1>Orders</h1>
 
           {Array.isArray(user.orders) && user.orders.length > 0 ? (
-            <ul>
+            <div className="simple-orders-list">
               {user.orders.map((order) => {
-                const id = order._id || order.id || order.orderId || "-";
-                const date = order.createdAt || order.created || order.date;
-                const itemsCount =
-                  order.items && Array.isArray(order.items)
-                    ? order.items.reduce(
-                        (sum, it) => sum + (it.quantity || it.qty || 1),
-                        0
-                      )
-                    : order.itemCount || 0;
-                const total =
-                  order.totalAmount ?? order.total ?? order.amount ?? "-";
+                const id = order.orderId || "-";
+                const date = order.createdAt;
+                const items = Array.isArray(order.items) ? order.items : [];
+                const total = order.totalAmount || 0;
+                const deliveryType = order.deliveryType || "N/A";
+
+                const itemNames = items
+                  .map((item) => {
+                    let name = item.name;
+                    if (item.size && item.size !== "normaali")
+                      name += ` (${item.size})`;
+                    return item.quantity > 1
+                      ? `${item.quantity}× ${name}`
+                      : name;
+                  })
+                  .join(", ");
 
                 return (
-                  <li key={id}>
-                    <strong>Order #{id}</strong>
-                    <div>
-                      {date ? new Date(date).toLocaleString() : "Date unknown"}
+                  <div key={id} className="order-list">
+                    <div className="order-header">
+                      <div
+                        className="delivery-type"
+                        style={{ width: "30px", height: "30px" }}
+                      >
+                        {order.deliveryType === "delivery" ? (
+                          <img
+                            src={deliveryIcon}
+                            alt="Delivery"
+                            className="dt-icon"
+                          />
+                        ) : order.deliveryType === "takeaway" ? (
+                          <img
+                            src={takeawayIcon}
+                            alt="Takeaway"
+                            className="dt-icon"
+                          />
+                        ) : null}
+                      </div>
+                      <strong>#{id}</strong>
+                      <span className="order-total">
+                        {Number(total).toFixed(2)} €
+                      </span>
                     </div>
-                    <div>Items: {itemsCount}</div>
-                    <div>
-                      Total:{" "}
-                      {typeof total === "number"
-                        ? `${total.toFixed(2)} €`
-                        : total}
+
+                    <div className="order-date">
+                      {date
+                        ? new Date(date).toLocaleDateString("fi-FI", {
+                            day: "numeric",
+                            month: "numeric",
+                            year: "numeric",
+                          }) +
+                          ", " +
+                          new Date(date).toLocaleTimeString("fi-FI", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
+                        : ""}
                     </div>
-                    <div>Status: {order.status ?? "-"}</div>
-                  </li>
+
+                    <div className="order-items">{itemNames || "No items"}</div>
+
+                    <TextButton className="reorder-btn">
+                      Make order again
+                    </TextButton>
+
+                    <hr className="order-divider" />
+                  </div>
                 );
               })}
-            </ul>
+            </div>
           ) : (
             <p>No orders found.</p>
           )}
