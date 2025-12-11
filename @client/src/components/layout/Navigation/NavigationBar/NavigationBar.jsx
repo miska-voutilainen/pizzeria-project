@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useAuth } from "../../../context/AuthContext.jsx";
-import { useCart } from "../../../context/CartContext.jsx";
+import { useAuth } from "../../../../context/AuthContext.jsx";
+import { useCart } from "../../../../context/CartContext.jsx";
 import "./NavigationBar.css";
+import pizzaWebLogo from "../../../../assets/images/Pizzaweb-logo.svg";
 
-import Button from "../../ui/Button/Button.jsx";
-import CartSidebar from "../CartSidebar/CartSidebar.jsx";
-import { Modal } from "../../Modal/Modal/Modal.jsx"; // This is your dialog-based modal
+import Button from "../../../ui/Button/Button.jsx";
+import CartSidebar from "../../CartSidebar/CartSidebar.jsx";
+import { Modal } from "../../../Modal/Modal/Modal.jsx"; // This is your dialog-based modal
 
 const NavigationBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -45,7 +46,7 @@ const NavigationBar = () => {
         {/* Logo */}
         <div className="navbar-row-start">
           <Link to="/">
-            <img src="/Pizzaweb-logo.svg" alt="Pizzaweb logo" />
+            <img src={pizzaWebLogo} alt="Pizzaweb logo" />
           </Link>
         </div>
 
