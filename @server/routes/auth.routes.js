@@ -253,6 +253,60 @@ export default function createAuthRouter(
     }
   });
 
+  router.post("/update-address", async (req, res) => {
+    if (!req.user) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    const { street, postalCode, city } = req.body;
+
+    if (!street || !postalCode || !city) {
+      return res
+        .status(400)
+        .json({ message: "All address fields are required" });
+    }
+
+    try {
+      await pool.execute(
+        `UPDATE user_data 
+       SET address = JSON_SET(IFNULL(address, '{}'), '$.street', ?, '$.postalCode', ?, '$.city', ?)
+       WHERE userId = ?`,
+        [street, postalCode, city, req.user.userId]
+      );
+
+      res.json({ message: "Address updated successfully" });
+    } catch (error) {
+      console.error("Update address error:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  router.post("/update-name", async (req, res) => {
+    if (!req.user) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    const { firstName, lastName } = req.body;
+
+    if (!firstName || !lastName) {
+      return res
+        .status(400)
+        .json({ message: "First and last name are required" });
+    }
+
+    try {
+      await pool.execute(
+        "UPDATE user_data SET firstName = ?, lastName = ? WHERE userId = ?",
+        [firstName.trim(), lastName.trim(), req.user.userId]
+      );
+
+      res.json({ message: "Name updated successfully" });
+    } catch (error) {
+      console.error("Update name error:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
   // Verify token (GET)
   router.get("/verify-email-token/:token", async (req, res) => {
     const { token } = req.params;

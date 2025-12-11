@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Footer.css";
-import MapModal from "../../Modal/mapModal/MapModal.jsx";
 
 const Footer = () => {
   return (
