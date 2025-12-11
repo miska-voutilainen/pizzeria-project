@@ -190,6 +190,7 @@ const UserPage = () => {
                   readOnly
                   name={"email"}
                   id={"email"}
+                  placeholder="pekka.virtanen@gmail.com"
                   // value={formData.city}
                   // onChange={handleFormChange("city")}
                 />
@@ -206,20 +207,7 @@ const UserPage = () => {
                   // onChange={handleFormChange("postcode")}
                 />
               </div>
-              <div className="checkout-input-row">
-                <label htmlFor="email">Email</label>
-                <InputField
-                  type="text"
-                  name={"email"}
-                  id={"email"}
-                  placeholder="pekka.virtanen@gmail.com"
-                  // value={formData.city}
-                  // onChange={handleFormChange("city")}
-                />
-              </div>
-              <p>
-                <strong>Email:</strong> {user.email || "Not provided"}
-              </p>
+              <p></p>
               {/* email verified  */}
               {!user.emailVerified && (
                 <div
@@ -315,8 +303,6 @@ const UserPage = () => {
             </div>
           </div>
 
-          <br />
-          <br />
           <h3>Your Options</h3>
           <div className="action-grid">
             <button className="action-btn logout">
