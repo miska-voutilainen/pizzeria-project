@@ -191,6 +191,11 @@
   display: flex;
 }
 
+.mobile-menu-column-end button {
+  width: 100%;
+  padding: 8px 0;
+}
+
 .mobile-menu-column-end a {
   width: 100%;
 }
