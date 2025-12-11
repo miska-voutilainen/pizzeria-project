@@ -158,7 +158,7 @@ const UserPage = () => {
         <div className="user-page-user-card">
           <div className="user-page-user-card-header">
             <div className="user-card-username">
-              <h2>Welcome back, {user.username}!</h2>
+              <h1>Welcome back, {user.username}!</h1>
               <div className="user-info">
                 <p>
                   <strong>Member since:</strong>{" "}
