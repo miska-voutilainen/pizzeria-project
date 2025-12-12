@@ -17,6 +17,7 @@ import klarnaImg from "../../assets/images/paymentMethods/Klarna_Payment_Badge.s
 import cardImg from "../../assets/images/paymentMethods/visa-and-mastercard-logos.svg";
 import RadioButton from "../../components/ui/RadioButton/RadioButton";
 import CheckoutNavigationBar from "../../components/layout/Navigation/CheckoutNavigationBar/CheckoutNavigationBar";
+import pizzaIMG from "../../assets/images/make-your-own-pizza.png"
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -410,7 +411,7 @@ const Checkout = () => {
                   {cartItems.map((item) => (
                     <div key={item.slug} className="checkout-order-item">
                       <div className="checkout-order-item-img-container">
-                        <img src={item.imgUrl} alt={item.name} />
+                        <img src={item.imgUrl||pizzaIMG} alt={item.name} />
                       </div>
                       <div className="checkout-order-item-details">
                         <div>
