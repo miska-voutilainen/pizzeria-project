@@ -1,10 +1,16 @@
 import "./PromoSlide.css";
 import { useEffect, useRef, useState } from "react";
+import useLanguage from "../../../context/useLanguage.jsx";
 import pizzaIcon from "../../../assets/images/ticker-slider-pizza.svg";
 import slicerIcon from "../../../assets/images/ticker-slider-slicer.svg";
 
 const PromoSlide = () => {
-  const messages = ["ALWAYS FRESH", "FAST DELIVERY", "IT'S ALWAYS PIZZA TIME!"];
+  const { t, language } = useLanguage();
+  const messages = [
+    t("promo.alwaysFresh"),
+    t("promo.fastDelivery"),
+    t("promo.pizzaTime"),
+  ];
   const separators = [pizzaIcon, slicerIcon];
   const containerRef = useRef(null);
   const [elements, setElements] = useState([]);
@@ -57,7 +63,7 @@ const PromoSlide = () => {
       clearTimeout(timer);
       window.removeEventListener("resize", updateContent);
     };
-  }, []);
+  }, [language]);
 
   return (
     <div className="ticker-wrapper" ref={containerRef}>

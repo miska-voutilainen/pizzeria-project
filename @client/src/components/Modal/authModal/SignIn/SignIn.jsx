@@ -8,8 +8,10 @@ import TextButton from "../../../ui/TextButton/TextButton.jsx";
 import TwoFactor from "../TwoFactor/TwoFactor.jsx";
 import { useAuth } from "../../../../context/AuthContext.jsx";
 import { useNavigate, useLocation } from "react-router-dom";
+import useLanguage from "../../../../context/useLanguage.jsx";
 
 const SignIn = ({ setModalContent, onClose, redirectPath }) => {
+  const { t } = useLanguage();
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [errors, setErrors] = React.useState({});
@@ -38,10 +40,12 @@ const SignIn = ({ setModalContent, onClose, redirectPath }) => {
 
   const validate = () => {
     const newErrors = {};
-    if (!username) newErrors.username = "Username is required";
-    else if (username.length < 3) newErrors.username = "Username too short";
-    if (!password) newErrors.password = "Password is required";
-    else if (password.length < 6) newErrors.password = "Password too short";
+    if (!username) newErrors.username = t("auth.errors.usernameRequired");
+    else if (username.length < 3)
+      newErrors.username = t("auth.errors.usernameTooShort");
+    if (!password) newErrors.password = t("auth.errors.passwordRequired");
+    else if (password.length < 6)
+      newErrors.password = t("auth.errors.passwordTooShort");
     return newErrors;
   };
 
@@ -126,11 +130,11 @@ const SignIn = ({ setModalContent, onClose, redirectPath }) => {
       <CloseButton onClick={onClose} />
       <div id="signInContent">
         <div id="signInTitle">
-          <h1>Sign in</h1>
+          <h1>{t("auth.signIn")}</h1>
           <div>
-            <p>Or</p>
+            <p>{t("auth.or")}</p>
             <TextButton
-              text="create an account"
+              text={t("auth.createAccount")}
               onClick={() => setModalContent("Register")}
             />
           </div>
@@ -142,7 +146,7 @@ const SignIn = ({ setModalContent, onClose, redirectPath }) => {
               type="text"
               name="username"
               id="username"
-              placeholder="Username"
+              placeholder={t("auth.username")}
               value={username}
               onChange={(value) => {
                 setUsername(value);
@@ -161,26 +165,26 @@ const SignIn = ({ setModalContent, onClose, redirectPath }) => {
                 setErrors((prev) => ({ ...prev, password: "" }));
                 setServerError("");
               }}
-              placeholder="Password"
+              placeholder={t("auth.password")}
             />
             {errors.password && <p className="error">{errors.password}</p>}
           </div>
           <CheckBox
             className="white-background"
-            label="Remember me"
+            label={t("auth.rememberMe")}
             id="remember-me"
           />
           <div className="sign-in-container">
             <Button
-              text={loading ? "Signing in..." : "Sign in"}
+              text={loading ? t("auth.signingIn") : t("auth.signIn")}
               id="sign-in-button"
               onClick={handleSubmit}
               disabled={loading}
             />
           </div>
           <TextButton
-            text="Forgot password?"
-            onClick={() => setModalContent("ResetPassword")} // ← Opens the ResetPassword modal
+            text={t("auth.forgotPassword")}
+            onClick={() => setModalContent("ResetPassword")}
           />
         </form>
       </div>
