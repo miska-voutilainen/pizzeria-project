@@ -198,6 +198,7 @@
     "lastName": "Last Name",
     "email": "Email",
     "password": "Password",
+    "enableTwoFacter": "Enable Two-Factor Authentication",
     "emailVerificationRequired": "Email Verification Required",
     "emailVerificationMessage": "Please verify your email address to enable security features like 2FA.",
     "verifyNow": "Verify Now",
