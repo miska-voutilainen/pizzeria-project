@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Footer.css";
-import MapModal from "../../Modal/mapModal/MapModal.jsx";
+// import MapModal from "../../Modal/mapModal/MapModal.jsx";
 import LanguageSwitcher from "../../LanguageSwitcher/LanguageSwitcher.jsx";
 import useLanguage from "../../../context/useLanguage.jsx";
 
