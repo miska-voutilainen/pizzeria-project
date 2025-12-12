@@ -37,6 +37,8 @@ footer {
   position: relative;
   margin-top: 20px;
   width: 100%;
+  flex-direction: column-reverse;
+  gap: 30px;
 }
 
 .footer-copyright small {
@@ -45,16 +47,12 @@ footer {
 
 /* Language switcher positioned absolutely to the right */
 .footer-copyright .language-switcher {
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
   .footer-copyright {
-    flex-direction: column;
+    flex-direction: column-reverse;
     gap: 15px;
     text-align: center;
   }

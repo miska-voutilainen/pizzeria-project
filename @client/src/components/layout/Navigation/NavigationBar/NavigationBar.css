@@ -212,7 +212,7 @@
 /* RESPONSIVE NAVIGATION */
 /* ---------------------------- */
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
   .navbar .navbar-links,
   .navbar .navbar-row-end {
     display: none;

@@ -6,10 +6,9 @@ import InputField from "../../components/ui/InputField/InputField.jsx";
 import TextButton from "../../components/ui/TextButton/TextButton.jsx";
 import deliveryIcon from "../../assets/images/delivery-icon.svg";
 import takeawayIcon from "../../assets/images/store-icon.svg";
-import useLanguage from "../../context/useLanguage.jsx";
+import "./UserPage.css";
 
 const UserPage = () => {
-  const { t } = useLanguage();
   const { user, loading, checkAuth } = useAuth();
 
   const [modalWindow, setModalWindow] = useState(null);
@@ -242,66 +241,134 @@ const UserPage = () => {
       <div className="user-page-wrapper">
         <div className="user-page-user-card">
           <div className="user-page-user-card-header">
-            <h2>
-              {t("userPage.welcomeBack").replace("{username}", user.username)}
-            </h2>
-            <div className="user-info">
-              <p>
-                <strong>{t("userPage.memberSince")}</strong>{" "}
-                {new Date().toLocaleDateString()}
-              </p>
+            <div className="user-card-username">
+              <h1>Welcome back, {user.username}!</h1>
+              <div className="user-info">
+                <p>
+                  <strong>Member since:</strong>{" "}
+                  {new Date(user.createdAt || Date.now()).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+            <div className="user-cad-header-logout">
+              <div className="action-grid">
+                <button
+                  className="action-btn logout"
+                  onClick={async () => {
+                    if (!confirm("Are you sure you want to log out?")) return;
+                    try {
+                      await fetch("http://localhost:3001/api/auth/logout", {
+                        method: "POST",
+                        credentials: "include",
+                      });
+                    } catch (err) {
+                      console.error("Logout error:", err);
+                    }
+                    await checkAuth();
+                    window.location.href = "/";
+                  }}
+                >
+                  <span>Logout</span>
+                </button>
+              </div>
             </div>
           </div>
 
           <div className="user-card-personal-container">
             <div className="checkout-inputs">
-              <h2>{t("userPage.personalInformation")}</h2>
+              <h2>Personal information</h2>
 
               {/* First Name */}
               <div className="checkout-input-row">
-                <label htmlFor="firstName">{t("userPage.firstName")}</label>
+                <label htmlFor="firstName">Etunimi</label>
                 <InputField
                   type="text"
-                  value={user.firstName || ""}
-                  readOnly
-                  placeholder={t("userPage.firstName")}
+                  value={name.firstName}
+                  onChange={(value) =>
+                    setName((prev) => ({ ...prev, firstName: value }))
+                  }
+                  placeholder="Etunimi puuttuu"
                 />
               </div>
 
               {/* Last Name */}
               <div className="checkout-input-row">
-                <label htmlFor="surname">{t("userPage.lastName")}</label>
+                <label htmlFor="surname">Sukunimi</label>
                 <InputField
                   type="text"
-                  value={user.lastName || ""}
-                  readOnly
-                  placeholder={t("userPage.lastName")}
+                  value={name.lastName}
+                  onChange={(value) =>
+                    setName((prev) => ({ ...prev, lastName: value }))
+                  }
+                  placeholder="Sukunimi puuttuu"
                 />
               </div>
 
               <div className="checkout-input-row">
-                <label htmlFor="email">{t("userPage.email")}</label>
+                <label htmlFor="email">Email</label>
                 <InputField
                   type="text"
                   value={user.email || ""}
                   readOnly
-                  name={"email"}
-                  id={"email"}
-                  placeholder={t("userPage.email")}
+                  placeholder="pekka.virtanen@gmail.com"
+                />
+                <TextButton
+                  text="Change"
+                  onClick={() => setModalWindow("ChangeEmail")}
                 />
               </div>
 
               <div className="checkout-input-row">
-                <label htmlFor="password">{t("userPage.password")}</label>
-                <InputField
-                  type="password"
-                  value={"**********"}
-                  readOnly
-                  name={"password"}
-                  id={"password"}
+                <label htmlFor="password">Salasana</label>
+                <InputField type="password" value={"**********"} readOnly />
+                <TextButton
+                  text="Change"
+                  onClick={() => setModalWindow("ResetPassword")}
                 />
               </div>
-              <p></p>
+
+              <div className="user-page-save-address-changes-container">
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  {nameMessage && (
+                    <p
+                      style={{
+                        margin: "0 15px 0 0",
+                        color: nameMessage.includes("success")
+                          ? "green"
+                          : "red",
+                      }}
+                    >
+                      {nameMessage}
+                    </p>
+                  )}
+                  <TextButton
+                    text={loadingName ? "Saving..." : "Save name"}
+                    onClick={handleSaveName}
+                    disabled={loadingName}
+                  />
+                </div>
+              </div>
+
+              {/* Message Display */}
+              {message && (
+                <p
+                  style={{
+                    margin: "15px 0",
+                    color:
+                      message.includes("success") || message.includes("sent")
+                        ? "green"
+                        : "red",
+                  }}
+                >
+                  {message}
+                </p>
+              )}
+
               {!user.emailVerified && (
                 <div
                   className="email-verification-banner"
@@ -317,11 +384,10 @@ const UserPage = () => {
                   }}
                 >
                   <div>
-                    <strong>
-                      ⚠️ {t("userPage.emailVerificationRequired")}
-                    </strong>
+                    <strong>Email Verification Required</strong>
                     <p style={{ margin: "5px 0 0 0", color: "#856404" }}>
-                      {t("userPage.emailVerificationMessage")}
+                      Please verify your email address to enable security
+                      features like 2FA.
                     </p>
                   </div>
                   <button
@@ -337,36 +403,22 @@ const UserPage = () => {
                       fontWeight: "bold",
                     }}
                   >
-                    {loading2FA
-                      ? t("userPage.sending")
-                      : t("userPage.verifyNow")}
+                    {loading2FA ? "Sending..." : "Verify Now"}
                   </button>
                 </div>
               )}
-              <div className="action-grid">
-                {!user.twoFactorEnabled ? (
-                  <button
-                    className="action-btn"
-                    onClick={handleSend2FACode}
-                    disabled={loading2FA}
-                  >
-                    <span>
-                      {loading2FA
-                        ? t("userPage.sending")
-                        : t("userPage.enable2FA")}
-                    </span>
-                  </button>
-                ) : (
-                  <button
-                    className="action-btn logout"
-                    onClick={handleDisable2FA}
-                    disabled={loading2FA}
-                  >
-                    <span>
-                      {loading2FA
-                        ? t("userPage.sending")
-                        : t("userPage.disable2FA")}
-                    </span>
+
+              {/* 2FA Toggle */}
+              <div className="email-2FA-container">
+                <p>Enable Two-Factor Authentication</p>
+                <div
+                  className={`switch ${active ? "active" : ""}`}
+                  onClick={handleSend2FACode}
+                  role="switch"
+                  aria-checked={active}
+                >
+                  <button className="toggle-btn" aria-label="Toggle">
+                    {active ? "ON" : "OFF"}
                   </button>
                   <span className="slider"></span>
                 </div>
@@ -377,46 +429,73 @@ const UserPage = () => {
           {/* Delivery Address */}
           <div className="user-card-delivery-address-container">
             <div className="checkout-inputs">
-              <h2>{t("userPage.deliveryAddress")}</h2>
+              <h2>Delivery address</h2>
 
               {/* Street */}
               <div className="checkout-input-row">
-                <label htmlFor="address">{t("userPage.address")}</label>
+                <label htmlFor="address">Katuosoite</label>
                 <InputField
                   type="text"
-                  value={user.address?.street || ""}
-                  readOnly
-                  placeholder={t("userPage.address")}
+                  value={address.street}
+                  onChange={(value) =>
+                    setAddress((prev) => ({ ...prev, street: value }))
+                  }
+                  placeholder="Katuosoite puuttuu"
                 />
               </div>
 
               {/* Postal Code */}
               <div className="checkout-input-row">
-                <label htmlFor="postcode">{t("userPage.postalCode")}</label>
+                <label htmlFor="postcode">Postinumero</label>
                 <InputField
                   type="text"
-                  value={user.address?.postalCode || ""}
-                  readOnly
-                  placeholder={t("userPage.postalCode")}
+                  value={address.postalCode}
+                  onChange={(value) =>
+                    setAddress((prev) => ({ ...prev, postalCode: value }))
+                  }
+                  placeholder="Postinumero puuttuu"
                 />
               </div>
 
               {/* City */}
               <div className="checkout-input-row">
-                <label htmlFor="region">{t("userPage.city")}</label>
+                <label htmlFor="region">Kaupunki</label>
                 <InputField
                   type="text"
-                  value={user.address?.city || ""}
-                  readOnly
-                  placeholder={t("userPage.city")}
+                  value={address.city}
+                  onChange={(value) =>
+                    setAddress((prev) => ({ ...prev, city: value }))
+                  }
+                  placeholder="Kaupunki puuttuu"
                 />
               </div>
 
-          <h3>{t("userPage.yourOptions")}</h3>
-          <div className="action-grid">
-            <button className="action-btn logout">
-              <span>{t("userPage.logout")}</span>
-            </button>
+              {/* Save Address Button + Message */}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                }}
+              >
+                {addressMessage && (
+                  <p
+                    style={{
+                      margin: "0 15px 0 0",
+                      color: addressMessage.includes("success")
+                        ? "green"
+                        : "red",
+                    }}
+                  >
+                    {addressMessage}
+                  </p>
+                )}
+                <TextButton
+                  text={loadingAddress ? "Saving..." : "Save address"}
+                  onClick={handleSaveAddress}
+                  disabled={loadingAddress}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
@@ -424,7 +503,7 @@ const UserPage = () => {
 
         {/* Orders */}
         <div className="user-page-orders-card">
-          <h1>{t("userPage.orders")}</h1>
+          <h2>Orders</h2>
           {Array.isArray(user.orders) && user.orders.length > 0 ? (
             <div className="simple-orders-list">
               {user.orders.map((order) => {
@@ -483,13 +562,9 @@ const UserPage = () => {
                           })
                         : ""}
                     </div>
-
-                    <div className="order-items">
-                      {itemNames || t("userPage.noItems")}
-                    </div>
-
+                    <div className="order-items">{itemNames || "No items"}</div>
                     <TextButton className="reorder-btn">
-                      {t("userPage.makeOrderAgain")}
+                      Make order again
                     </TextButton>
                     <hr className="order-divider" />
                   </div>
@@ -497,7 +572,7 @@ const UserPage = () => {
               })}
             </div>
           ) : (
-            <p>{t("userPage.noOrders")}</p>
+            <p>No orders found.</p>
           )}
         </div>
       </div>
