@@ -87,6 +87,8 @@ Kaikki käyttäjien tekemät tilaukset löytyvät tilaukset-sivulta. Kaikki tila
 
 # Design mockups
 
+[Figma](https://www.figma.com/file/FR6tI8Frh21vGbl0s8m4C0?node-id=0:1&t=ymfrxXASeqTyy2bT-1&locale=en&type=design)
+
 ![About us](@client/src/assets/Mockups/about-us-mockup.png)
 ![About us](@client/src/assets/Mockups/admin-mockup.png)
 ![About us](@client/src/assets/Mockups/home-mockup.png)
