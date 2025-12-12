@@ -4,6 +4,7 @@ import aboutUsLeft from "../../assets/images/about-us-left.png";
 import aboutUsRight from "../../assets/images/about-us-right.png";
 import SquareButton from "../../components/ui/SquareButton/SquareButton";
 import useLanguage from "../../context/useLanguage.jsx";
+import placeholder from "../../assets/images/map-placeholder.jpg"
 
 const AboutUsPage = () => {
   const { t } = useLanguage();
@@ -109,7 +110,7 @@ const AboutUsPage = () => {
               className="contact-info-map"
               ref={mapRef}
               style={{ width: "550px", height: "400px", borderRadius: "8px" }}
-            ></div>
+            ><img src={placeholder}></img></div>
           </div>
         </div>
       </section>

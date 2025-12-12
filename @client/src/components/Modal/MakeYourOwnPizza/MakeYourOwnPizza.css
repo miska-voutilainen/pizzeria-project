@@ -36,7 +36,7 @@
     line-height: normal;
 }
 
-#make-your-own-pizza-text {
+#make-your-own-pizza-text {<
     display: flex;
     flex-direction: column;
     gap: 15px;
