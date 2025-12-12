@@ -7,8 +7,7 @@ import CloseButton from "../../../ui/CloseButton/CloseButton.jsx";
 const TwoFactor = ({
   onClose,
   setModalContent,
-  userId,
-  onCodeSubmit,
+  onCodeSubmit, // Required: parent passes the verification logic
   isLoading = false,
   error = "",
 }) => {
@@ -23,34 +22,34 @@ const TwoFactor = ({
     setShowError(false);
     if (onCodeSubmit) {
       onCodeSubmit(code);
-    } else {
-      setModalContent("Success");
     }
   };
 
   return (
-    <div className="two-factor-container">
-      <CloseButton onClick={onClose} />
-      <h1 className="twofactor-title">The code was sent to your email</h1>
-      <div id="two-factor-content">
-        <p className="twofactor-subtitle">
-          Enter the 4-digit code sent via your email
-        </p>
-        <div id="input-and-error">
-          <OtpInput value={code} onChange={setCode} />
-          <p
-            className="error-text"
-            style={{ visibility: error || showError ? "visible" : "hidden" }}
-          >
-            {error || "Wrong number!"}
+    <div>
+      <div className="two-factor-container">
+        <CloseButton onClick={onClose} />
+        <h1 className="twofactor-title">The code was sent to your email</h1>
+        <div id="two-factor-content">
+          <p className="twofactor-subtitle">
+            Enter the 4-digit code sent via your email
           </p>
+          <div id="input-and-error">
+            <OtpInput value={code} onChange={setCode} />
+            <p
+              className="error-text"
+              style={{ visibility: error || showError ? "visible" : "hidden" }}
+            >
+              {error || "Wrong number!"}
+            </p>
+          </div>
+          <Button
+            id="two-factor-button"
+            text={isLoading ? "Verifying..." : "Confirm"}
+            onClick={handleSubmit}
+            disabled={isLoading || code.length !== 4}
+          />
         </div>
-        <Button
-          id="two-factor-button"
-          text={isLoading ? "Verifying..." : "Confirm"}
-          onClick={handleSubmit}
-          disabled={isLoading || code.length !== 4}
-        />
       </div>
     </div>
   );

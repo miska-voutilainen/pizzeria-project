@@ -149,7 +149,7 @@ const NavigationBar = () => {
                 <Button
                   text={t("auth.signIn")}
                   imageUrl={"./user-icon.svg"}
-                  onClick={() => openModal()}
+                  onClick={() => setModalWindow("SignIn")}
                 />
               )}
             </div>

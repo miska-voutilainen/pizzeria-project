@@ -69,7 +69,7 @@ const MakeYourOwnPizza = ({ onClose }) => {
         src={makeYourOwnPizzaImage}
         alt="Make Your Own Pizza"
       />
-      <img src="./make-your-own-pizza-line.svg" alt="Line" />
+      <img src="./make-your-own-pizza-line.svg" alt="Line" className="image-line"/>
 
       <div id="make-your-own-pizza-right-side">
         <div id="make-your-own-pizza-text">

@@ -24,7 +24,6 @@ const SignIn = ({ setModalContent, onClose, redirectPath }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Use redirectPath if provided, otherwise use current location or "/"
   const getRedirectPath = () => {
     if (redirectPath) return redirectPath;
     if (location.pathname !== "/") return location.pathname;
@@ -62,13 +61,10 @@ const SignIn = ({ setModalContent, onClose, redirectPath }) => {
           body: JSON.stringify({ code, userId }),
         }
       );
-
       if (!response.ok) {
         const err = await response.json();
         throw new Error(err.message);
       }
-
-      // Login successful
       await checkAuth();
       onClose();
       navigate(getRedirectPath());
@@ -87,7 +83,6 @@ const SignIn = ({ setModalContent, onClose, redirectPath }) => {
       setErrors(validationErrors);
       return;
     }
-
     setLoading(true);
     try {
       const response = await fetch("http://localhost:3001/api/auth/login", {
@@ -96,14 +91,11 @@ const SignIn = ({ setModalContent, onClose, redirectPath }) => {
         credentials: "include",
         body: JSON.stringify({ username, password }),
       });
-
       if (!response.ok) {
         const err = await response.json();
         throw new Error(err.message);
       }
-
       const data = await response.json();
-
       if (data.requires2FA) {
         setUserId(data.userId);
         setShow2FA(true);
@@ -126,7 +118,6 @@ const SignIn = ({ setModalContent, onClose, redirectPath }) => {
       <TwoFactor
         onClose={onClose}
         setModalContent={() => {}}
-        userId={userId}
         onCodeSubmit={handleVerify2FA}
         isLoading={loading}
         error={serverError}
@@ -183,7 +174,7 @@ const SignIn = ({ setModalContent, onClose, redirectPath }) => {
             label={t("auth.rememberMe")}
             id="remember-me"
           />
-          <div>
+          <div className="sign-in-container">
             <Button
               text={loading ? t("auth.signingIn") : t("auth.signIn")}
               id="sign-in-button"

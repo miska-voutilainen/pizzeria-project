@@ -64,6 +64,23 @@ export const send2FAEmail = async (
   });
 };
 
+export const sendEmailChangeLink = async (email, username, changeLink) => {
+  const trimmedEmail = email.trim();
+  if (!trimmedEmail) {
+    throw new Error("Email recipient is required");
+  }
+  const t = await getTransporter();
+  await t.sendMail({
+    from: `"Pizzeria" <${process.env.EMAIL_ADDRESS}>`,
+    to: trimmedEmail,
+    subject: "Change Your Email Address",
+    html: `<p>Hi ${username},</p>
+           <p>You requested to change your email address.</p>
+           <p>Click <a href="${changeLink}">here</a> to set your new email.</p>
+           <p>This link expires in 1 hour.</p>
+           <p>If you didn't request this, you can safely ignore this email.</p>`,
+  });
+};
 export const sendUnlockEmail = async (
   email,
   username,

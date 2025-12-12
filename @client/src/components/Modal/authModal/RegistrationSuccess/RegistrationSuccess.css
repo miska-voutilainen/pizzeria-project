@@ -5,6 +5,7 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
+    width: 90%
 }
 
 .success-text>p {
@@ -14,9 +15,4 @@
     font-style: normal;
     font-weight: 400;
     line-height: normal;
-    width: 500px;
-}
-
-.success-text>h1 {
-    width: 1000px;
 }

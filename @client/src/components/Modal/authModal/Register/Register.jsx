@@ -115,7 +115,6 @@ const Register = ({ setModalContent, onClose }) => {
               placeholder={t("auth.confirmPassword")}
             />
           </div>
-          <div>
             <Button
               text={
                 isLoading ? t("auth.creatingAccount") : t("auth.createAccount")
@@ -124,7 +123,6 @@ const Register = ({ setModalContent, onClose }) => {
               onClick={handleRegister}
               disabled={isLoading}
             />
-          </div>
         </form>
       </div>
     </div>

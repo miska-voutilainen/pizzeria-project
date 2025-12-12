@@ -33,6 +33,10 @@ const NavigationBar = () => {
         ref={signInRef}
         window={modalWindow}
         setModalWindow={setModalWindow}
+        isLoading2FA={false}
+        twoFactorError={""}
+        on2FASetupSubmit={() => {}}
+        on2FADisableSubmit={() => {}}
       />
       <div className="navbar-container">
         {/* Logo */}

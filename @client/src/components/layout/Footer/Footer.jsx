@@ -58,11 +58,6 @@ const Footer = () => {
           <LanguageSwitcher />
         </div>
       </footer>
-
-      {/* Dialog instance for map modal (temporary) */}
-      <dialog ref={mapRef} className="MapModal">
-        <MapModal onClose={closeMap} />
-      </dialog>
     </>
   );
 };

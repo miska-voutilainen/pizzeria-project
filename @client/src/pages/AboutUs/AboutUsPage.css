@@ -208,4 +208,8 @@
   #philosophy {
     padding: 7rem 0;
   }
+
+  .contact-info-map {
+    width: 100% !important;
+  }
 }

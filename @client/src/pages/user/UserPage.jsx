@@ -1,9 +1,7 @@
-// src/pages/user/UserPage.jsx
+import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { Navigate } from "react-router-dom";
-import { useState } from "react";
-import SquareButton from "../../components/ui/SquareButton/SquareButton.jsx";
-import "./UserPage.css";
+import { Modal } from "../../components/Modal/Modal/Modal.jsx";
 import InputField from "../../components/ui/InputField/InputField.jsx";
 import TextButton from "../../components/ui/TextButton/TextButton.jsx";
 import deliveryIcon from "../../assets/images/delivery-icon.svg";
@@ -13,17 +11,47 @@ import useLanguage from "../../context/useLanguage.jsx";
 const UserPage = () => {
   const { t } = useLanguage();
   const { user, loading, checkAuth } = useAuth();
-  const [showCodeInput, setShowCodeInput] = useState(false);
-  const [verificationCode, setVerificationCode] = useState("");
+
+  const [modalWindow, setModalWindow] = useState(null);
+  const modalRef = useRef(null);
   const [loading2FA, setLoading2FA] = useState(false);
+  const [twoFactorError, setTwoFactorError] = useState("");
   const [message, setMessage] = useState("");
+  const [active, setActive] = useState(!!user?.twoFactorEnabled);
+
+  const [address, setAddress] = useState({
+    street: user.address?.street || "",
+    postalCode: user.address?.postalCode || "",
+    city: user.address?.city || "",
+  });
+  const [loadingAddress, setLoadingAddress] = useState(false);
+  const [addressMessage, setAddressMessage] = useState("");
+
+  const [name, setName] = useState({
+    firstName: user.firstName || "",
+    lastName: user.lastName || "",
+  });
+  const [loadingName, setLoadingName] = useState(false);
+  const [nameMessage, setNameMessage] = useState("");
+
+  useEffect(() => {
+    setActive(!!user?.twoFactorEnabled);
+  }, [user?.twoFactorEnabled]);
 
   if (loading) return null;
   if (!user) return <Navigate to="/login" replace />;
 
   const handleSend2FACode = async () => {
+    if (!user.emailVerified) {
+      window.alert(
+        "Please verify your email address first before enabling 2FA."
+      );
+      return;
+    }
+
     setLoading2FA(true);
     setMessage("");
+    setTwoFactorError("");
 
     try {
       const response = await fetch(
@@ -36,18 +64,12 @@ const UserPage = () => {
 
       if (response.ok) {
         setMessage("4-digit code sent to your email!");
-        setShowCodeInput(true);
+        setModalWindow(
+          user.twoFactorEnabled ? "TwoFactorDisable" : "TwoFactorSetup"
+        );
       } else {
         const error = await response.json();
-        if (error.requiresEmailVerification) {
-          setMessage(
-            "Please verify your email address first before enabling 2FA."
-          );
-          // Automatically send verification email
-          handleSendEmailVerification();
-        } else {
-          setMessage(error.message || "Failed to send code");
-        }
+        setMessage(error.message || "Failed to send code");
       }
     } catch (error) {
       setMessage("Failed to send code");
@@ -56,13 +78,9 @@ const UserPage = () => {
     }
   };
 
-  const handleVerifyCode = async () => {
-    if (verificationCode.length !== 4) {
-      setMessage("Please enter a 4-digit code");
-      return;
-    }
-
+  const handle2FASetupSubmit = async (code) => {
     setLoading2FA(true);
+    setTwoFactorError("");
 
     try {
       const response = await fetch(
@@ -71,52 +89,50 @@ const UserPage = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
-          body: JSON.stringify({ code: verificationCode }),
+          body: JSON.stringify({ code }),
         }
       );
 
       if (response.ok) {
         setMessage("2FA enabled successfully!");
-        setShowCodeInput(false);
-        setVerificationCode("");
-        // Refresh user data
+        modalRef.current.close();
         await checkAuth();
       } else {
-        const error = await response.json();
-        setMessage(error.message || "Invalid code");
+        const err = await response.json();
+        setTwoFactorError(err.message || "Invalid code");
       }
-    } catch (error) {
-      setMessage("Verification failed");
+    } catch (err) {
+      setTwoFactorError("Verification failed");
     } finally {
       setLoading2FA(false);
     }
   };
 
-  const handleDisable2FA = async () => {
-    if (!confirm("Are you sure you want to disable 2FA?")) return;
-
+  const handle2FADisableSubmit = async (code) => {
     setLoading2FA(true);
-    setMessage("");
+    setTwoFactorError("");
 
     try {
       const response = await fetch(
-        "http://localhost:3001/api/auth/disable-2fa",
+        "http://localhost:3001/api/auth/disable-2fa-with-code",
         {
           method: "POST",
+          headers: { "Content-Type": "application/json" },
           credentials: "include",
+          body: JSON.stringify({ code }),
         }
       );
 
       if (response.ok) {
         setMessage("2FA disabled successfully!");
-        // Refresh user data
+        modalRef.current.close();
         await checkAuth();
       } else {
-        const error = await response.json();
-        setMessage(error.message || "Failed to disable 2FA");
+        const err = await response.json();
+        setTwoFactorError(err.message || "Invalid code");
       }
-    } catch (error) {
-      setMessage("Failed to disable 2FA");
+    } catch (err) {
+      setTwoFactorError("Verification failed");
     } finally {
       setLoading2FA(false);
     }
@@ -134,11 +150,8 @@ const UserPage = () => {
           body: JSON.stringify({ username: user.username }),
         }
       );
-
       if (response.ok) {
-        setMessage(
-          "Verification email sent! Please check your inbox and verify your email before enabling 2FA."
-        );
+        setMessage("Verification email sent! Please check your inbox.");
       } else {
         const error = await response.json();
         setMessage(error.message || "Failed to send verification email");
@@ -149,8 +162,83 @@ const UserPage = () => {
       setLoading2FA(false);
     }
   };
+
+  const handleSaveAddress = async () => {
+    setLoadingAddress(true);
+    setAddressMessage("");
+
+    try {
+      const response = await fetch(
+        "http://localhost:3001/api/auth/update-address",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(address),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setAddressMessage("Address saved successfully!");
+        await checkAuth(); // Refresh user data
+      } else {
+        setAddressMessage(data.message || "Failed to save address");
+      }
+    } catch (err) {
+      setAddressMessage("Network error - please try again");
+    } finally {
+      setLoadingAddress(false);
+    }
+  };
+
+  const handleSaveName = async () => {
+    setLoadingName(true);
+    setNameMessage("");
+
+    try {
+      const response = await fetch(
+        "http://localhost:3001/api/auth/update-name",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            firstName: name.firstName.trim(),
+            lastName: name.lastName.trim(),
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setNameMessage("Name saved successfully!");
+        await checkAuth(); // Refresh user data
+      } else {
+        setNameMessage(data.message || "Failed to save name");
+      }
+    } catch (err) {
+      setNameMessage("Failed to save name");
+    } finally {
+      setLoadingName(false);
+    }
+  };
+
   return (
     <section id="user-page">
+      {/* Modal for all flows */}
+      <Modal
+        ref={modalRef}
+        window={modalWindow}
+        setModalWindow={setModalWindow}
+        isLoading2FA={loading2FA}
+        twoFactorError={twoFactorError}
+        on2FASetupSubmit={handle2FASetupSubmit}
+        on2FADisableSubmit={handle2FADisableSubmit}
+      />
+
       <div className="user-page-wrapper">
         <div className="user-page-user-card">
           <div className="user-page-user-card-header">
@@ -169,6 +257,7 @@ const UserPage = () => {
             <div className="checkout-inputs">
               <h2>{t("userPage.personalInformation")}</h2>
 
+              {/* First Name */}
               <div className="checkout-input-row">
                 <label htmlFor="firstName">{t("userPage.firstName")}</label>
                 <InputField
@@ -178,6 +267,8 @@ const UserPage = () => {
                   placeholder={t("userPage.firstName")}
                 />
               </div>
+
+              {/* Last Name */}
               <div className="checkout-input-row">
                 <label htmlFor="surname">{t("userPage.lastName")}</label>
                 <InputField
@@ -187,6 +278,7 @@ const UserPage = () => {
                   placeholder={t("userPage.lastName")}
                 />
               </div>
+
               <div className="checkout-input-row">
                 <label htmlFor="email">{t("userPage.email")}</label>
                 <InputField
@@ -198,6 +290,7 @@ const UserPage = () => {
                   placeholder={t("userPage.email")}
                 />
               </div>
+
               <div className="checkout-input-row">
                 <label htmlFor="password">{t("userPage.password")}</label>
                 <InputField
@@ -275,15 +368,18 @@ const UserPage = () => {
                         : t("userPage.disable2FA")}
                     </span>
                   </button>
-                )}
+                  <span className="slider"></span>
+                </div>
               </div>
             </div>
           </div>
 
+          {/* Delivery Address */}
           <div className="user-card-delivery-address-container">
             <div className="checkout-inputs">
               <h2>{t("userPage.deliveryAddress")}</h2>
 
+              {/* Street */}
               <div className="checkout-input-row">
                 <label htmlFor="address">{t("userPage.address")}</label>
                 <InputField
@@ -293,6 +389,8 @@ const UserPage = () => {
                   placeholder={t("userPage.address")}
                 />
               </div>
+
+              {/* Postal Code */}
               <div className="checkout-input-row">
                 <label htmlFor="postcode">{t("userPage.postalCode")}</label>
                 <InputField
@@ -302,6 +400,8 @@ const UserPage = () => {
                   placeholder={t("userPage.postalCode")}
                 />
               </div>
+
+              {/* City */}
               <div className="checkout-input-row">
                 <label htmlFor="region">{t("userPage.city")}</label>
                 <InputField
@@ -311,8 +411,6 @@ const UserPage = () => {
                   placeholder={t("userPage.city")}
                 />
               </div>
-            </div>
-          </div>
 
           <h3>{t("userPage.yourOptions")}</h3>
           <div className="action-grid">
@@ -322,6 +420,9 @@ const UserPage = () => {
           </div>
         </div>
 
+        <hr className="user-page-divider" />
+
+        {/* Orders */}
         <div className="user-page-orders-card">
           <h1>{t("userPage.orders")}</h1>
           {Array.isArray(user.orders) && user.orders.length > 0 ? (
@@ -331,8 +432,6 @@ const UserPage = () => {
                 const date = order.createdAt;
                 const items = Array.isArray(order.items) ? order.items : [];
                 const total = order.totalAmount || 0;
-                const deliveryType = order.deliveryType || "N/A";
-
                 const itemNames = items
                   .map((item) => {
                     let name = item.name;
@@ -370,7 +469,6 @@ const UserPage = () => {
                         {Number(total).toFixed(2)} €
                       </span>
                     </div>
-
                     <div className="order-date">
                       {date
                         ? new Date(date).toLocaleDateString("fi-FI", {
@@ -393,7 +491,6 @@ const UserPage = () => {
                     <TextButton className="reorder-btn">
                       {t("userPage.makeOrderAgain")}
                     </TextButton>
-
                     <hr className="order-divider" />
                   </div>
                 );
