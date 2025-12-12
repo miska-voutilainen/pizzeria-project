@@ -49,6 +49,10 @@ footer {
 .footer-copyright .language-switcher {
 }
 
+.temporary-map-button {
+  display: none;
+}
+
 /* Mobile responsiveness */
 @media (max-width: 768px) {
   .footer-copyright {
