@@ -199,6 +199,7 @@
     "lastName": "Sukunimi",
     "email": "Sähköposti",
     "password": "Salasana",
+    "enableTwoFacter": "Ota kaksivaiheinen todennus käyttöön",
     "emailVerificationRequired": "Sähköpostin vahvistus vaaditaan",
     "emailVerificationMessage": "Ole hyvä ja vahvista sähköpostiosoitteesi 2FA-toiminnon ottamiseksi käyttöön.",
     "verifyNow": "Vahvista nyt",

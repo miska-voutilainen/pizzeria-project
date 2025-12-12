@@ -47,7 +47,7 @@ const Footer = () => {
         </div>
 
         {/* Temporary button to open MapModal */}
-        <div style={{ marginTop: "12px" }}>
+        <div className="footer-map-button-container">
           <button className="temporary-map-button" onClick={openMap}>
             {t("footer.openMap")}
           </button>
