@@ -5,16 +5,18 @@ import "./MenuPage.css";
 import Newsletter from "../../components/layout/Newsletter/Newsletter.jsx";
 import PromoSlide from "../../components/layout/PromoSlide/PromoSlide.jsx";
 import RadioButton from "../../components/ui/RadioButton/RadioButton.jsx";
-
-const categories = [
-  { id: "pizza", label: "Pizzas", fetch: getPizzas },
-  { id: "drinks", label: "Drinks", fetch: getDrinks },
-];
+import useLanguage from "../../context/useLanguage.jsx";
 
 const MenuPage = () => {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("pizza");
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const categories = [
+    { id: "pizza", label: t("products.pizza"), fetch: getPizzas },
+    { id: "drinks", label: t("products.drinks"), fetch: getDrinks },
+  ];
 
   const currentCategory = categories.find((c) => c.id === activeTab);
 
@@ -37,13 +39,6 @@ const MenuPage = () => {
       <section id="menu-page">
         <div className="category-tabs">
           {categories.map((cat) => (
-            // <button
-            //   key={cat.id}
-            //   onClick={() => setActiveTab(cat.id)}
-            //   className={`category-tab ${activeTab === cat.id ? "active" : ""}`}
-            // >
-            //   {cat.label}
-            // </button>
             <RadioButton
               text={cat.label}
               key={cat.id}
@@ -55,15 +50,13 @@ const MenuPage = () => {
 
         <div className="product-grid">
           {loading ? (
-            <p className="loading-text">
-              Loading {currentCategory.label.toLowerCase()}...
-            </p>
+            <p className="loading-text">{t("common.loading")}</p>
           ) : products.length > 0 ? (
             products.map((product) => (
               <ProductCard key={product.slug} pizza={product} />
             ))
           ) : (
-            <p className="loading-text">No items available.</p>
+            <p className="loading-text">{t("menu.noItems")}</p>
           )}
         </div>
       </section>

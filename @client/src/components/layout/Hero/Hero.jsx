@@ -7,10 +7,12 @@ import cover6 from "../../../assets/images/cover6.jpg";
 import cover7 from "../../../assets/images/cover7.jpg";
 import cover8 from "../../../assets/images/cover8.jpg";
 import "./Hero.css";
+import useLanguage from "../../../context/useLanguage.jsx";
 
 const images = [cover1, cover2, cover4, cover5, cover6, cover7, cover8];
 
 const Hero = () => {
+  const { t } = useLanguage();
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
@@ -29,7 +31,7 @@ const Hero = () => {
               key={index}
               src={image}
               className={`hero-image ${index === current ? "active" : ""}`}
-              alt="Promotion"
+              alt={t("hero.imageAlt")}
             />
           ))}
         </div>

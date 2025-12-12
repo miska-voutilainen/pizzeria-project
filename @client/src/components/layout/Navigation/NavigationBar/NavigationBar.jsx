@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../../../context/AuthContext.jsx";
 import { useCart } from "../../../../context/CartContext.jsx";
 import "./NavigationBar.css";
+import useLanguage from "../../../../context/useLanguage.jsx";
 
 import pizzaWebLogo from "../../../../assets/images/Pizzaweb-logo.svg";
 
@@ -18,6 +19,7 @@ const NavigationBar = () => {
   const location = useLocation();
   const { user } = useAuth();
   const { getCartItemCount } = useCart();
+  const { t } = useLanguage();
 
   const cartItemCount = getCartItemCount();
   const signInRef = React.useRef(null);
@@ -49,18 +51,18 @@ const NavigationBar = () => {
         <nav className="navbar-links">
           <ul>
             <li>
-              <Link to="/menu">Menu</Link>
+              <Link to="/menu">{t("navigation.menu")}</Link>
             </li>
             <li>
               <a
                 className="make-your-own-pizza"
                 onClick={() => setModalWindow("MakeYourOwnPizza")}
               >
-                Luo oma pizza
+                {t("products.makeYourOwn")}
               </a>
             </li>
             <li>
-              <Link to="/about">About us</Link>
+              <Link to="/about">{t("navigation.aboutUs")}</Link>
             </li>
           </ul>
         </nav>
@@ -77,7 +79,7 @@ const NavigationBar = () => {
           ) : (
             <Button
               onClick={() => setModalWindow("SignIn")}
-              text={"Sign in"}
+              text={t("auth.signIn")}
               imageUrl={"./user-icon.svg"}
             />
           )}
@@ -125,15 +127,13 @@ const NavigationBar = () => {
             <nav>
               <ul>
                 <li>
-                  <Link to="/menu">Menu</Link>
+                  <Link to="/menu">{t("navigation.menu")}</Link>
                 </li>
                 <li>
-                  <a onClick={() => setModalWindow("MakeYourOwnPizza")}>
-                    Luo oma pizza
-                  </a>
+                  <Link to="/omapizza">{t("products.makeYourOwn")}</Link>
                 </li>
                 <li>
-                  <Link to="/about">About us</Link>
+                  <Link to="/about">{t("navigation.aboutUs")}</Link>
                 </li>
               </ul>
             </nav>
@@ -147,7 +147,7 @@ const NavigationBar = () => {
                 />
               ) : (
                 <Button
-                  text={"Sign in"}
+                  text={t("auth.signIn")}
                   imageUrl={"./user-icon.svg"}
                   onClick={() => setModalWindow("SignIn")}
                 />

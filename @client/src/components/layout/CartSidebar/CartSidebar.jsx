@@ -6,6 +6,7 @@ import CloseButonDark from "../../../assets/images/close-dark.svg";
 import Button from "../../ui/Button/Button";
 import TrashIcon from "../../../assets/images/trash-icon.svg";
 import QuantityInput from "../../ui/QuantityInput/QuantityInput";
+import useLanguage from "../../../context/useLanguage";
 
 const CartSidebar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
@@ -40,6 +41,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
       navigate("/checkout");
     }
   };
+  const { t } = useLanguage();
 
   if (!isVisible) return null;
 
@@ -58,10 +60,10 @@ const CartSidebar = ({ isOpen, onClose }) => {
           <div className="cart-header">
             <h2>
               {cartItems.length === 0
-                ? "Shopping Cart"
-                : `${getCartItemCount()} items for ${getCartTotal().toFixed(
-                    2
-                  )}€`}
+                ? t("cart.shopingCart")
+                : `${getCartItemCount()} ${t(
+                    "products.itemFor"
+                  )} ${getCartTotal().toFixed(2)}€`}
             </h2>
             <button className="close-cart" onClick={onClose}>
               <img src={CloseButonDark} alt="Close" />
@@ -71,7 +73,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
           <div className="cart-content">
             {cartItems.length === 0 ? (
               <>
-                <p>Your cart is empty</p>
+                <p>{t("cart.empty")}</p>
                 {emptyCartMessage && (
                   <p
                     style={{
@@ -80,7 +82,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
                       fontSize: "14px",
                     }}
                   >
-                    Please add items to your cart before checkout
+                    {t("cart.pleaseAddItems")}
                   </p>
                 )}
               </>
@@ -155,25 +157,25 @@ const CartSidebar = ({ isOpen, onClose }) => {
               <p>
                 <span>
                   {cartItems.length === 0
-                    ? "Shopping Cart"
-                    : `${getCartItemCount()} items`}
+                    ? t("cart.shopingCart")
+                    : `${getCartItemCount()} ${t("checkout.items")}`}
                 </span>
                 <span>{getCartTotal().toFixed(2)}€</span>
               </p>
             </div>
             <div>
               <p>
-                <span>Shipping</span>
-                <span>Free</span>
+                <span>{t("cart.shipping")}</span>
+                <span>{t("checkout.deliveryFree")}</span>
               </p>
             </div>
             <div className="cart-total">
               <p>
-                <span>Order summary</span>
+                <span>{t("checkout.orderSummary")}</span>
                 <span>{getCartTotal().toFixed(2)} €</span>
               </p>
             </div>
-            <Button text="Checkout" onClick={handleCheckoutClick} />
+            <Button text={t("cart.checkout")} onClick={handleCheckoutClick} />
           </div>
         </div>
       </div>

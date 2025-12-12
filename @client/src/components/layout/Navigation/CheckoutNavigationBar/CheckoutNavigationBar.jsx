@@ -2,11 +2,13 @@ import "./CheckoutNavigationBar.css";
 import pizzaWebLogo from "../../../../assets/images/Pizzaweb-logo.svg";
 import checkmarkIcon from "../../../../assets/images/checkmark-icon.svg";
 import { Link, useLocation } from "react-router-dom";
+import useLanguage from "../../../../context/useLanguage.jsx";
 
 const CheckoutNavigationBar = () => {
   const location = useLocation();
   const isCheckout = location.pathname === "/checkout";
   const isOrderConfirmation = location.pathname === "/order-confirmation";
+  const { t } = useLanguage();
 
   return (
     <header className="navbar checkout-header">
@@ -27,7 +29,7 @@ const CheckoutNavigationBar = () => {
                 <img src={checkmarkIcon} alt="Checkmark" />
               </div>
               <div className="checkout-status-step-name-container">
-                <p>Cart</p>
+                <p>{t("checkout.steps.cart")}</p>
               </div>
             </div>
 
@@ -52,7 +54,7 @@ const CheckoutNavigationBar = () => {
                 )}
               </div>
               <div className="checkout-status-step-name-container">
-                <p>Checkout</p>
+                <p>{t("checkout.steps.checkout")}</p>
               </div>
             </div>
 
@@ -73,7 +75,7 @@ const CheckoutNavigationBar = () => {
                 <p>3</p>
               </div>
               <div className="checkout-status-step-name-container">
-                <p>Done!</p>
+                <p>{t("checkout.steps.done")}</p>
               </div>
             </div>
           </div>

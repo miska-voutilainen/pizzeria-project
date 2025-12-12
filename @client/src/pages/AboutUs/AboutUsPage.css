@@ -32,7 +32,9 @@
 }
 
 .our-story-wrapper p {
+  line-height: 1.8;
   width: 80%;
+  margin-bottom: 2rem;
 }
 
 .our-story-wrapper h1::before {

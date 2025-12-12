@@ -1,43 +1,40 @@
 import "./WhyUs.css";
+import useLanguage from "../../../context/useLanguage.jsx";
 
 const WhyUs = () => {
+  const { t } = useLanguage();
+
   return (
     <section className="info-section">
-      <h1 className="info-title">Why Choose Us?</h1>
+      <h2 className="info-title">{t("whyUs.title")}</h2>
       <div className="separator-line"></div>
 
       <div className="info-grid">
         <div className="info-item">
           <img
             src="https://s3.eu-north-1.amazonaws.com/mahalna.images/Frame.png"
-            alt="Fresh ingredients"
+            alt={t("whyUs.freshIngredients")}
           />
-          <h3 className="info-name">Fresh ingredients</h3>
-          <p className="info-description">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit
-          </p>
+          <h3 className="info-name">{t("whyUs.freshIngredients")}</h3>
+          <p className="info-description">{t("whyUs.description")}</p>
         </div>
 
         <div className="info-item">
           <img
             src="https://s3.eu-north-1.amazonaws.com/mahalna.images/Frame2.png"
-            alt="Fast delivery"
+            alt={t("whyUs.fastDelivery")}
           />
-          <h3 className="info-name">Guaranteed fast delivery</h3>
-          <p className="info-description">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit
-          </p>
+          <h3 className="info-name">{t("whyUs.fastDelivery")}</h3>
+          <p className="info-description">{t("whyUs.description")}</p>
         </div>
 
         <div className="info-item">
           <img
             src="https://s3.eu-north-1.amazonaws.com/mahalna.images/Frame3.png"
-            alt="Delicious pizza"
+            alt={t("whyUs.quality")}
           />
-          <h3 className="info-name">Delicious Pizza</h3>
-          <p className="info-description">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit
-          </p>
+          <h3 className="info-name">{t("whyUs.quality")}</h3>
+          <p className="info-description">{t("whyUs.description")}</p>
         </div>
       </div>
     </section>

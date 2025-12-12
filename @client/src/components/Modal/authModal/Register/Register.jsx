@@ -6,8 +6,10 @@ import { useState } from "react";
 import CloseButton from "../../../ui/CloseButton/CloseButton.jsx";
 import InputField from "../../../ui/InputField/InputField.jsx";
 import TextButton from "../../../ui/TextButton/TextButton.jsx";
+import useLanguage from "../../../../context/useLanguage.jsx";
 
 const Register = ({ setModalContent, onClose }) => {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -26,15 +28,16 @@ const Register = ({ setModalContent, onClose }) => {
     e.preventDefault();
 
     // Client-side validation
-    if (!formData.username.trim()) return setError("Username is required");
-    if (!formData.email.trim()) return setError("Email is required");
+    if (!formData.username.trim())
+      return setError(t("auth.errors.usernameRequired"));
+    if (!formData.email.trim()) return setError(t("auth.errors.emailRequired"));
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
-      return setError("Please enter a valid email");
-    if (!formData.password) return setError("Password is required");
+      return setError(t("errors.invalidEmail"));
+    if (!formData.password) return setError(t("auth.errors.passwordRequired"));
     if (formData.password.length < 6)
-      return setError("Password must be at least 6 characters");
+      return setError(t("auth.errors.passwordTooShort"));
     if (formData.password !== formData.confirm)
-      return setError("Passwords do not match");
+      return setError(t("errors.passwordMismatch"));
 
     setIsLoading(true);
     setError("");
@@ -67,11 +70,11 @@ const Register = ({ setModalContent, onClose }) => {
       <CloseButton onClick={onClose} />
       <div id="registerContent">
         <div id="registerTitle">
-          <h1>Register</h1>
+          <h1>{t("auth.register")}</h1>
           <div>
-            <p>Or</p>
+            <p>{t("auth.or")}</p>
             <TextButton
-              text="log in"
+              text={t("auth.signIn")}
               onClick={() => setModalContent("SignIn")}
             />
           </div>
@@ -83,7 +86,7 @@ const Register = ({ setModalContent, onClose }) => {
               type="email"
               name="email"
               id="email"
-              placeholder="Email"
+              placeholder={t("auth.email")}
               value={formData.email}
               onChange={(value) => handleChange("email", value)}
             />
@@ -91,7 +94,7 @@ const Register = ({ setModalContent, onClose }) => {
               type="text"
               name="username"
               id="username"
-              placeholder="Username"
+              placeholder={t("auth.username")}
               value={formData.username}
               onChange={(value) => handleChange("username", value)}
             />
@@ -101,7 +104,7 @@ const Register = ({ setModalContent, onClose }) => {
               id="password"
               value={formData.password}
               onChange={(value) => handleChange("password", value)}
-              placeholder="Password"
+              placeholder={t("auth.password")}
             />
             <InputField
               type="password"
@@ -109,11 +112,13 @@ const Register = ({ setModalContent, onClose }) => {
               id="confirm-password"
               value={formData.confirm}
               onChange={(value) => handleChange("confirm", value)}
-              placeholder="Confirm password"
+              placeholder={t("auth.confirmPassword")}
             />
           </div>
             <Button
-              text={isLoading ? "Creating Account..." : "Create an account"}
+              text={
+                isLoading ? t("auth.creatingAccount") : t("auth.createAccount")
+              }
               id="register-button"
               onClick={handleRegister}
               disabled={isLoading}

@@ -5,10 +5,12 @@ import { useState, useEffect } from "react";
 import IngredientCard from "../../ui/IngredientCard/IngredientCard.jsx";
 import RadioButton from "../../ui/RadioButton/RadioButton.jsx";
 import CloseButton from "../../ui/CloseButton/CloseButton.jsx";
-import { useCart } from "../../../context/CartContext.jsx"; // ← ADD THIS
+import { useCart } from "../../../context/CartContext.jsx";
+import useLanguage from "../../../context/useLanguage.jsx";
 
 const MakeYourOwnPizza = ({ onClose }) => {
-  const { addToCart } = useCart(); // ← GET addToCart
+  const { t } = useLanguage();
+  const { addToCart } = useCart();
 
   const lengths = {
     "20 cm": 10,
@@ -71,10 +73,9 @@ const MakeYourOwnPizza = ({ onClose }) => {
 
       <div id="make-your-own-pizza-right-side">
         <div id="make-your-own-pizza-text">
-          <h1>Make Your Own Pizza</h1>
+          <h1>{t("makeYourOwnPizza.title")}</h1>
           <p id="make-your-own-pizza-description">
-            Choose your favorite dough, pick the sauce that fits your taste, add
-            cheese, and finish it with any toppings you love.
+            {t("makeYourOwnPizza.description")}
           </p>
 
           <div id="length-and-dough">
@@ -89,7 +90,10 @@ const MakeYourOwnPizza = ({ onClose }) => {
               ))}
             </div>
             <div id="dough">
-              {["Traditional", "Active"].map((d) => (
+              {[
+                t("makeYourOwnPizza.traditional"),
+                t("makeYourOwnPizza.active"),
+              ].map((d) => (
                 <RadioButton
                   key={d}
                   text={d}
@@ -102,7 +106,7 @@ const MakeYourOwnPizza = ({ onClose }) => {
         </div>
 
         <div id="add-ingredients">
-          <h2>Add Ingredients</h2>
+          <h2>{t("makeYourOwnPizza.addIngredients")}</h2>
           <div id="ingredients-list">
             {ingredients.map((ing) => (
               <IngredientCard
@@ -117,7 +121,10 @@ const MakeYourOwnPizza = ({ onClose }) => {
           </div>
 
           <Button
-            text={`Add to Cart ${price.toFixed(2)}€`}
+            text={t("makeYourOwnPizza.addToCart").replace(
+              "{price}",
+              price.toFixed(2)
+            )}
             id="make-your-own-pizza-button"
             onClick={() => {
               // Get only topping names (no quantities)

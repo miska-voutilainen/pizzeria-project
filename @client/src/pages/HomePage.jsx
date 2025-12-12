@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getPizzas } from "../lib/api/products.js";
 import { useNavigate } from "react-router-dom";
+import useLanguage from "../context/useLanguage.jsx";
 
 import Hero from "../components/layout/Hero/Hero.jsx";
 import Footer from "../components/layout/Footer/Footer.jsx";
@@ -16,6 +17,7 @@ import Button from "../components/ui/Button/Button.jsx";
 const HomePage = () => {
   const [pizzas, setPizzas] = useState([]);
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   useEffect(() => {
     getPizzas()
@@ -31,19 +33,19 @@ const HomePage = () => {
       <Hero />
 
       <section id="home-products">
-        <h1 className="page-title">─ Pizzat ─</h1>
+        <h1 className="page-title">─ {t("products.pizza")} ─</h1>
         <div className="product-grid">
           {displayedPizzas.length > 0 ? (
             displayedPizzas.map((pizza) => (
               <ProductCard key={pizza.slug} pizza={pizza} />
             ))
           ) : (
-            <p className="loading-text">Loading pizzas...</p>
+            <p className="loading-text">{t("common.loading")}</p>
           )}
         </div>
 
         <div className="products-view-all-btn-container">
-          <Button url="/menu" text="Full menu" />
+          <Button url="/menu" text={t("navigation.menu")} />
         </div>
       </section>
 
