@@ -49,6 +49,9 @@ footer {
 .footer-copyright .language-switcher {
 }
 
+.footer-map-button-container {
+  display: none;
+}
 .temporary-map-button {
   display: none;
 }

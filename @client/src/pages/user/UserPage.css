@@ -54,6 +54,7 @@
   font-weight: bold;
   transition: 0.5s all;
   font-size: 1rem;
+  white-space: nowrap;
 }
 
 .action-grid .action-btn.logout:hover {

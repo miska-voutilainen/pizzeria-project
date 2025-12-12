@@ -7,8 +7,10 @@ import TextButton from "../../components/ui/TextButton/TextButton.jsx";
 import deliveryIcon from "../../assets/images/delivery-icon.svg";
 import takeawayIcon from "../../assets/images/store-icon.svg";
 import "./UserPage.css";
+import useLanguage from "../../context/useLanguage.jsx";
 
 const UserPage = () => {
+  const { t } = useLanguage();
   const { user, loading, checkAuth } = useAuth();
 
   const [modalWindow, setModalWindow] = useState(null);
@@ -242,10 +244,12 @@ const UserPage = () => {
         <div className="user-page-user-card">
           <div className="user-page-user-card-header">
             <div className="user-card-username">
-              <h1>Welcome back, {user.username}!</h1>
+              <h1>
+                {t("userPage.welcomeBack").replace("{username}", user.username)}
+              </h1>
               <div className="user-info">
                 <p>
-                  <strong>Member since:</strong>{" "}
+                  <strong>{t("userPage.memberSince")}</strong>{" "}
                   {new Date(user.createdAt || Date.now()).toLocaleDateString()}
                 </p>
               </div>
@@ -268,7 +272,7 @@ const UserPage = () => {
                     window.location.href = "/";
                   }}
                 >
-                  <span>Logout</span>
+                  <span>{t("userPage.logout")}</span>
                 </button>
               </div>
             </div>
@@ -276,11 +280,11 @@ const UserPage = () => {
 
           <div className="user-card-personal-container">
             <div className="checkout-inputs">
-              <h2>Personal information</h2>
+              <h2>{t("userPage.personalInformation")}</h2>
 
               {/* First Name */}
               <div className="checkout-input-row">
-                <label htmlFor="firstName">Etunimi</label>
+                <label htmlFor="firstName">{t("userPage.firstName")}</label>
                 <InputField
                   type="text"
                   value={name.firstName}
@@ -293,24 +297,24 @@ const UserPage = () => {
 
               {/* Last Name */}
               <div className="checkout-input-row">
-                <label htmlFor="surname">Sukunimi</label>
+                <label htmlFor="surname">{t("userPage.lastName")}</label>
                 <InputField
                   type="text"
                   value={name.lastName}
                   onChange={(value) =>
                     setName((prev) => ({ ...prev, lastName: value }))
                   }
-                  placeholder="Sukunimi puuttuu"
+                  placeholder={t("userPage.lastName")}
                 />
               </div>
 
               <div className="checkout-input-row">
-                <label htmlFor="email">Email</label>
+                <label htmlFor="email">{t("userPage.email")}</label>
                 <InputField
                   type="text"
                   value={user.email || ""}
                   readOnly
-                  placeholder="pekka.virtanen@gmail.com"
+                  placeholder={t("userPage.email")}
                 />
                 <TextButton
                   text="Change"
@@ -319,7 +323,7 @@ const UserPage = () => {
               </div>
 
               <div className="checkout-input-row">
-                <label htmlFor="password">Salasana</label>
+                <label htmlFor="password">{t("userPage.password")}</label>
                 <InputField type="password" value={"**********"} readOnly />
                 <TextButton
                   text="Change"
@@ -384,10 +388,11 @@ const UserPage = () => {
                   }}
                 >
                   <div>
-                    <strong>Email Verification Required</strong>
+                    <strong>
+                      ⚠️ {t("userPage.emailVerificationRequired")}
+                    </strong>
                     <p style={{ margin: "5px 0 0 0", color: "#856404" }}>
-                      Please verify your email address to enable security
-                      features like 2FA.
+                      {t("userPage.emailVerificationMessage")}
                     </p>
                   </div>
                   <button
@@ -403,14 +408,16 @@ const UserPage = () => {
                       fontWeight: "bold",
                     }}
                   >
-                    {loading2FA ? "Sending..." : "Verify Now"}
+                    {loading2FA
+                      ? t("userPage.sending")
+                      : t("userPage.verifyNow")}
                   </button>
                 </div>
               )}
 
               {/* 2FA Toggle */}
               <div className="email-2FA-container">
-                <p>Enable Two-Factor Authentication</p>
+                <p>{t("userPage.enableTwoFacter")} </p>
                 <div
                   className={`switch ${active ? "active" : ""}`}
                   onClick={handleSend2FACode}
@@ -429,7 +436,7 @@ const UserPage = () => {
           {/* Delivery Address */}
           <div className="user-card-delivery-address-container">
             <div className="checkout-inputs">
-              <h2>Delivery address</h2>
+              <h2>{t("userPage.deliveryAddress")}</h2>
 
               {/* Street */}
               <div className="checkout-input-row">
@@ -446,27 +453,27 @@ const UserPage = () => {
 
               {/* Postal Code */}
               <div className="checkout-input-row">
-                <label htmlFor="postcode">Postinumero</label>
+                <label htmlFor="postcode">{t("userPage.postalCode")}</label>
                 <InputField
                   type="text"
                   value={address.postalCode}
                   onChange={(value) =>
                     setAddress((prev) => ({ ...prev, postalCode: value }))
                   }
-                  placeholder="Postinumero puuttuu"
+                  placeholder={t("userPage.postalCode")}
                 />
               </div>
 
               {/* City */}
               <div className="checkout-input-row">
-                <label htmlFor="region">Kaupunki</label>
+                <label htmlFor="region">{t("userPage.city")}</label>
                 <InputField
                   type="text"
                   value={address.city}
                   onChange={(value) =>
                     setAddress((prev) => ({ ...prev, city: value }))
                   }
-                  placeholder="Kaupunki puuttuu"
+                  placeholder={t("userPage.city")}
                 />
               </div>
 
@@ -503,7 +510,7 @@ const UserPage = () => {
 
         {/* Orders */}
         <div className="user-page-orders-card">
-          <h2>Orders</h2>
+          <h2>{t("userPage.orders")}</h2>
           {Array.isArray(user.orders) && user.orders.length > 0 ? (
             <div className="simple-orders-list">
               {user.orders.map((order) => {
@@ -562,9 +569,11 @@ const UserPage = () => {
                           })
                         : ""}
                     </div>
-                    <div className="order-items">{itemNames || "No items"}</div>
+                    <div className="order-items">
+                      {itemNames || t("userPage.noItems")}
+                    </div>
                     <TextButton className="reorder-btn">
-                      Make order again
+                      {t("userPage.makeOrderAgain")}
                     </TextButton>
                     <hr className="order-divider" />
                   </div>
@@ -572,7 +581,7 @@ const UserPage = () => {
               })}
             </div>
           ) : (
-            <p>No orders found.</p>
+            <p>{t("userPage.noOrders")}</p>
           )}
         </div>
       </div>
