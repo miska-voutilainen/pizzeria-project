@@ -1,0 +1,44 @@
+.button {
+  background-color: var(--red);
+  color: var(--background-light);
+  padding: 5px 20px;
+  display: flex;
+  gap: 10px;
+  font-weight: bold;
+  font-size: 18px;
+  text-decoration: none;
+  transition: 0.3s ease;
+  white-space: nowrap;
+  text-align: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+}
+
+.button.disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.button img {
+  width: 17px;
+}
+
+.button:hover {
+  opacity: 0.8;
+}
+
+/* appearance dark */
+
+.button-dark {
+  background-color: var(--background-dark);
+  color: var(--background-light);
+  border: 1px solid var(--color-border);
+}
+
+.button-dark:hover {
+  /* background-color: #333; */
+  opacity: 0.6;
+}

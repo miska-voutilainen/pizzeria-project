@@ -1,0 +1,10 @@
+.text-button{
+    text-decoration: none;
+    color: #919185;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.text-button:hover {
+    color: #1C3D19;
+}

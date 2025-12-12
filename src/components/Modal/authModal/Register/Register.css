@@ -1,0 +1,60 @@
+
+#registerContent{
+    display: flex;
+    width: 536px;
+    height: 430px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 25px;
+}
+
+
+#registerTitle {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#registerTitle>div{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    color: #1C3D19;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+
+#inputFields{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+
+#sign-in-button{
+    width: 100%;
+    height: 43px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#inputFields {
+    width: 100%;
+}
+
+@media (max-width: 800px){
+    #registerContent{
+        display: flex;
+        width: 90%;
+        height: 400px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 25px;
+    }}
+
+

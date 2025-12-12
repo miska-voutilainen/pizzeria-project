@@ -1,0 +1,53 @@
+.input-submit-container {
+  display: flex;
+  border: 3px solid var(--background-light);
+  max-width: 350px;
+}
+
+.input-submit-container input[type="email"],
+.input-submit-container input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  background-color: #224724;
+  border: none;
+  color: white;
+  font-family: "Roboto Slab";
+  font-size: 1rem;
+}
+
+.input-submit-container button[type="submit"] {
+  padding: 0px 25px;
+  cursor: pointer;
+  background-color: var(--background-light);
+  border: none;
+  color: var(--background-dark);
+  font-weight: 700;
+  font-size: 1rem;
+  font-family: "Roboto Slab";
+  transition: 0.4s ease;
+}
+
+.input-submit-button-wide {
+  padding: 0px 60px !important;
+  font-size: 1.2rem !important;
+}
+
+.input-submit-container button[type="submit"]:hover {
+  opacity: 0.8;
+}
+
+/* light appearance */
+.input-submit-container.light {
+  border-color: var(--color-green) !important;
+}
+
+.input-submit-container.light input[type="email"],
+.input-submit-container.light input[type="text"] {
+  background-color: #e6e5ce !important;
+  color: var(--color-green) !important;
+}
+
+.input-submit-container.light button[type="submit"] {
+  background-color: var(--color-green) !important;
+  color: var(--background);
+}

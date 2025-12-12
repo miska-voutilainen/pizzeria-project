@@ -1,0 +1,67 @@
+.ingredient-card {
+    width: 98px;
+    height: 148px;
+    padding: 14px 13px 13px 13px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 12px;
+    border: 2px solid #A88F67;
+    background: #FDF8E2;
+}
+
+.image-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ingredient-image{
+    height: 40px;
+}
+
+.ingredient-header{
+    color: #224724;
+    height: 19px;
+    align-self: stretch;
+    font-size: 0.8rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 0.44px;
+}
+
+.ingredient-price{
+    font-size: 0.7rem;
+    color: #224724;
+    font-weight: 500;
+}
+
+.quantity-input-container>div{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.ingredient-card button {
+    background-color: var(--color-green);
+    color: white;
+    border: none;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.ingredient-card .quantity-input button:hover {
+    background-color: #2d5a2a;
+}
+
+.ingredient-card.quantity-text {
+    font-weight: bold;
+    min-width: 20px;
+    text-align: center;
+}

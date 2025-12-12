@@ -1,0 +1,80 @@
+#square-button-container {
+  position: relative;
+  z-index: 1;
+}
+
+#square-button-container button {
+  top: 0;
+  left: 0;
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-green);
+  cursor: pointer;
+  border: none;
+  box-shadow: 6px 6px 0 #8faa90;
+  margin: 0px 7px 7px 0px;
+}
+
+#square-button-container button:hover {
+  top: 3px;
+  left: 3px;
+  box-shadow: 3px 3px 0 #8faa90;
+}
+
+#square-button-container button:hover::after {
+  top: 1px;
+  right: -2px;
+  width: 4px;
+  height: 4px;
+}
+
+#square-button-container button:hover::before {
+  bottom: -2px;
+  left: 1px;
+  width: 4px;
+  height: 4px;
+}
+
+#square-button-container button::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  background-color: #8faa90;
+  transform: rotate(45deg);
+  z-index: -1;
+}
+
+#square-button-container button::before {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 2px;
+  width: 8px;
+  height: 8px;
+  background-color: #8faa90;
+  transform: rotate(45deg);
+  z-index: -1;
+}
+
+#square-button-container button:active {
+  top: 6px;
+  left: 6px;
+  box-shadow: none;
+}
+
+#square-button-container button:active::before {
+  bottom: 1px;
+  left: 1px;
+}
+
+#square-button-container button:active::after {
+  top: 1px;
+  right: 1px;
+}

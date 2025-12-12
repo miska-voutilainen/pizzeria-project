@@ -1,0 +1,35 @@
+footer {
+  background-color: var(--background-dark);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 100px 0px 60px;
+  gap: 30px;
+}
+
+.footer-logo img {
+  width: 180px;
+}
+
+.footer-nav-links ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  padding: 0;
+  margin: 10px 0;
+}
+
+.footer-nav-links ul a {
+  color: var(--background-light);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.footer-nav-links a:hover {
+  color: #f4d03f;
+}
+
+.footer-copyright small {
+  color: var(--background-light);
+}

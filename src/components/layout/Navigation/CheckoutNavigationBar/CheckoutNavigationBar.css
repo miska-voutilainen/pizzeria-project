@@ -1,0 +1,96 @@
+.checkout-status-tracker-container {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.checkout-status-step {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  opacity: 0.3;
+}
+
+.checkout-status-step-done {
+  opacity: 1;
+}
+
+.checkout-status-tracker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--background-light);
+}
+
+/* Checkmark for Cart */
+.checkout-status-step-container {
+  display: flex;
+  height: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.checkout-status-step-container img {
+  height: 100%;
+  width: 23px;
+  margin-bottom: -1px;
+}
+
+.checkout-status-step-container p {
+  font-size: 1.3rem;
+  line-height: 100%;
+}
+
+.checkout-connecting-line {
+  width: 43px;
+}
+
+.checkout-connecting-line.solid {
+  border-top: 1px solid var(--background-light);
+}
+
+.checkout-connecting-line.dashed {
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--background-light),
+    var(--background-light) 7px,
+    transparent 5px,
+    transparent 12px
+  );
+  opacity: 0.3;
+  background-position: left top;
+  background-repeat: repeat-x;
+  background-size: 100% 10px;
+  height: 1.5px;
+}
+
+@media (max-width: 500px) {
+  .checkout-status-step-name-container p {
+    font-size: 0.8rem;
+  }
+
+  .checkout-status-step-container img {
+    width: 18px;
+  }
+
+  .checkout-connecting-line.dashed {
+    background-image: repeating-linear-gradient(
+      90deg,
+      var(--background-light),
+      var(--background-light) 4px,
+      transparent 5px,
+      transparent 7px
+    );
+  }
+
+  .checkout-connecting-line {
+    width: 18px;
+  }
+
+  .checkout-status-tracker {
+    gap: 1px;
+  }
+}

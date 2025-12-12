@@ -1,0 +1,119 @@
+/* ------------------------------------------------------- */
+/* Root Defaults — Modern, clean, accessible               */
+/* ------------------------------------------------------- */
+
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;500;600;700;800&display=swap");
+
+:root {
+  --font-base: "Roboto Slab", serif;
+
+  /* Typography scale */
+  --title-1: 64px;
+  --subtitle-1: 32px;
+  --subtitle-2: 32px;
+  --body: 15px;
+
+  --page-max-width: 1200px;
+  --navbar-height: 70px;
+  --navbar-container-padding-sides: 0 40px;
+  --hover-animation: 0.3s ease;
+
+  /* Global font settings */
+  font-family: var(--font-base);
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 400;
+
+  /* Colors */
+  color: rgba(0, 0, 0, 0.87);
+  --red: #e10000;
+  --color-green: #1b4618;
+  --background: #fdf8e2;
+  --input-background: #e6e5ce;
+  --background-light: #fdf8e2;
+  --background-dark: #082109;
+  --input-placeholder: rgba(28, 61, 25, 0.2);
+  --color-border: #a88f67;
+
+  background-color: #ffffff;
+
+  /* Rendering improvements */
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ------------------------------------------------------- */
+/* CSS Reset — Removes browser inconsistencies             */
+/* ------------------------------------------------------- */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ------------------------------------------------------- */
+/* Body — Good defaults for full-page apps                 */
+/* ------------------------------------------------------- */
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-color: var(--background-light);
+  font-family: var(--font-base);
+}
+
+/* ------------------------------------------------------- */
+/* Typography Utility Classes (Optional but recommended)   */
+/* ------------------------------------------------------- */
+
+.title-1 {
+  font-size: var(--title-1);
+  font-weight: 400;
+}
+
+.subtitle-1 {
+  font-size: var(--subtitle-1);
+  font-weight: 400;
+}
+
+.subtitle-1-bold {
+  font-size: var(--subtitle-1);
+  font-weight: 700;
+}
+
+.subtitle-2 {
+  font-size: var(--subtitle-2);
+  font-weight: 400;
+}
+
+.subtitle-2-bold {
+  font-size: var(--subtitle-2);
+  font-weight: 700;
+}
+
+.body {
+  font-size: var(--body);
+  font-weight: 400;
+}
+
+.body-bold {
+  font-size: var(--body);
+  font-weight: 700;
+}
+
+/* ------------------------------------------------------- */
+/* Accessibility: Only hide outline for mouse users        */
+/* ------------------------------------------------------- */
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Add this to your global CSS if needed */
+.slider-container {
+  contain: layout style paint;
+}

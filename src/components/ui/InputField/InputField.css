@@ -1,0 +1,23 @@
+.greyInput {
+  display: flex;
+  height: 43px;
+  padding: 5px 20px 5px 20px;
+  width: 100%;
+  align-items: center;
+  align-self: stretch;
+  background: var(--input-background);
+  box-shadow: 0 0 10px 0 rgba(28, 61, 25, 0.08) inset;
+  border: none;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.greyInput::placeholder {
+  color: var(--input-placeholder);
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: 0.45px;
+  font-family: var(--font-base);
+}

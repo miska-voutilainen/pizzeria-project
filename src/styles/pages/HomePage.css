@@ -1,0 +1,44 @@
+/* ──────────────────────── PAGE TITLE ──────────────────────── */
+.page-title {
+  text-align: center;
+  color: var(--color-green);
+  font-family: var(--font-base);
+  font-size: 55px;
+  line-height: 3.5;
+  font-weight: 400;
+}
+
+/* ──────────────────────── PRODUCT GRID & CARDS ──────────────────────── */
+.product-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1fr;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 90%;
+}
+
+@media (min-width: 640px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 768px) {
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .product-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+.loading-text {
+  text-align: center;
+  color: #6b7280;
+  grid-column: 1 / -1;
+  padding: 2rem;
+}

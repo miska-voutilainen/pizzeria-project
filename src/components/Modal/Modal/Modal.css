@@ -1,0 +1,167 @@
+dialog:focus {
+    outline: none;
+}
+dialog {
+    outline: none;
+}
+
+dialog {
+    background: var(--background);
+    border: none;
+    z-index: 9999;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+}
+
+.SignIn, .Register, .ResetPassword {
+    width: 843px;
+}
+
+.ResetPassword {
+    height: 410px;
+}
+
+.TwoFactor{
+    width:723px;
+    height:735px;
+}
+
+.Success {
+    width: 721px;
+    height: 735px;
+}
+
+.ResetPasswordSuccess, .EmailConfirmationSuccess{
+    width: 843px;
+    height: 520px;
+}
+
+.ResetPasswordSuccess>div, .EmailConfirmationSuccess>div{
+    height: 469px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+    text-align: center;
+}
+dialog>div{
+    border: 3px solid #A88F67;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 23px 18px 24px 19px;
+}
+
+
+dialog::backdrop {
+    background: rgba(0, 0, 0, 0.40);
+    backdrop-filter: blur(1px);
+}
+
+.SignIn>div, .Register>div {
+    height: 543px;
+}
+
+.Success>div {
+    height: 683px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 33px;
+}
+
+.TwoFactor{
+    height: 735px;
+}
+
+.TwoFactor>div{
+    height:683px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 61px;
+}
+
+.ResetPassword>div{
+    height: 358px;
+}
+
+
+#sign-in-button, #register-button, #reset-password-button {
+    width: 100%;
+    height: 43px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#reset-password-button{
+    width: 100%;
+}
+
+#two-factor-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 43px;
+    max-width: 396px;
+}
+
+
+dialog h1{
+    color: #1C3D19;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.RegistrationSuccess {
+    width: 1043px;
+    height: 606px;
+}
+
+.RegistrationSuccess>div {
+    height: 559px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+}
+
+dialog form{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    width: 100%;
+}
+
+dialog input:focus{
+    outline: 2px solid #A88F67;
+}
+
+@media (max-width: 800px) {
+    modal {
+        width: 90%;
+    }
+
+    #two-factor-button{
+        max-width: 316px;
+    }
+}
+
+
+
+
+
+
+
